@@ -1,0 +1,14 @@
+{
+  "name": "contestmanager",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w @contest/scoring && npm run build -w api && npm run build -w app",
+    "test": "npm test -w @contest/scoring",
+    "dev:api": "npm run build -w @contest/scoring && npm run start:dev -w api",
+    "dev:app": "npm run build -w @contest/scoring && npm start -w app"
+  }
+}

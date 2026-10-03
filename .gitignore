@@ -1,0 +1,9 @@
+node_modules
+dist
+.env
+.angular
+www
+uploads
+coverage
+*.tsbuildinfo
+apps/api/src/generated

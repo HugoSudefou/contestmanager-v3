@@ -1,0 +1,9 @@
+node_modules
+**/node_modules
+**/dist
+apps/app/www
+apps/app/.angular
+apps/app/android
+apps/api/src/generated
+apps/api/uploads
+**/.env

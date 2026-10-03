@@ -1,0 +1,93 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "esm"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  REFEREE
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  username     String   @unique
+  passwordHash String
+  role         Role     @default(REFEREE)
+  createdAt    DateTime @default(now())
+  scores       MatchParticipant[]
+}
+
+/// A mission sheet (e.g. "Défi 2026 - Cycle 2"). `sheet` follows the Sheet type of @contest/scoring.
+model Contest {
+  id          Int      @id @default(autoincrement())
+  name        String
+  season      String
+  description String?
+  sheet       Json
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  groups      Group[]
+}
+
+model Tournament {
+  id       Int       @id @default(autoincrement())
+  name     String
+  date     DateTime?
+  location String?
+  groups   Group[]
+}
+
+/// A group of teams playing the same contest sheet in a tournament (e.g. "CM1-CM2").
+model Group {
+  id           Int        @id @default(autoincrement())
+  name         String
+  tournamentId Int
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  contestId    Int
+  contest      Contest    @relation(fields: [contestId], references: [id], onDelete: Restrict)
+  teams        Team[]
+  matches      Match[]
+}
+
+model Team {
+  id             Int                @id @default(autoincrement())
+  name           String
+  school         String?
+  members        String?
+  groupId        Int
+  group          Group              @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  participations MatchParticipant[]
+}
+
+model Match {
+  id           Int                @id @default(autoincrement())
+  groupId      Int
+  group        Group              @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  tableNumber  Int?
+  scheduledAt  DateTime?
+  participants MatchParticipant[]
+}
+
+/// One team in one match, with its result once a referee has scored it.
+model MatchParticipant {
+  id          Int       @id @default(autoincrement())
+  matchId     Int
+  match       Match     @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  teamId      Int
+  team        Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  score       Int?
+  answers     Json?
+  penalties   Int?
+  timeSeconds Int?
+  refereeId   Int?
+  referee     User?     @relation(fields: [refereeId], references: [id], onDelete: SetNull)
+  scoredAt    DateTime?
+
+  @@unique([matchId, teamId])
+}
