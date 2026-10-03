@@ -22,6 +22,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/tournament.page').then((m) => m.TournamentPage),
   },
   { path: 'team/:id', loadComponent: () => import('./pages/team.page').then((m) => m.TeamPage) },
+  {
+    path: 'teacher',
+    canActivate: [requireRole('TEACHER', 'ADMIN')],
+    loadComponent: () => import('./pages/teacher.page').then((m) => m.TeacherPage),
+  },
   { path: 'sheet/:contestId', loadComponent: () => import('./pages/sheet.page').then((m) => m.SheetPage) },
   {
     path: 'admin',

@@ -16,7 +16,8 @@
     "lint": "oxlint --type-aware src/",
     "postinstall": "prisma generate",
     "seed": "prisma db seed",
-    "migrate": "prisma migrate dev"
+    "migrate": "prisma migrate dev",
+    "test": "node --test src/*.test.ts"
   },
   "dependencies": {
     "@contest/scoring": "*",

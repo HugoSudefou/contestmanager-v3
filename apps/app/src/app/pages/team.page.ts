@@ -77,8 +77,7 @@ interface TeamDetail extends Team {
               <ion-card-title>{{ t.name }}</ion-card-title>
             </ion-card-header>
             <ion-card-content>
-              @if (t.school) { <p>{{ t.school }}</p> }
-              @if (t.members) { <p>Membres : {{ t.members }}</p> }
+              @if (t.school) { <p>{{ t.school.name }}</p> }
               <p>Feuille de mission : {{ t.group.contest.name }}</p>
               <p><strong>Meilleur score : {{ best() ?? '—' }}</strong></p>
             </ion-card-content>

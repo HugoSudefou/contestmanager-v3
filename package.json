@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "build": "npm run build -w @contest/scoring && npm run build -w api && npm run build -w app",
-    "test": "npm test -w @contest/scoring",
+    "test": "npm test -w @contest/scoring && npm test -w api",
     "dev:api": "npm run build -w @contest/scoring && npm run start:dev -w api",
     "dev:app": "npm run build -w @contest/scoring && npm start -w app"
   }

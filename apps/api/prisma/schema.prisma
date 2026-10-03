@@ -11,6 +11,7 @@ datasource db {
 enum Role {
   ADMIN
   REFEREE
+  TEACHER
 }
 
 model User {
@@ -18,8 +19,21 @@ model User {
   username     String   @unique
   passwordHash String
   role         Role     @default(REFEREE)
+  firstName    String?
+  lastName     String?
+  schoolId     Int?
+  school       School?  @relation(fields: [schoolId], references: [id], onDelete: SetNull)
   createdAt    DateTime @default(now())
   scores       MatchParticipant[]
+  /// Teams of a teacher's class (TEACHER role).
+  teams        Team[]
+}
+
+model School {
+  id       Int    @id @default(autoincrement())
+  name     String @unique
+  teams    Team[]
+  teachers User[]
 }
 
 /// A mission sheet (e.g. "Défi 2026 - Cycle 2"). `sheet` follows the Sheet type of @contest/scoring.
@@ -58,11 +72,25 @@ model Group {
 model Team {
   id             Int                @id @default(autoincrement())
   name           String
-  school         String?
-  members        String?
+  schoolId       Int?
+  school         School?            @relation(fields: [schoolId], references: [id], onDelete: SetNull)
+  teacherId      Int?
+  teacher        User?              @relation(fields: [teacherId], references: [id], onDelete: SetNull)
   groupId        Int
   group          Group              @relation(fields: [groupId], references: [id], onDelete: Cascade)
   participations MatchParticipant[]
+  students       Student[]
+}
+
+/// Never exposed by public routes (minors): only admins and the team's teacher see students.
+model Student {
+  id        Int    @id @default(autoincrement())
+  firstName String
+  lastName  String
+  /// Role in the team (pilote, constructeur...), free text.
+  role      String?
+  teamId    Int
+  team      Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
 }
 
 model Match {
@@ -71,6 +99,10 @@ model Match {
   group        Group              @relation(fields: [groupId], references: [id], onDelete: Cascade)
   tableNumber  Int?
   scheduledAt  DateTime?
+  /// Final phase only: 1 = final, 2 = semi-finals, 3 = quarter-finals... null = qualifying match.
+  round        Int?
+  /// Final phase only: position in the round. The winner goes to (round - 1, bracketIndex / 2).
+  bracketIndex Int?
   participants MatchParticipant[]
 }
 

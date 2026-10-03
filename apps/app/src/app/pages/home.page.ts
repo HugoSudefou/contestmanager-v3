@@ -47,6 +47,11 @@ import { ApiService } from '../api.service';
         <ion-button expand="block" size="large" fill="outline" routerLink="/training">
           Feuille de mission (entraînement)
         </ion-button>
+        @if (api.user()?.role === 'TEACHER') {
+          <ion-button expand="block" fill="outline" routerLink="/teacher">Espace enseignant</ion-button>
+        } @else if (!api.user()) {
+          <ion-button expand="block" fill="clear" routerLink="/login" [queryParams]="{ redirect: '/teacher' }">Espace enseignant</ion-button>
+        }
         @if (api.user()?.role === 'ADMIN') {
           <ion-button expand="block" fill="clear" routerLink="/admin">Administration</ion-button>
         } @else {

@@ -7,10 +7,12 @@ import type { Role } from './generated/prisma/client.js';
 class UserDto {
   @IsString() username: string;
   @IsOptional() @IsString() @MinLength(6) password?: string;
-  @IsIn(['ADMIN', 'REFEREE']) role: Role;
+  @IsIn(['ADMIN', 'REFEREE', 'TEACHER']) role: Role;
+  @IsOptional() @IsString() firstName?: string;
+  @IsOptional() @IsString() lastName?: string;
 }
 
-const select = { id: true, username: true, role: true, createdAt: true };
+const select = { id: true, username: true, role: true, firstName: true, lastName: true, createdAt: true };
 
 @Controller('users')
 export class UsersController {

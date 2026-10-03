@@ -16,12 +16,19 @@ for (const c of contests) {
 // Demo data only on request: SEED_DEMO=1 npx prisma db seed
 if (process.env.SEED_DEMO && (await prisma.tournament.count()) === 0) {
   const [c2, c3] = await Promise.all(contests.map((c: { name: string }) => prisma.contest.findFirstOrThrow({ where: { name: c.name } })));
+  const school = await prisma.school.upsert({ where: { name: 'École Jules Ferry' }, create: { name: 'École Jules Ferry' }, update: {} });
   const tournament = await prisma.tournament.create({ data: { name: 'Tournoi de démonstration', location: 'Gymnase' } });
   for (const [name, contest] of [['CE1-CE2', c2], ['CM1-CM2', c3]] as const) {
     const group = await prisma.group.create({ data: { name, tournamentId: tournament.id, contestId: contest.id } });
     const teams = await Promise.all(
       ['Les Robotines', 'Bip Bip', 'Mécano Kids', 'Les Circuits'].map((t) =>
-        prisma.team.create({ data: { name: `${t} (${name})`, school: 'École Jules Ferry', groupId: group.id } }),
+        prisma.team.create({
+          data: {
+            name: `${t} (${name})`,
+            groupId: group.id,
+            schoolId: school.id,
+          },
+        }),
       ),
     );
     for (let i = 0; i < teams.length; i += 2) {

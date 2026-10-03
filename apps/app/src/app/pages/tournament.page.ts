@@ -23,7 +23,8 @@ import {
   IonToolbar,
   ViewWillEnter,
 } from '@ionic/angular';
-import { ApiService, type Group, type Match, type Participant, type TournamentDetail } from '../api.service';
+import { ApiService, FINALS_GROUP, canScore, type Group, type Match, type Participant, type TournamentDetail } from '../api.service';
+import { BracketComponent } from '../bracket.component';
 
 @Component({
   selector: 'app-tournament',
@@ -49,6 +50,7 @@ import { ApiService, type Group, type Match, type Participant, type TournamentDe
     IonSegmentButton,
     IonRefresher,
     IonRefresherContent,
+    BracketComponent,
   ],
   template: `
     <ion-header>
@@ -79,7 +81,7 @@ import { ApiService, type Group, type Match, type Participant, type TournamentDe
         } @else if (data.error()) {
           <ion-text color="danger"><p class="ion-padding">{{ data.error()?.message }}</p></ion-text>
         } @else if (mode() === 'referee') {
-          @if (!api.user()) {
+          @if (!canScore(api.user())) {
             <div class="ion-padding">
               <p>Connectez-vous en arbitre pour noter les matchs.</p>
               <ion-button expand="block" routerLink="/login" [queryParams]="{ redirect: currentUrl }">Connexion arbitre</ion-button>
@@ -97,7 +99,7 @@ import { ApiService, type Group, type Match, type Participant, type TournamentDe
                         </h3>
                         <div class="teams">
                           @for (p of m.participants; track p.id) {
-                            <ion-button size="small" [fill]="p.score === null && !pending(m, p) ? 'solid' : 'outline'" [color]="pending(m, p) ? 'warning' : 'primary'" [disabled]="!api.user()" (click)="score(g, m, p)">
+                            <ion-button size="small" [fill]="p.score === null && !pending(m, p) ? 'solid' : 'outline'" [color]="pending(m, p) ? 'warning' : 'primary'" [disabled]="!canScore(api.user())" (click)="score(g, m, p)">
                               {{ p.team.name }}{{ pending(m, p) ? ' · en attente d\'envoi' : p.score === null ? '' : ' · ' + p.score + ' pts' }}
                             </ion-button>
                           }
@@ -110,12 +112,16 @@ import { ApiService, type Group, type Match, type Participant, type TournamentDe
                 </ion-list>
             }
         } @else {
+          @if (finals(); as f) {
+            <ion-list-header><ion-label>Phase finale</ion-label></ion-list-header>
+            <app-bracket [matches]="f.matches"></app-bracket>
+          }
           <ion-list>
             @for (t of teams(); track t.id) {
               <ion-item button [routerLink]="['/team', t.id]">
                 <ion-label>
                   <h2>{{ t.name }}</h2>
-                  <p>{{ t.group }}{{ t.school ? ' · ' + t.school : '' }}</p>
+                  <p>{{ t.group }}{{ t.school ? ' · ' + t.school.name : '' }}</p>
                 </ion-label>
               </ion-item>
             } @empty {
@@ -133,6 +139,7 @@ export class TournamentPage implements ViewWillEnter {
   private router = inject(Router);
   id = input.required<string>();
   mode = input<'referee' | 'team'>('team');
+  canScore = canScore;
   search = signal('');
   showDone = signal(false);
   currentUrl = this.router.url;
@@ -142,11 +149,13 @@ export class TournamentPage implements ViewWillEnter {
     loader: ({ params }) => this.api.get<TournamentDetail>(`/tournaments/${params}`),
   });
 
+  finals = computed(() => (this.data.hasValue() ? this.data.value().groups.find((g) => g.name === FINALS_GROUP) : undefined));
+
   teams = computed(() => {
     const q = this.search().trim().toLowerCase();
     return (this.data.hasValue() ? this.data.value().groups : [])
       .flatMap((g) => g.teams.map((t) => ({ ...t, group: g.name })))
-      .filter((t) => !q || `${t.name} ${t.school ?? ''}`.toLowerCase().includes(q))
+      .filter((t) => !q || `${t.name} ${t.school?.name ?? ''}`.toLowerCase().includes(q))
       .sort((a, b) => a.name.localeCompare(b.name));
   });
 

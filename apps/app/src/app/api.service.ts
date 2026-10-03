@@ -2,7 +2,7 @@ import { Injectable, computed, signal } from '@angular/core';
 import type { Answers, Sheet } from '@contest/scoring';
 import { environment } from '../environments/environment';
 
-export type Role = 'ADMIN' | 'REFEREE';
+export type Role = 'ADMIN' | 'REFEREE' | 'TEACHER';
 export interface User { id: number; username: string; role: Role }
 export interface Contest {
   id: number;
@@ -13,7 +13,14 @@ export interface Contest {
   published: boolean;
 }
 export interface Tournament { id: number; name: string; date: string | null; location: string | null }
-export interface Team { id: number; name: string; school: string | null; members: string | null; groupId: number }
+export interface Team {
+  id: number;
+  name: string;
+  school: { name: string } | null;
+  teacherId: number | null;
+  groupId: number;
+}
+export interface Student { id?: number; firstName: string; lastName: string; role: string | null }
 export interface Participant {
   id: number;
   matchId: number;
@@ -28,6 +35,9 @@ export interface Match {
   groupId: number;
   tableNumber: number | null;
   scheduledAt: string | null;
+  /** Final phase: 1 = final, 2 = semi-finals... null = qualifying match. */
+  round: number | null;
+  bracketIndex: number | null;
   participants: Participant[];
 }
 export interface Group {
@@ -232,6 +242,11 @@ export const practiceHistory = {
   add: (run: PracticeRun) => write('practice', [run, ...practiceHistory.list()].slice(0, 200)),
   clear: () => localStorage.removeItem('practice'),
 };
+
+export const FINALS_GROUP = 'Phase finale';
+export const roundName = (round: number) =>
+  ({ 1: 'Finale', 2: 'Demi-finales', 3: 'Quarts de finale', 4: 'Huitièmes de finale' })[round] ?? `Tour ${round}`;
+export const canScore = (u: User | null) => u?.role === 'REFEREE' || u?.role === 'ADMIN';
 
 export const formatTime = (s: number) =>
   `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

@@ -13,7 +13,8 @@ Nouvelle version de l'application de gestion du défi robotique (remplace `conte
 | Arbitre | Se connecte, choisit le tournoi, voit les matchs « à noter », remplit la feuille de mission (chrono, pénalités, total en direct), envoie le score. |
 | Équipe | Cherche son équipe, voit ses matchs, ses scores et son meilleur score. |
 | Entraînement | N'importe quelle feuille publiée, sans compte, scores gardés sur le téléphone. |
-| Admin (`/admin`) | Crée les **concours** (feuilles de mission) sans code, les tournois, groupes, équipes (collage en masse), matchs, comptes arbitres. |
+| Enseignant | Voit ses équipes, leurs matchs et scores, et gère la liste des élèves (nom, prénom, rôle). |
+| Admin (`/admin`) | Crée les **concours** (feuilles de mission) sans code, les tournois, groupes, équipes (collage en masse ou **import Excel**), matchs, **phase finale**, comptes arbitres / enseignants. |
 
 ### Ajouter un nouveau concours (chaque année)
 
@@ -32,6 +33,25 @@ Nouvelle version de l'application de gestion du défi robotique (remplace `conte
 Le bouton **JSON** permet d'exporter / importer une feuille entière (sauvegarde, copie entre serveurs).
 
 Les feuilles 2019 (cycle 2 et cycle 3) de l'ancienne appli sont importées automatiquement au premier démarrage.
+
+### Import des inscriptions (Excel)
+
+`Administration > Tournois > (tournoi) > Importer les inscriptions` : même classeur que l'ancien back office (modèle : `docs/modele-inscriptions.xlsx`), ligne 1 = en-têtes :
+
+| Onglet | Colonnes |
+|---|---|
+| `ecole` | id, nom |
+| `classe` | id, enseignant (« Prénom Nom »), classe, niveau |
+| `equipe` | id, puis (nom, prénom, rôle) × élèves |
+| `ecole-classe-equipe` | id école, id classe, id équipe |
+
+L'appli affiche un aperçu (et les lignes en erreur), on choisit le concours joué par niveau, puis l'import crée : les écoles, **un groupe par classe**, les équipes (« Équipe 12 »), les élèves et **un compte enseignant par enseignant** avec un mot de passe aléatoire affiché une seule fois (export CSV). Réimporter le même fichier met à jour sans doublon.
+
+Les noms des élèves (mineurs) ne sont visibles que par les admins et l'enseignant de l'équipe, jamais dans les pages publiques.
+
+### Phase finale
+
+`Administration > Tournois > (tournoi) > Phase finale` : choisir le concours, 2/4/8/16 équipes, l'heure de début et la durée d'un tour. Sont qualifiées la meilleure équipe de chaque groupe puis les meilleurs scores restants, placées en tableau (1 contre 8, 4 contre 5…). Un groupe « Phase finale » est créé ; les arbitres notent ces matchs comme les autres et **le gagnant passe automatiquement au tour suivant**. En cas d'égalité rien ne bouge : faire rejouer et ressaisir le score. Le tableau s'affiche dans l'appli (côté équipes).
 
 ### En ligne / hors ligne
 
@@ -59,7 +79,7 @@ npm run dev:app                   # appli sur http://localhost:4200
 
 Compte admin créé au premier démarrage de l'API : `ADMIN_USERNAME` / `ADMIN_PASSWORD` (`admin` / `change-me` par défaut, **à changer**). `SEED_DEMO=1` ajoute un tournoi de démonstration.
 
-Tests du moteur de score : `npm test`.
+Tests (moteur de score, tableau de phase finale) : `npm test`.
 
 ## Mise en production (serveur / VPS)
 

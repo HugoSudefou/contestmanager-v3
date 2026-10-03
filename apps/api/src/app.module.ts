@@ -7,9 +7,11 @@ import { ContestsController } from './contests.controller.js';
 import {
   GroupsController,
   MatchesController,
+  MeController,
   TeamsController,
   TournamentsController,
 } from './events.controller.js';
+import { TournamentToolsController } from './tournament-tools.controller.js';
 import { UsersController } from './users.controller.js';
 import { UploadsController } from './uploads.controller.js';
 
@@ -29,6 +31,8 @@ import { UploadsController } from './uploads.controller.js';
     GroupsController,
     TeamsController,
     MatchesController,
+    MeController,
+    TournamentToolsController,
     UsersController,
     UploadsController,
   ],

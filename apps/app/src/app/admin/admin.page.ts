@@ -110,6 +110,7 @@ import { ApiService, type Contest, type Role, type Tournament, type User } from 
               <ion-select label="Rôle" labelPlacement="stacked" name="r" [(ngModel)]="newUser.role" interface="popover">
                 <ion-select-option value="REFEREE">Arbitre</ion-select-option>
                 <ion-select-option value="ADMIN">Admin</ion-select-option>
+                <ion-select-option value="TEACHER">Enseignant</ion-select-option>
               </ion-select>
               <ion-button type="submit">Ajouter</ion-button>
             </form>
@@ -117,7 +118,7 @@ import { ApiService, type Contest, type Role, type Tournament, type User } from 
               @for (u of users.hasValue() ? users.value() : []; track u.id) {
                 <ion-item>
                   <ion-label>{{ u.username }}</ion-label>
-                  <ion-note slot="end">{{ u.role === 'ADMIN' ? 'Admin' : 'Arbitre' }}</ion-note>
+                  <ion-note slot="end">{{ roleLabel[u.role] }}</ion-note>
                   <ion-button slot="end" fill="clear" (click)="resetPassword(u)" aria-label="Changer le mot de passe"><ion-icon slot="icon-only" name="key-outline"></ion-icon></ion-button>
                   <ion-button slot="end" fill="clear" color="danger" [disabled]="u.id === api.user()?.id" (click)="remove('/users/' + u.id, u.username)" aria-label="Supprimer"><ion-icon slot="icon-only" name="trash-outline"></ion-icon></ion-button>
                 </ion-item>
@@ -144,6 +145,7 @@ export class AdminPage implements ViewWillEnter {
   contests = resource({ loader: () => this.api.get<Contest[]>('/contests?all=1') });
   tournaments = resource({ loader: () => this.api.get<Tournament[]>('/tournaments') });
   users = resource({ loader: () => this.api.get<User[]>('/users') });
+  roleLabel: Record<Role, string> = { ADMIN: 'Admin', REFEREE: 'Arbitre', TEACHER: 'Enseignant' };
   newUser: { username: string; password: string; role: Role } = { username: '', password: '', role: 'REFEREE' };
 
   constructor() {
