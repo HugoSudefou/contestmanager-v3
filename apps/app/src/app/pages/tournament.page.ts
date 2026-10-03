@@ -100,7 +100,7 @@ import { BracketComponent } from '../bracket.component';
                         <div class="teams">
                           @for (p of m.participants; track p.id) {
                             <ion-button size="small" [fill]="p.score === null && !pending(m, p) ? 'solid' : 'outline'" [color]="pending(m, p) ? 'warning' : 'primary'" [disabled]="!canScore(api.user())" (click)="score(g, m, p)">
-                              {{ p.team.name }}{{ pending(m, p) ? ' · en attente d\'envoi' : p.score === null ? '' : ' · ' + p.score + ' pts' }}
+                              {{ label(m, p) }}
                             </ion-button>
                           }
                         </div>
@@ -168,6 +168,11 @@ export class TournamentPage implements ViewWillEnter {
   visibleMatches(g: Group): Match[] {
     if (this.showDone()) return g.matches;
     return g.matches.filter((m) => m.participants.some((p) => p.score === null && !this.pending(m, p)));
+  }
+
+  label(m: Match, p: Participant) {
+    if (this.pending(m, p)) return `${p.team.name} · en attente d'envoi`;
+    return p.score === null ? p.team.name : `${p.team.name} · ${p.score} pts`;
   }
 
   pending(m: Match, p: Participant) {
