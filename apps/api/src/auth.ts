@@ -53,9 +53,13 @@ export class AuthGuard implements CanActivate {
     const roles = this.reflector.getAllAndOverride<Role[] | 'public'>('roles', [ctx.getHandler(), ctx.getClass()]) ?? [
       'ADMIN',
     ];
-    if (roles === 'public') return true;
     const req = ctx.switchToHttp().getRequest();
     const token = /^Bearer (.+)$/.exec(req.headers.authorization ?? '')?.[1];
+    if (roles === 'public') {
+      // Public routes still see who is calling, so they can show more to admins.
+      req.user = token ? await this.jwt.verifyAsync<AuthUser>(token).catch(() => undefined) : undefined;
+      return true;
+    }
     if (!token) throw new UnauthorizedException('Connexion requise');
     try {
       req.user = await this.jwt.verifyAsync<AuthUser>(token);

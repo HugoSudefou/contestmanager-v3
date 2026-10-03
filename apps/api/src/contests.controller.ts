@@ -1,8 +1,8 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, Post, Put, Query, Req } from '@nestjs/common';
 import { IsBoolean, IsObject, IsOptional, IsString } from 'class-validator';
 import { validateSheet } from '@contest/scoring';
 import { PrismaService } from './prisma.service.js';
-import { Public } from './auth.js';
+import { Public, type AuthUser } from './auth.js';
 import type { Prisma } from './generated/prisma/client.js';
 
 class ContestDto {
@@ -20,17 +20,20 @@ export class ContestsController {
   /** The app lists published contests; the admin passes ?all=1 to see drafts too. */
   @Public()
   @Get()
-  list(@Query('all') all?: string) {
+  list(@Req() req: { user?: AuthUser }, @Query('all') all?: string) {
     return this.prisma.contest.findMany({
-      where: all ? {} : { published: true },
+      where: all && req.user?.role === 'ADMIN' ? {} : { published: true },
       orderBy: [{ season: 'desc' }, { name: 'asc' }],
     });
   }
 
   @Public()
   @Get(':id')
-  get(@Param('id', ParseIntPipe) id: number) {
-    return this.prisma.contest.findUniqueOrThrow({ where: { id } });
+  async get(@Param('id', ParseIntPipe) id: number, @Req() req: { user?: AuthUser }) {
+    const contest = await this.prisma.contest.findUniqueOrThrow({ where: { id } });
+    // Drafts: admins (editor, preview) and referees (a group may already use it), not the public.
+    if (!contest.published && !req.user) throw new NotFoundException('Élément introuvable');
+    return contest;
   }
 
   @Post()

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
 import { IsIn, IsOptional, IsString, MinLength } from 'class-validator';
 import { PrismaService } from './prisma.service.js';
 import { hashPassword } from './auth.js';
@@ -23,7 +23,8 @@ export class UsersController {
 
   @Post()
   async create(@Body() { password, ...dto }: UserDto) {
-    return this.prisma.user.create({ data: { ...dto, passwordHash: await hashPassword(password ?? '') }, select });
+    if (!password) throw new BadRequestException('Mot de passe requis (6 caractères minimum)');
+    return this.prisma.user.create({ data: { ...dto, passwordHash: await hashPassword(password) }, select });
   }
 
   /** Password is only changed when provided. */
