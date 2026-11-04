@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { computeSheet, validateSheet, type Sheet } from './index.ts';
+import { compareResults, computeSheet, validateSheet, type Sheet } from './index.ts';
 
 // Shapes taken from the 2019 sheets of the old app.
 const sheet: Sheet = {
@@ -51,4 +51,31 @@ test('validateSheet accepts a good sheet and reports broken references', () => {
   const broken = structuredClone(sheet);
   broken.missions[0].maxObjects!.items.push('ghost');
   assert.equal(validateSheet(broken).length, 1);
+});
+
+test('maxPenalties caps the penalties counted (Mars II: 5 pts, 10 max)', () => {
+  const capped = { ...sheet, penaltyPoints: 5, maxPenalties: 10 };
+  assert.equal(computeSheet(capped, {}, 14).penalties, 50);
+  assert.equal(computeSheet(capped, {}, 3).penalties, 15);
+  assert.equal(computeSheet(sheet, {}, 14).penalties, 56); // no cap set: unchanged behaviour
+  assert.deepEqual(validateSheet(capped), []);
+  assert.equal(validateSheet({ ...sheet, maxPenalties: -1 }).length, 1);
+});
+
+test('free stopwatch: durationSeconds 0 is a valid sheet', () => {
+  assert.deepEqual(validateSheet({ ...sheet, durationSeconds: 0 }), []);
+  assert.equal(validateSheet({ ...sheet, durationSeconds: -1 }).length, 1);
+});
+
+test('compareResults: score first, then time only when the tie-break is on', () => {
+  assert.ok(compareResults({ score: 300 }, { score: 250 }) < 0);
+  assert.ok(compareResults({ score: null }, { score: 0 }) > 0);
+  const fast = { score: 300, timeSeconds: 95 };
+  const slow = { score: 300, timeSeconds: 140 };
+  const untimed = { score: 300, timeSeconds: 0 };
+  assert.equal(compareResults(fast, slow), 0); // option off: still a tie
+  assert.ok(compareResults(fast, slow, true) < 0);
+  assert.ok(compareResults(untimed, slow, true) > 0); // a timed run beats an untimed one
+  assert.equal(compareResults(untimed, { score: 300, timeSeconds: null }, true), 0);
+  assert.ok(compareResults({ score: 310, timeSeconds: 500 }, fast, true) < 0); // points always come first
 });

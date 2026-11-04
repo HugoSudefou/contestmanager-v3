@@ -26,3 +26,22 @@ test('matchWinner needs every score and no tie', () => {
   assert.equal(matchWinner([{ teamId: 1, score: 10 }, { teamId: 2, score: 10 }]), null);
   assert.equal(matchWinner([{ teamId: 1, score: 10 }, { teamId: 2, score: 30 }]), 2);
 });
+
+test('time tie-break: equal scores are split by the faster timed run', () => {
+  const p = [
+    { teamId: 1, score: 300, timeSeconds: 140 },
+    { teamId: 2, score: 300, timeSeconds: 95 },
+  ];
+  assert.equal(matchWinner(p), null);
+  assert.equal(matchWinner(p, true), 2);
+  assert.equal(matchWinner([{ teamId: 1, score: 300, timeSeconds: 0 }, { teamId: 2, score: 300, timeSeconds: 0 }], true), null);
+  const q = qualify(
+    [
+      { teamId: 1, groupId: 1, best: 300, timeSeconds: 140 },
+      { teamId: 2, groupId: 2, best: 300, timeSeconds: 95 },
+    ],
+    2,
+    true,
+  );
+  assert.deepEqual(q.map((t) => t.teamId), [2, 1]);
+});

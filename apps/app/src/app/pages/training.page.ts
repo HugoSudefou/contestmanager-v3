@@ -43,7 +43,7 @@ import { ApiService, formatTime, practiceHistory, type Contest } from '../api.se
             <ion-item button [routerLink]="['/sheet', c.id]">
               <ion-label>
                 <h2>{{ c.name }}</h2>
-                <p>{{ c.season }} · {{ c.sheet.missions.length }} missions · {{ time(c.sheet.durationSeconds) }}</p>
+                <p>{{ c.season }} · {{ c.sheet.missions.length }} missions · {{ c.sheet.durationSeconds ? time(c.sheet.durationSeconds) : 'chrono libre' }}</p>
               </ion-label>
             </ion-item>
           }

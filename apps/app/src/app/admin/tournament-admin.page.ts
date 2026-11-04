@@ -1,3 +1,4 @@
+import { compareResults } from '@contest/scoring';
 import { Component, inject, input, resource, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -29,7 +30,7 @@ import {
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { createOutline, trashOutline } from 'ionicons/icons';
-import { ApiService, FINALS_GROUP, roundName, type Contest, type Group, type Team, type TournamentDetail } from '../api.service';
+import { ApiService, FINALS_GROUP, formatTime, roundName, type Contest, type Group, type Team, type TournamentDetail } from '../api.service';
 import { StudentsEditorComponent } from '../students-editor.component';
 import { readWorkbook, type ImportEntry } from './import-workbook';
 
@@ -137,7 +138,7 @@ interface MatchDraft { tableNumber?: number; scheduledAt?: string; teamIds: numb
                   @for (t of ranking(g); track t.team.id) {
                     <ion-item>
                       <ion-label>{{ t.team.name }} <ion-note>{{ t.team.school?.name }}</ion-note></ion-label>
-                      <ion-note slot="end">{{ t.best === null ? '—' : t.best + ' pts' }}</ion-note>
+                      <ion-note slot="end">{{ t.best === null ? '—' : t.best + ' pts' + (t.tie && t.timeSeconds ? ' · ' + time(t.timeSeconds) : '') }}</ion-note>
                       <ion-button slot="end" fill="clear" size="small" (click)="toggleStudents(t.team.id)">Élèves</ion-button>
                       <ion-button slot="end" fill="clear" (click)="editTeam(t.team)" aria-label="Modifier"><ion-icon slot="icon-only" name="create-outline"></ion-icon></ion-button>
                       <ion-button slot="end" fill="clear" color="danger" (click)="remove('/teams/' + t.team.id, t.team.name)" aria-label="Supprimer"><ion-icon slot="icon-only" name="trash-outline"></ion-icon></ion-button>
@@ -332,13 +333,17 @@ export class TournamentAdminPage {
   }
 
   /** Teams sorted by best score, unscored last. */
+  time = formatTime;
+
   ranking(g: Group) {
     return g.teams
       .map((team) => {
+        const tie = !!g.contest?.sheet?.timeTiebreak;
         const scores = g.matches.flatMap((m) => m.participants).filter((p) => p.teamId === team.id && p.score !== null);
-        return { team, best: scores.length ? Math.max(...scores.map((p) => p.score!)) : null };
+        const top = [...scores].sort((a, b) => compareResults(a, b, tie))[0];
+        return { team, best: top ? top.score : null, timeSeconds: top?.timeSeconds ?? null, tie };
       })
-      .sort((a, b) => (b.best ?? -Infinity) - (a.best ?? -Infinity) || a.team.name.localeCompare(b.team.name));
+      .sort((a, b) => compareResults({ score: a.best, timeSeconds: a.timeSeconds }, { score: b.best, timeSeconds: b.timeSeconds }, a.tie) || a.team.name.localeCompare(b.team.name));
   }
 
   async createGroup() {

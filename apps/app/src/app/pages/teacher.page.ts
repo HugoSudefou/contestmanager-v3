@@ -109,7 +109,7 @@ export class TeacherPage {
   teams = resource({ loader: () => this.api.get<TeacherTeam[]>('/me/teams') });
 
   time(s: number | null) {
-    return s === null ? '' : formatTime(s);
+    return s ? formatTime(s) : 'non chronométré';
   }
 
   logout() {

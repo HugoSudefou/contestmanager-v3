@@ -30,7 +30,7 @@ import {
   ToastController,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { addOutline, pauseOutline, playOutline, removeOutline } from 'ionicons/icons';
+import { addOutline, pauseOutline, playOutline, refreshOutline, removeOutline } from 'ionicons/icons';
 import { computeSheet, type Answers, type ItemValue } from '@contest/scoring';
 import { ApiService, formatTime, practiceHistory, type Contest } from '../api.service';
 
@@ -69,6 +69,9 @@ import { ApiService, formatTime, practiceHistory, type Contest } from '../api.se
         <ion-buttons slot="start"><ion-back-button [defaultHref]="backUrl()"></ion-back-button></ion-buttons>
         <ion-title>{{ teamName() || (contest.hasValue() && contest.value().name) || 'Feuille de mission' }}</ion-title>
         <ion-buttons slot="end">
+          @if (!running() && elapsed() > 0) {
+            <ion-button (click)="resetTimer()" aria-label="Remettre le chrono à zéro"><ion-icon slot="icon-only" name="refresh-outline"></ion-icon></ion-button>
+          }
           <ion-button (click)="toggleTimer()" [color]="finished() ? 'danger' : undefined" aria-label="Chrono">
             <ion-icon slot="start" [name]="running() ? 'pause-outline' : 'play-outline'"></ion-icon>
             {{ clock() }}
@@ -92,16 +95,26 @@ import { ApiService, formatTime, practiceHistory, type Contest } from '../api.se
         <ion-text color="danger"><p class="ion-padding">{{ contest.error()?.message }}</p></ion-text>
       } @else if (contest.value(); as c) {
         <div class="narrow">
+          @if (c.description) {
+            <ion-card>
+              <ion-card-content>
+                <details class="intro">
+                  <summary>Présentation du défi</summary>
+                  <p>{{ c.description }}</p>
+                </details>
+              </ion-card-content>
+            </ion-card>
+          }
           <ion-card>
             <ion-item lines="none">
               <ion-label>
                 <h2>Pénalités</h2>
-                <p>{{ c.sheet.penaltyPoints }} points retirés par pénalité</p>
+                <p>{{ c.sheet.penaltyPoints }} points retirés par pénalité@if (c.sheet.maxPenalties) { (maximum {{ c.sheet.maxPenalties }})}</p>
               </ion-label>
               <div class="counter" slot="end">
                 <ion-button fill="outline" (click)="penalties.set(Math.max(0, penalties() - 1))" aria-label="Retirer une pénalité"><ion-icon slot="icon-only" name="remove-outline"></ion-icon></ion-button>
                 <span class="count">{{ penalties() }}</span>
-                <ion-button fill="outline" (click)="penalties.set(penalties() + 1)" aria-label="Ajouter une pénalité"><ion-icon slot="icon-only" name="add-outline"></ion-icon></ion-button>
+                <ion-button fill="outline" (click)="penalties.set(c.sheet.maxPenalties ? Math.min(c.sheet.maxPenalties, penalties() + 1) : penalties() + 1)" [disabled]="!!c.sheet.maxPenalties && penalties() >= c.sheet.maxPenalties" aria-label="Ajouter une pénalité"><ion-icon slot="icon-only" name="add-outline"></ion-icon></ion-button>
               </div>
             </ion-item>
           </ion-card>
@@ -195,6 +208,8 @@ import { ApiService, formatTime, practiceHistory, type Contest } from '../api.se
     </ion-footer>
   `,
   styles: `
+    .intro summary { cursor: pointer; font-weight: 600; }
+    .intro p { white-space: pre-line; margin: 8px 0 0; }
     .total { display: flex; justify-content: space-between; padding: 0 16px; font-size: 1.1rem; }
     .mission-img { width: 100%; max-height: 220px; object-fit: cover; cursor: zoom-in; }
     .thumb { width: 56px; height: 56px; object-fit: cover; border-radius: 4px; cursor: zoom-in; }
@@ -233,6 +248,9 @@ export class SheetPage implements OnDestroy {
   saving = signal(false);
   zoom = signal<string | null>(null);
   private timer?: ReturnType<typeof setInterval>;
+  /** Wall-clock start of the current run and seconds already counted before it (pause / resume). */
+  private startedAt = 0;
+  private counted = 0;
 
   result = computed(() => {
     const c = this.contest.hasValue() ? this.contest.value() : null;
@@ -244,7 +262,7 @@ export class SheetPage implements OnDestroy {
   backUrl = computed(() => (this.tournament() ? `/tournament/${this.tournament()}?mode=referee` : '/training'));
 
   constructor() {
-    addIcons({ addOutline, removeOutline, playOutline, pauseOutline });
+    addIcons({ addOutline, removeOutline, playOutline, pauseOutline, refreshOutline });
   }
 
   value(missionId: string, itemId: string): ItemValue {
@@ -264,13 +282,23 @@ export class SheetPage implements OnDestroy {
     if (this.running()) return this.stopTimer();
     if (this.finished()) this.elapsed.set(0);
     this.running.set(true);
+    // Count from the wall clock (setInterval drifts): the time can split two teams with equal scores.
+    this.counted = this.elapsed();
+    this.startedAt = Date.now();
     this.timer = setInterval(() => {
-      this.elapsed.update((s) => s + 1);
+      const s = this.counted + Math.floor((Date.now() - this.startedAt) / 1000);
+      this.elapsed.set(this.duration() > 0 ? Math.min(s, this.duration()) : s);
       if (this.finished()) {
         this.stopTimer();
         navigator.vibrate?.(800);
       }
-    }, 1000);
+    }, 250);
+  }
+
+  /** Free stopwatch: back to 00:00 without touching the answers (e.g. before the timed full run). */
+  resetTimer() {
+    this.stopTimer();
+    this.elapsed.set(0);
   }
 
   private stopTimer() {
@@ -302,7 +330,7 @@ export class SheetPage implements OnDestroy {
   async save() {
     this.stopTimer();
     const r = this.result()!;
-    const summary = `Score : ${r.total} pts · Temps : ${this.clock()}`;
+    const summary = `Score : ${r.total} pts · Temps : ${this.elapsed() > 0 ? this.clock() : 'non chronométré'}`;
     const warnings = r.missions.filter((m) => m.error).length;
     const message = warnings ? `${summary}\n⚠ ${warnings} mission(s) avec une erreur de saisie.` : summary;
 

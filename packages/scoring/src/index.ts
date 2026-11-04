@@ -27,8 +27,13 @@ export interface MissionDef {
 }
 
 export interface Sheet {
+  /** Match length; 0 = free stopwatch (counts up with no limit, timing optional). */
   durationSeconds: number;
+  /** Equal scores are split by time: a timed run beats an untimed one, the shorter time wins. */
+  timeTiebreak?: boolean;
   penaltyPoints: number;
+  /** Optional cap on the number of penalties counted (e.g. Mars II: 10 max). */
+  maxPenalties?: number;
   missions: MissionDef[];
 }
 
@@ -89,11 +94,37 @@ export function computeMission(mission: MissionDef, answers: MissionAnswers = {}
   return { id: mission.id, points };
 }
 
+/** Number of penalties actually counted: never negative, capped by `maxPenalties` when set. */
+export function clampPenalties(sheet: Pick<Sheet, 'maxPenalties'>, penaltyCount: number): number {
+  const n = Math.max(0, Math.floor(Number(penaltyCount) || 0));
+  return sheet.maxPenalties != null && sheet.maxPenalties > 0 ? Math.min(n, sheet.maxPenalties) : n;
+}
+
 export function computeSheet(sheet: Sheet, answers: Answers, penaltyCount: number): SheetResult {
   const missions = sheet.missions.map((m) => computeMission(m, answers[m.id]));
-  const penalties = Math.max(0, Math.floor(penaltyCount)) * sheet.penaltyPoints;
+  const penalties = clampPenalties(sheet, penaltyCount) * sheet.penaltyPoints;
   const total = missions.reduce((sum, m) => sum + m.points, 0) - penalties;
   return { missions, penalties, total };
+}
+
+export interface Performance {
+  score: number | null;
+  timeSeconds?: number | null;
+}
+
+/**
+ * Sort comparator for results: negative when `a` ranks before `b`, 0 for a real tie.
+ * Higher score first (unscored last). With `timeTiebreak`, equal scores are split by time:
+ * a timed run (more than 0 s) beats an untimed one, and the shorter time wins.
+ */
+export function compareResults(a: Performance, b: Performance, timeTiebreak = false): number {
+  const sa = a.score ?? -Infinity;
+  const sb = b.score ?? -Infinity;
+  if (sa !== sb) return sa > sb ? -1 : 1;
+  if (!timeTiebreak) return 0;
+  const ta = a.timeSeconds && a.timeSeconds > 0 ? a.timeSeconds : Infinity;
+  const tb = b.timeSeconds && b.timeSeconds > 0 ? b.timeSeconds : Infinity;
+  return ta === tb ? 0 : ta < tb ? -1 : 1;
 }
 
 /** Returns human-readable problems; empty array = valid. Used by the admin form and the API. */
@@ -101,8 +132,9 @@ export function validateSheet(sheet: unknown): string[] {
   const errors: string[] = [];
   const s = sheet as Partial<Sheet> | null;
   if (!s || typeof s !== 'object') return ['La feuille de mission est vide.'];
-  if (!Number.isFinite(s.durationSeconds) || (s.durationSeconds ?? 0) <= 0) errors.push('Durée du chrono invalide.');
+  if (!Number.isFinite(s.durationSeconds) || (s.durationSeconds ?? -1) < 0) errors.push('Durée du chrono invalide.');
   if (!Number.isFinite(s.penaltyPoints) || (s.penaltyPoints ?? -1) < 0) errors.push('Points de pénalité invalides.');
+  if (s.maxPenalties != null && !(Number.isInteger(s.maxPenalties) && s.maxPenalties >= 0)) errors.push('Maximum de pénalités invalide.');
   if (!Array.isArray(s.missions) || s.missions.length === 0) return [...errors, 'Ajoutez au moins une mission.'];
 
   const missionIds = new Set<string>();

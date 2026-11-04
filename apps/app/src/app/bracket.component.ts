@@ -1,4 +1,5 @@
 import { Component, computed, input } from '@angular/core';
+import { compareResults } from '@contest/scoring';
 import { DatePipe } from '@angular/common';
 import { roundName, type Match } from './api.service';
 
@@ -43,6 +44,8 @@ import { roundName, type Match } from './api.service';
 })
 export class BracketComponent {
   matches = input.required<Match[]>();
+  /** Contest option: equal scores are split by time. */
+  timeTiebreak = input(false);
 
   rounds = computed(() => {
     const byRound = new Map<number, Match[]>();
@@ -55,7 +58,7 @@ export class BracketComponent {
   winnerId(m: Match): number | null {
     const scored = m.participants.filter((p) => p.score !== null);
     if (scored.length < 2 || scored.length !== m.participants.length) return null;
-    const [first, second] = [...scored].sort((a, b) => b.score! - a.score!);
-    return first.score === second.score ? null : first.teamId;
+    const [first, second] = [...scored].sort((a, b) => compareResults(a, b, this.timeTiebreak()));
+    return compareResults(first, second, this.timeTiebreak()) === 0 ? null : first.teamId;
   }
 }

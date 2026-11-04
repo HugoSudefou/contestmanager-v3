@@ -19,7 +19,8 @@ import { randomBytes } from 'node:crypto';
 import { PrismaService } from './prisma.service.js';
 import { hashPassword } from './auth.js';
 import { StudentDto } from './events.controller.js';
-import { bracketSeeds, qualify } from './bracket.js';
+import { bracketSeeds, qualify, type Ranked } from './bracket.js';
+import { compareResults, type Sheet } from '@contest/scoring';
 
 /** One line of the old "ecole-classe-equipe" workbook, already joined by the app. */
 class ImportEntryDto {
@@ -128,19 +129,24 @@ export class TournamentToolsController {
       where: { tournamentId, contestId: dto.contestId },
       include: { matches: { include: { participants: true } } },
     });
-    const best = new Map<number, { teamId: number; groupId: number; best: number }>();
+    const contest = await this.prisma.contest.findUniqueOrThrow({ where: { id: dto.contestId } });
+    const timeTiebreak = !!(contest.sheet as unknown as Sheet).timeTiebreak;
+    const best = new Map<number, Ranked>();
     for (const g of groups) {
       for (const p of g.matches.flatMap((m) => m.participants)) {
         if (p.score === null) continue;
         const current = best.get(p.teamId);
-        if (!current || p.score > current.best) best.set(p.teamId, { teamId: p.teamId, groupId: g.id, best: p.score });
+        const candidate = { teamId: p.teamId, groupId: g.id, best: p.score, timeSeconds: p.timeSeconds };
+        if (!current || compareResults({ score: p.score, timeSeconds: p.timeSeconds }, { score: current.best, timeSeconds: current.timeSeconds }, timeTiebreak) < 0) {
+          best.set(p.teamId, candidate);
+        }
       }
     }
     if (best.size < dto.size) {
       throw new BadRequestException(`Seulement ${best.size} équipe(s) notée(s) sur ce concours : impossible de faire une phase finale à ${dto.size}.`);
     }
 
-    const seeded = qualify([...best.values()], dto.size);
+    const seeded = qualify([...best.values()], dto.size, timeTiebreak);
     const rounds = Math.log2(dto.size);
     const start = dto.startAt ? new Date(dto.startAt) : null;
     const at = (round: number) => (start ? new Date(start.getTime() + (rounds - round) * dto.minutesPerRound * 60_000) : null);

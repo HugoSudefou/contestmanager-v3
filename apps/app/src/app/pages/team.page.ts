@@ -128,6 +128,6 @@ export class TeamPage {
   }
 
   time(s: number | null) {
-    return s === null ? '' : formatTime(s);
+    return s ? formatTime(s) : 'non chronométré';
   }
 }

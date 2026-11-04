@@ -20,7 +20,7 @@ Nouvelle version de l'application de gestion du défi robotique (remplace `conte
 
 `Administration > Concours > Nouveau concours` (ou **dupliquer** celui de l'an dernier) :
 
-1. Nom, saison, durée du chrono, points par pénalité.
+1. Nom, saison, durée du match (0 = **chronomètre libre**, sans limite), points par pénalité, **maximum de pénalités** (vide = illimité), et l'option **départager les égalités au temps**.
 2. Pour chaque mission : titre, explication, image, et des **lignes de score** :
    - *Case à cocher* : X points si réalisé ;
    - *Compteur* : N × points (avec un maximum), ex. « 5 pts par déchet, max 4 » ;
@@ -32,7 +32,18 @@ Nouvelle version de l'application de gestion du défi robotique (remplace `conte
 
 Le bouton **JSON** permet d'exporter / importer une feuille entière (sauvegarde, copie entre serveurs).
 
-Les feuilles 2019 (cycle 2 et cycle 3) de l'ancienne appli sont importées automatiquement au premier démarrage.
+Les feuilles 2019 (cycle 2 et cycle 3) de l'ancienne appli et les feuilles **Défi Mars II 2027** (cycle 2 et cycle 3) sont importées automatiquement au démarrage (une feuille déjà présente sous le même nom n'est pas recréée).
+
+### Chronomètre et départage au temps
+
+- Avec une durée de 0, le chrono de la feuille arbitre est un **chronomètre libre** : il compte sans limite, se met en pause, et le bouton ↻ le remet à zéro sans effacer la feuille (pratique pour chronométrer le passage complet après des missions validées une par une). Chronométrer reste facultatif : un score envoyé à 00:00 est « non chronométré ».
+- Si l'option **départager au temps** est cochée, à points égaux le temps le plus court l'emporte (classement des groupes, qualification et matchs de la phase finale) ; un passage chronométré passe devant un passage non chronométré.
+
+### Défi Mars II 2027
+
+Feuilles `Défi Mars II 2027 - Cycle 2` et `- Cycle 3` (règlement robotique92) : 6 missions sur 100 points (+10 pour une provision empilée), bonus technologique (100 max) et bonus pédagogique (100 max), 5 points par pénalité (10 maximum), chronomètre libre avec départage au temps. Les images sont dans `apps/app/src/assets/mars2027/`.
+
+Sur un serveur déjà en service, sans redéployer : créer un concours, ouvrir **JSON** et coller `docs/defi-mars-2027-cycle2.json` (ou `cycle3`). Les images des missions n'apparaissent qu'après le déploiement de la nouvelle version de l'appli.
 
 ### Import des inscriptions (Excel)
 

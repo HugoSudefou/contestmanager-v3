@@ -111,10 +111,12 @@ const move = <T,>(list: T[], index: number, delta: number) => {
               <div class="grid2">
                 <ion-input label="Nom" labelPlacement="stacked" [(ngModel)]="f.name" placeholder="Défi robotique 2026 - Cycle 3"></ion-input>
                 <ion-input label="Saison" labelPlacement="stacked" [(ngModel)]="f.season" placeholder="2025-2026"></ion-input>
-                <ion-input label="Durée du chrono (secondes)" labelPlacement="stacked" type="number" min="1" [(ngModel)]="f.sheet.durationSeconds"></ion-input>
+                <ion-input label="Durée du match en secondes (0 = chronomètre libre)" labelPlacement="stacked" type="number" min="0" [(ngModel)]="f.sheet.durationSeconds"></ion-input>
                 <ion-input label="Points retirés par pénalité" labelPlacement="stacked" type="number" min="0" [(ngModel)]="f.sheet.penaltyPoints"></ion-input>
+                <ion-input label="Maximum de pénalités (vide = illimité)" labelPlacement="stacked" type="number" min="0" [(ngModel)]="f.sheet.maxPenalties"></ion-input>
               </div>
               <ion-textarea label="Description" labelPlacement="stacked" [autoGrow]="true" [(ngModel)]="f.description"></ion-textarea>
+              <ion-toggle [(ngModel)]="f.sheet.timeTiebreak" justify="start">En cas d'égalité de points, départager au temps (le plus rapide gagne)</ion-toggle>
               <ion-toggle [(ngModel)]="f.published" justify="start">Publié (visible dans l'appli)</ion-toggle>
             </ion-card-content>
           </ion-card>
@@ -436,8 +438,10 @@ export class ContestEditorPage implements OnInit {
     const f = this.form()!;
     // ion-input type=number still yields strings: normalise before validating.
     const sheet = JSON.parse(JSON.stringify(f.sheet), (key, v) =>
-      ['points', 'max', 'add', 'durationSeconds', 'penaltyPoints'].includes(key) && v !== '' && v !== null ? Number(v) : v,
+      ['points', 'max', 'add', 'durationSeconds', 'penaltyPoints', 'maxPenalties'].includes(key) && v !== '' && v !== null ? Number(v) : v,
     ) as Sheet;
+    if (!sheet.timeTiebreak) delete sheet.timeTiebreak;
+    if ((sheet.maxPenalties as unknown) === '' || sheet.maxPenalties === null || sheet.maxPenalties === 0) delete sheet.maxPenalties;
     sheet.missions.forEach((m) => m.rules?.forEach((r) => r.when.forEach((c) => typeof c.equals === 'string' && (c.equals = Number(c.equals)))));
     const errors = [...(f.name.trim() ? [] : ['Le nom est obligatoire.']), ...validateSheet(sheet)];
     this.errors.set(errors);

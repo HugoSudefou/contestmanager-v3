@@ -25,7 +25,7 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-import { computeSheet, type Answers, type Sheet } from '@contest/scoring';
+import { clampPenalties, computeSheet, type Answers, type Sheet } from '@contest/scoring';
 import { PrismaService } from './prisma.service.js';
 import { Public, Roles, type AuthUser } from './auth.js';
 import type { Prisma } from './generated/prisma/client.js';
@@ -262,7 +262,7 @@ export class MatchesController {
       data: {
         score: result.total,
         answers: dto.answers as Prisma.InputJsonValue,
-        penalties: dto.penalties,
+        penalties: clampPenalties(sheet, dto.penalties),
         timeSeconds: dto.timeSeconds,
         refereeId: req.user.id,
         scoredAt: new Date(),
@@ -274,8 +274,11 @@ export class MatchesController {
 
   /** Final phase: puts the winner of a finished match into the next round (replacing a previous, unscored winner). */
   private async advance(matchId: number) {
-    const match = await this.prisma.match.findUniqueOrThrow({ where: { id: matchId }, include: { participants: true } });
-    const winner = matchWinner(match.participants);
+    const match = await this.prisma.match.findUniqueOrThrow({
+      where: { id: matchId },
+      include: { participants: true, group: { include: { contest: true } } },
+    });
+    const winner = matchWinner(match.participants, !!(match.group.contest.sheet as unknown as Sheet).timeTiebreak);
     const next = await this.prisma.match.findFirst({
       where: { groupId: match.groupId, round: match.round! - 1, bracketIndex: Math.floor(match.bracketIndex! / 2) },
     });

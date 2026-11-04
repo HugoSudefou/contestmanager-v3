@@ -114,7 +114,7 @@ import { BracketComponent } from '../bracket.component';
         } @else {
           @if (finals(); as f) {
             <ion-list-header><ion-label>Phase finale</ion-label></ion-list-header>
-            <app-bracket [matches]="f.matches"></app-bracket>
+            <app-bracket [matches]="f.matches" [timeTiebreak]="!!f.contest.sheet.timeTiebreak"></app-bracket>
           }
           <ion-list>
             @for (t of teams(); track t.id) {
