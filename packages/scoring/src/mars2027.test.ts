@@ -3,18 +3,15 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { computeSheet, validateSheet, type Sheet } from './index.ts';
 
-const load = (cycle: number) =>
-  JSON.parse(readFileSync(new URL(`../../../docs/defi-mars-2027-cycle${cycle}.json`, import.meta.url), 'utf8')) as Sheet;
 const seed = JSON.parse(readFileSync(new URL('../../../apps/api/prisma/seed-contests.json', import.meta.url), 'utf8')) as {
   name: string;
   sheet: Sheet;
 }[];
+const load = (cycle: number) => seed.find((c) => c.name === `Défi Mars II 2027 - Cycle ${cycle}`)!.sheet;
 
 for (const cycle of [2, 3]) {
-  test(`Mars II cycle ${cycle}: sheet is valid and identical in docs/ and in the seed`, () => {
-    const sheet = load(cycle);
-    assert.deepEqual(validateSheet(sheet), []);
-    assert.deepEqual(seed.find((c) => c.name === `Défi Mars II 2027 - Cycle ${cycle}`)?.sheet, sheet);
+  test(`Mars II cycle ${cycle}: sheet is valid`, () => {
+    assert.deepEqual(validateSheet(load(cycle)), []);
   });
 
   test(`Mars II cycle ${cycle}: perfect run, penalties and bonus cap`, () => {

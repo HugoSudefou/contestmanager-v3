@@ -26,7 +26,8 @@ import {
   ViewWillEnter,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { copyOutline, trashOutline, keyOutline } from 'ionicons/icons';
+import { copyOutline, trashOutline, keyOutline, downloadOutline, cloudUploadOutline } from 'ionicons/icons';
+import { validateSheet, type Sheet } from '@contest/scoring';
 import { ApiService, type Contest, type Role, type Tournament, type User } from '../api.service';
 
 @Component({
@@ -75,6 +76,8 @@ import { ApiService, type Contest, type Role, type Tournament, type User } from 
           @case ('contests') {
             <p>Un concours = une feuille de mission (missions, barème, chrono). Les groupes de tournoi y sont rattachés.</p>
             <ion-button routerLink="/admin/contest/new">Nouveau concours</ion-button>
+            <ion-button fill="outline" (click)="fileInput.click()"><ion-icon slot="start" name="cloud-upload-outline"></ion-icon>Importer (fichier JSON)</ion-button>
+            <input #fileInput type="file" accept=".json,application/json" hidden (change)="importFile(fileInput)" />
             <ion-list>
               @for (c of contests.hasValue() ? contests.value() : []; track c.id) {
                 <ion-item>
@@ -83,6 +86,7 @@ import { ApiService, type Contest, type Role, type Tournament, type User } from 
                     <p>{{ c.season }} · {{ c.sheet.missions.length }} missions</p>
                   </ion-label>
                   <ion-badge slot="end" [color]="c.published ? 'success' : 'medium'">{{ c.published ? 'Publié' : 'Brouillon' }}</ion-badge>
+                  <ion-button slot="end" fill="clear" (click)="exportFile(c)" aria-label="Exporter en fichier JSON"><ion-icon slot="icon-only" name="download-outline"></ion-icon></ion-button>
                   <ion-button slot="end" fill="clear" (click)="duplicate(c)" aria-label="Dupliquer"><ion-icon slot="icon-only" name="copy-outline"></ion-icon></ion-button>
                   <ion-button slot="end" fill="clear" color="danger" (click)="remove('/contests/' + c.id, c.name)" aria-label="Supprimer"><ion-icon slot="icon-only" name="trash-outline"></ion-icon></ion-button>
                 </ion-item>
@@ -149,7 +153,7 @@ export class AdminPage implements ViewWillEnter {
   newUser: { username: string; password: string; role: Role } = { username: '', password: '', role: 'REFEREE' };
 
   constructor() {
-    addIcons({ copyOutline, trashOutline, keyOutline });
+    addIcons({ copyOutline, trashOutline, keyOutline, downloadOutline, cloudUploadOutline });
   }
 
   ionViewWillEnter() {
@@ -169,6 +173,48 @@ export class AdminPage implements ViewWillEnter {
 
   async duplicate(c: Contest) {
     await this.run(() => this.api.send('POST', `/contests/${c.id}/duplicate`), 'Concours dupliqué');
+  }
+
+  /**
+   * Creates a contest from a JSON file chosen on the device (docs/concours/*.json, or a file exported here).
+   * Accepts a full contest { name, season, description, sheet } or a bare sheet { durationSeconds, missions... }
+   * (then the file name becomes the contest name). Imported contests start as drafts.
+   */
+  async importFile(input: HTMLInputElement) {
+    const file = input.files?.[0];
+    input.value = ''; // allow re-importing the same file
+    if (!file) return;
+    let body: { name: string; season: string; description?: string; published: boolean; sheet: Sheet };
+    try {
+      const data = JSON.parse(await file.text());
+      const full = data && typeof data === 'object' && 'sheet' in data;
+      const sheet = (full ? data.sheet : data) as Sheet;
+      const errors = validateSheet(sheet);
+      if (errors.length) throw new Error(errors.join(' '));
+      body = {
+        name: (full && typeof data.name === 'string' && data.name.trim()) || file.name.replace(/\.json$/i, ''),
+        season: (full && typeof data.season === 'string' && data.season) || '',
+        ...(full && typeof data.description === 'string' ? { description: data.description } : {}),
+        published: false,
+        sheet,
+      };
+    } catch (e) {
+      const message = e instanceof SyntaxError ? "Ce fichier n'est pas un JSON valide." : (e as Error).message;
+      await (await this.toasts.create({ message: `Import impossible : ${message}`, duration: 5000, color: 'danger' })).present();
+      return;
+    }
+    await this.run(() => this.api.send('POST', '/contests', body), `« ${body.name} » importé (brouillon : à publier dans l'éditeur)`);
+  }
+
+  /** Downloads a contest as a JSON file that the Import button accepts (backup, copy to another server). */
+  exportFile(c: Contest) {
+    const { name, season, description, published, sheet } = c;
+    const blob = new Blob([JSON.stringify({ name, season, description, published, sheet }, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${name.replace(/[\\/:*?"<>|]+/g, '-')}.json`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   }
 
   async remove(path: string, name: string) {

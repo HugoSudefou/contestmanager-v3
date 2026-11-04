@@ -12,6 +12,14 @@ export interface Contest {
   sheet: Sheet;
   published: boolean;
 }
+/** Contest embedded in the app (builtin-contests.ts): training works with no server and no network. */
+export interface BuiltinContest {
+  id: string;
+  name: string;
+  season: string;
+  description: string | null;
+  sheet: Sheet;
+}
 export interface Tournament { id: number; name: string; date: string | null; location: string | null }
 export interface Team {
   id: number;
@@ -230,7 +238,8 @@ export class ApiError extends Error {
 
 /** Local history of training sheets (no server involved). */
 export interface PracticeRun {
-  contestId: number;
+  /** Server contest id, or the key of a built-in contest (e.g. "mars2-cycle3"). */
+  contestId: number | string;
   contestName: string;
   team: string;
   total: number;

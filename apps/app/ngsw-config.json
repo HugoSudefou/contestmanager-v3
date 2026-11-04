@@ -10,6 +10,14 @@
       }
     },
     {
+      "name": "missions",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": ["/assets/legacy/**", "/assets/mars2027/**"]
+      }
+    },
+    {
       "name": "assets",
       "installMode": "lazy",
       "updateMode": "prefetch",

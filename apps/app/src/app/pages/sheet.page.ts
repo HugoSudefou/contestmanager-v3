@@ -32,7 +32,8 @@ import {
 import { addIcons } from 'ionicons';
 import { addOutline, pauseOutline, playOutline, refreshOutline, removeOutline } from 'ionicons/icons';
 import { computeSheet, type Answers, type ItemValue } from '@contest/scoring';
-import { ApiService, formatTime, practiceHistory, type Contest } from '../api.service';
+import { ApiService, formatTime, practiceHistory, type BuiltinContest, type Contest } from '../api.service';
+import { builtinContest } from '../builtin-contests';
 
 @Component({
   selector: 'app-sheet',
@@ -238,7 +239,11 @@ export class SheetPage implements OnDestroy {
 
   contest = resource({
     params: () => this.contestId(),
-    loader: ({ params }) => this.api.get<Contest>(`/contests/${params}`),
+    // Built-in contests (training) never touch the server, so they work offline in class.
+    loader: ({ params }): Promise<Contest | BuiltinContest> => {
+      const builtin = builtinContest(params);
+      return builtin ? Promise.resolve(builtin) : this.api.get<Contest>(`/contests/${params}`);
+    },
   });
 
   answers = signal<Answers>({});

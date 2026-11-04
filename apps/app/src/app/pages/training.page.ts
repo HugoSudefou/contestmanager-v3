@@ -1,4 +1,4 @@
-import { Component, inject, resource, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import {
@@ -12,17 +12,16 @@ import {
   IonList,
   IonListHeader,
   IonNote,
-  IonSpinner,
-  IonText,
   IonTitle,
   IonToolbar,
   ViewWillEnter,
 } from '@ionic/angular';
-import { ApiService, formatTime, practiceHistory, type Contest } from '../api.service';
+import { formatTime, practiceHistory } from '../api.service';
+import { BUILTIN_CONTESTS } from '../builtin-contests';
 
 @Component({
   selector: 'app-training',
-  imports: [DatePipe, RouterLink, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton, IonButton, IonContent, IonList, IonListHeader, IonItem, IonLabel, IonNote, IonSpinner, IonText],
+  imports: [DatePipe, RouterLink, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton, IonButton, IonContent, IonList, IonListHeader, IonItem, IonLabel, IonNote],
   template: `
     <ion-header>
       <ion-toolbar color="primary">
@@ -34,12 +33,7 @@ import { ApiService, formatTime, practiceHistory, type Contest } from '../api.se
       <div class="narrow">
         <ion-list>
           <ion-list-header>Choisissez la feuille de mission</ion-list-header>
-          @if (contests.isLoading()) {
-            <div class="ion-text-center ion-padding"><ion-spinner></ion-spinner></div>
-          } @else if (contests.error()) {
-            <ion-text color="danger"><p class="ion-padding">{{ contests.error()?.message }}</p></ion-text>
-          }
-          @for (c of contests.hasValue() ? contests.value() : []; track c.id) {
+          @for (c of contests; track c.id) {
             <ion-item button [routerLink]="['/sheet', c.id]">
               <ion-label>
                 <h2>{{ c.name }}</h2>
@@ -47,6 +41,7 @@ import { ApiService, formatTime, practiceHistory, type Contest } from '../api.se
               </ion-label>
             </ion-item>
           }
+          <ion-item lines="none"><ion-note>Ces feuilles sont intégrées à l'appli : elles fonctionnent sans connexion. Les scores restent sur cet appareil.</ion-note></ion-item>
         </ion-list>
 
         <ion-list>
@@ -71,8 +66,8 @@ import { ApiService, formatTime, practiceHistory, type Contest } from '../api.se
   `,
 })
 export class TrainingPage implements ViewWillEnter {
-  private api = inject(ApiService);
-  contests = resource({ loader: () => this.api.get<Contest[]>('/contests') });
+  /** Embedded in the app: no server, no network needed (classes train before the tournament). */
+  contests = BUILTIN_CONTESTS;
   history = signal(practiceHistory.list());
   time = formatTime;
 

@@ -12,7 +12,7 @@ Nouvelle version de l'application de gestion du défi robotique (remplace `conte
 |---|---|
 | Arbitre | Se connecte, choisit le tournoi, voit les matchs « à noter », remplit la feuille de mission (chrono, pénalités, total en direct), envoie le score. |
 | Équipe | Cherche son équipe, voit ses matchs, ses scores et son meilleur score. |
-| Entraînement | N'importe quelle feuille publiée, sans compte, scores gardés sur le téléphone. |
+| Entraînement | Les 4 concours **intégrés à l'appli** (RoBee, GardBot, Mars II cycle 2 et cycle 3), sans compte, **sans serveur ni connexion**, scores gardés sur l'appareil. Pour les classes avant le tournoi. |
 | Enseignant | Voit ses équipes, leurs matchs et scores, et gère la liste des élèves (nom, prénom, rôle). |
 | Admin (`/admin`) | Crée les **concours** (feuilles de mission) sans code, les tournois, groupes, équipes (collage en masse ou **import Excel**), matchs, **phase finale**, comptes arbitres / enseignants. |
 
@@ -30,7 +30,7 @@ Nouvelle version de l'application de gestion du défi robotique (remplace `conte
    - règles bonus : « si choix 1 = Réussi **et** case X cochée alors +10 pts » (points négatifs possibles).
 4. Cocher **Publié**, enregistrer, puis **Aperçu** pour tester la feuille.
 
-Le bouton **JSON** permet d'exporter / importer une feuille entière (sauvegarde, copie entre serveurs).
+**Importer (fichier JSON)** (liste des concours) crée un concours à partir d'un fichier choisi sur l'appareil : un concours complet (`name`, `season`, `description`, `sheet`) ou une feuille seule (le nom du fichier devient le nom du concours). Le concours importé est un **brouillon** : le publier dans l'éditeur. L'icône ⬇ d'un concours l'exporte dans ce même format (sauvegarde, copie vers un autre serveur). Les fichiers des 4 concours sont dans `docs/concours/`. Le bouton **JSON** de l'éditeur reste disponible pour coller une feuille.
 
 Les feuilles 2019 (cycle 2 et cycle 3) de l'ancienne appli et les feuilles **Défi Mars II 2027** (cycle 2 et cycle 3) sont importées automatiquement au démarrage (une feuille déjà présente sous le même nom n'est pas recréée).
 
@@ -41,9 +41,13 @@ Les feuilles 2019 (cycle 2 et cycle 3) de l'ancienne appli et les feuilles **Dé
 
 ### Défi Mars II 2027
 
-Feuilles `Défi Mars II 2027 - Cycle 2` et `- Cycle 3` (règlement robotique92) : 6 missions sur 100 points (+10 pour une provision empilée), bonus technologique (100 max) et bonus pédagogique (100 max), 5 points par pénalité (10 maximum), chronomètre libre avec départage au temps. Les images sont dans `apps/app/src/assets/mars2027/`.
+Feuilles `Défi Mars II 2027 - Cycle 2` et `- Cycle 3` (règlement robotique92) : 6 missions sur 100 points (+10 pour une provision empilée), bonus technologique (100 max) et bonus pédagogique (100 max), 5 points par pénalité (10 maximum), chronomètre libre avec départage au temps. Images dans `apps/app/src/assets/mars2027/`.
 
-Sur un serveur déjà en service, sans redéployer : créer un concours, ouvrir **JSON** et coller `docs/defi-mars-2027-cycle2.json` (ou `cycle3`). Les images des missions n'apparaissent qu'après le déploiement de la nouvelle version de l'appli.
+### Concours intégrés (entraînement hors ligne)
+
+La page **Entraînement** n'interroge pas le serveur : ses 4 feuilles sont compilées dans l'appli (`apps/app/src/app/builtin-contests.ts`), et l'appli web (PWA) précharge les images des missions. Une fois l'appli ouverte une fois (ou l'APK installé), les enseignants peuvent s'entraîner en classe sans réseau.
+
+Ces feuilles sont générées à partir de `apps/api/prisma/seed-contests.json` (source unique) : après une modification du barème, lancer `python3 scripts/make_builtin.py .` qui régénère `builtin-contests.ts` et `docs/concours/*.json` ; `npm test` vérifie que les trois restent identiques.
 
 ### Import des inscriptions (Excel)
 

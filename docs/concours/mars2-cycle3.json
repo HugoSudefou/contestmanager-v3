@@ -1,0 +1,452 @@
+{
+  "name": "Mars II - cycle 3",
+  "season": "2026-2027",
+  "description": "Expédition Mars II : retour sur Mars\nLa précédente expédition sur Mars s'est mal terminée : la tour de contrôle est en panne, un robot s'est déréglé et plusieurs zones de la base sont devenues dangereuses. Votre équipe doit reprendre le contrôle : réactiver la tour de contrôle, neutraliser le robot défectueux, sécuriser la zone radioactive et se débarrasser de la roche radioactive. Ensuite, remettre en place l'émetteur, rejoindre la base et décoller.\n\nLe rover peut rouler dans la base (marron), le camp et la réserve (vert foncé et vert clair), le hangar (bleu) et sur le sol martien. Il doit absolument éviter le fossé (violet), la zone radioactive (jaune) et les deux cratères.\n\nMatériel cycle 3. Chaque mission peut être validée séparément ; le passage complet peut être chronométré (chronomètre libre, facultatif) : à égalité de points, le plus rapide l'emporte.\n\nPénalités : 5 points par pénalité, 10 pénalités maximum. 1 pénalité : rouler sur un cratère (nouvel essai depuis la base ou le camp, 4 tentatives maximum) ; toucher la tour de contrôle (elle est replacée) ; une roue touche le fossé violet ; une roue touche la zone radioactive ; rover retiré du tapis à la main ; rover sorti de sa zone de jeu ; la roche radioactive passe dans la base ; franchir totalement un fossé (interdit). Après une pénalité avec reprise à la main, le rover repart du hangar, de la base ou du camp. Un objet déplacé par erreur reste à sa nouvelle place. Les objets ne se bougent jamais à la main.",
+  "published": false,
+  "sheet": {
+    "durationSeconds": 0,
+    "timeTiebreak": true,
+    "penaltyPoints": 5,
+    "maxPenalties": 10,
+    "missions": [
+      {
+        "id": "m1",
+        "title": "Mission 1 - Ravitaillement",
+        "description": "Le rover part de la base et apporte les 4 provisions (2 caisses grises, 2 caisses de couleur) dans la réserve (vert clair) du camp, en évitant les cratères. Cycle 3 : il les transporte et les dépose dans la réserve, derrière la barre grise. Toucher un cratère = 1 pénalité et reprise depuis la base. Maximum 100 points + bonus de 10 points.",
+        "image": "assets/mars2027/m1-parcours.png",
+        "items": [
+          {
+            "id": "reserve",
+            "type": "counter",
+            "label": "Une provision se trouve dans la réserve (derrière la barre grise).",
+            "image": "assets/mars2027/m1-caisses-reserve-cycle3.jpg",
+            "points": 25,
+            "max": 4
+          },
+          {
+            "id": "camp",
+            "type": "counter",
+            "label": "Une provision se trouve dans le camp, mais pas dans la réserve.",
+            "points": 15,
+            "max": 4
+          },
+          {
+            "id": "hors-base",
+            "type": "counter",
+            "label": "Une provision se trouve en dehors de la base (hors du fossé et de la zone radioactive).",
+            "points": 5,
+            "max": 4
+          },
+          {
+            "id": "base",
+            "type": "counter",
+            "label": "Une provision se trouve sur le sol de la base.",
+            "image": "assets/mars2027/m1-caisses-base.jpg",
+            "points": 1,
+            "max": 4
+          },
+          {
+            "id": "empilee",
+            "type": "check",
+            "label": "Bonus : une provision est empilée dans la réserve (elle ne touche pas le sol).",
+            "image": "assets/mars2027/m1-caisses-empilees.jpg",
+            "points": 10
+          }
+        ],
+        "maxObjects": {
+          "items": [
+            "reserve",
+            "camp",
+            "hors-base",
+            "base"
+          ],
+          "max": 4
+        }
+      },
+      {
+        "id": "m2",
+        "title": "Mission 2 - Neutraliser le robot défectueux",
+        "description": "Faire tomber le robot défectueux (sur la croix bleue) avec le projectile qui se trouve dans le hangar. Cycle 3 : le rover catapulte le projectile depuis la zone de tir. Après un échec, une deuxième et dernière tentative est possible avec 1 pénalité (le rover retourne chercher le projectile au hangar). Noter le meilleur résultat. Maximum 100 points.",
+        "image": "assets/mars2027/m2-plan.png",
+        "items": [
+          {
+            "id": "resultat",
+            "type": "choice",
+            "label": "Résultat du tir",
+            "image": "assets/mars2027/m2-robot-tombe.jpg",
+            "options": [
+              {
+                "label": "Le robot défectueux est tombé.",
+                "points": 100
+              },
+              {
+                "label": "Le robot défectueux a été déplacé hors de la croix bleue sans tomber.",
+                "points": 75
+              },
+              {
+                "label": "Le projectile a touché le robot défectueux sans le déplacer.",
+                "points": 50
+              },
+              {
+                "label": "Le projectile a été tiré depuis la zone de tir sans toucher le robot défectueux.",
+                "points": 30
+              },
+              {
+                "label": "Autre situation (pas de tir).",
+                "points": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "m3",
+        "title": "Mission 3 - Réactiver la tour de contrôle",
+        "description": "Le rover s'arrête sur les 4 lieux de réparation (ronds rouges) qui entourent la tour de contrôle. Chaque réparation = un bruit de quelques secondes : la série de notes demandée (sol 4, la 4, fa 4, fa 3, do 4 : « Rencontres du troisième type »). Compter chaque rond une seule fois, dans la ligne la plus haute atteinte (4 ronds maximum). Toucher la tour = 1 pénalité (elle est replacée). Maximum 100 points.",
+        "image": "assets/mars2027/m3-plan.png",
+        "items": [
+          {
+            "id": "note",
+            "type": "counter",
+            "label": "Le robot s'arrête sur un rond et joue la série de notes demandée (sol 4, la 4, fa 4, fa 3, do 4 : « Rencontres du troisième type »).",
+            "image": "assets/mars2027/m3-tour-de-controle.jpg",
+            "points": 25,
+            "max": 4
+          },
+          {
+            "id": "hasard",
+            "type": "counter",
+            "label": "Le robot s'arrête sur un rond et joue un bruitage au hasard.",
+            "points": 15,
+            "max": 4
+          },
+          {
+            "id": "arret",
+            "type": "counter",
+            "label": "Le robot s'arrête sur le bon rond, sans bruitage.",
+            "points": 10,
+            "max": 4
+          },
+          {
+            "id": "passage",
+            "type": "counter",
+            "label": "Le robot passe sur un rond sans s'arrêter.",
+            "points": 5,
+            "max": 4
+          }
+        ],
+        "maxObjects": {
+          "items": [
+            "note",
+            "hasard",
+            "arret",
+            "passage"
+          ],
+          "max": 4
+        }
+      },
+      {
+        "id": "m4",
+        "title": "Mission 4 - Sécuriser la zone radioactive",
+        "description": "Replacer les 2 barrières jaunes sur leurs emplacements marqués au sol (quadrillé jaune et blanc) à l'entrée de la zone radioactive. Cycle 3 : une des deux barrières est placée perpendiculairement à son emplacement. Parfaitement placée = la barrière jaune (hors pieds gris) est entièrement au-dessus de la zone marquée. Compter chaque barrière une seule fois (2 maximum). Barrière non déplacée = 0 point. Maximum 100 points.",
+        "image": "assets/mars2027/m4-plan.png",
+        "items": [
+          {
+            "id": "parfaite",
+            "type": "counter",
+            "label": "Barrière parfaitement replacée dans la zone marquée, et droite.",
+            "image": "assets/mars2027/m4-barrieres-zone-cycle3.jpg",
+            "points": 50,
+            "max": 2
+          },
+          {
+            "id": "partielle-droite",
+            "type": "counter",
+            "label": "Barrière qui touche la zone marquée sans être parfaitement placée, et droite.",
+            "points": 30,
+            "max": 2
+          },
+          {
+            "id": "partielle-tombee",
+            "type": "counter",
+            "label": "Barrière qui touche la zone marquée sans être parfaitement placée, mais tombée.",
+            "points": 20,
+            "max": 2
+          },
+          {
+            "id": "deplacee",
+            "type": "counter",
+            "label": "Barrière déplacée mais qui ne touche pas la zone marquée.",
+            "points": 10,
+            "max": 2
+          }
+        ],
+        "maxObjects": {
+          "items": [
+            "parfaite",
+            "partielle-droite",
+            "partielle-tombee",
+            "deplacee"
+          ],
+          "max": 2
+        }
+      },
+      {
+        "id": "m5",
+        "title": "Mission 5 - Se débarrasser de la roche radioactive",
+        "description": "La roche radioactive part du pont. Le rover l'emmène dans la zone radioactive et la dépose dans le caisson (pneu) choisi. Le caisson 2 est le plus éloigné. Si la roche passe dans la base : 1 pénalité. Maximum 100 points.",
+        "image": "assets/mars2027/m5-plan.png",
+        "items": [
+          {
+            "id": "position",
+            "type": "choice",
+            "label": "La roche radioactive se trouve",
+            "image": "assets/mars2027/m5-roche-caisson2-cycle3.jpg",
+            "options": [
+              {
+                "label": "dans le caisson (pneu) 2.",
+                "points": 100
+              },
+              {
+                "label": "dans le caisson (pneu) 1.",
+                "points": 75
+              },
+              {
+                "label": "dans la zone radioactive, mais pas dans un caisson.",
+                "points": 30
+              },
+              {
+                "label": "ailleurs, mais plus sur le pont.",
+                "points": 5
+              },
+              {
+                "label": "toujours sur le pont.",
+                "points": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "m6",
+        "title": "Mission 6 - Placer l'émetteur et décoller",
+        "description": "Le rover récupère l'émetteur dans le hangar, contourne la tour de contrôle et soulève l'émetteur pour le poser sur le socle blanc de l'îlot, sans que ses roues touchent le fossé violet. Il rejoint ensuite la base et décolle avec un son de décollage de fusée. Maximum 100 points.",
+        "image": "assets/mars2027/m6-plan.png",
+        "items": [
+          {
+            "id": "emetteur",
+            "type": "choice",
+            "label": "Partie 1 - L'émetteur se trouve",
+            "image": "assets/mars2027/m6-emetteur-ilot.jpg",
+            "options": [
+              {
+                "label": "sur le socle blanc de l'îlot, sans toucher le fossé violet.",
+                "points": 50
+              },
+              {
+                "label": "sur l'îlot, en touchant le fossé violet.",
+                "points": 30
+              },
+              {
+                "label": "en dehors du hangar, mais pas sur l'îlot.",
+                "points": 5
+              },
+              {
+                "label": "toujours dans le hangar.",
+                "points": 0
+              }
+            ]
+          },
+          {
+            "id": "rover",
+            "type": "choice",
+            "label": "Partie 2 - Le rover",
+            "options": [
+              {
+                "label": "est à la base et décolle avec un son de décollage de fusée.",
+                "points": 50
+              },
+              {
+                "label": "est à la base, sans son de décollage.",
+                "points": 30
+              },
+              {
+                "label": "n'est pas à la base.",
+                "points": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "bonus-techno",
+        "title": "Bonus technologique",
+        "description": "Maximum 100 points. Moteurs, capteurs et outils doivent servir aux missions du défi.",
+        "items": [
+          {
+            "id": "moteurs",
+            "type": "counter",
+            "label": "Le rover utilise un moteur supplémentaire pour une action autre que ses déplacements, en lien avec les missions.",
+            "points": 20,
+            "max": 2
+          },
+          {
+            "id": "capteurs",
+            "type": "counter",
+            "label": "Le rover utilise un capteur dans ses missions pour être plus autonome.",
+            "points": 20,
+            "max": 2
+          },
+          {
+            "id": "outils-3d",
+            "type": "counter",
+            "label": "Le rover utilise un outil fabriqué à l'aide d'une imprimante 3D.",
+            "points": 20,
+            "max": 2
+          }
+        ],
+        "rules": [
+          {
+            "label": "Plafond du bonus technologique : 100 points",
+            "when": [
+              {
+                "item": "moteurs",
+                "equals": 2
+              },
+              {
+                "item": "capteurs",
+                "equals": 2
+              },
+              {
+                "item": "outils-3d",
+                "equals": 2
+              }
+            ],
+            "add": -20
+          }
+        ]
+      },
+      {
+        "id": "bonus-pedago",
+        "title": "Bonus pédagogique",
+        "description": "Maximum 100 points. Attitude pendant le défi (50 points) et affiche format raisin sur le stand (5 cadres de 10 points). Les cadres de l'affiche ne comptent que si l'affiche est présente.",
+        "items": [
+          {
+            "id": "attitude",
+            "type": "check",
+            "points": 50,
+            "label": "Attitude de l'équipe pendant le défi : bonne relation entre eux, avec les autres équipes et les adultes ; respect des lieux et du matériel ; tous ensemble pour les tests et les matchs ; s'encouragent, sont positifs ; prennent en compte les remarques de l'arbitre ; apprécient le moment ; persévèrent même sans réussir."
+          },
+          {
+            "id": "affiche",
+            "type": "check",
+            "points": 0,
+            "label": "Une affiche (format raisin) est présente sur le stand de l'équipe."
+          },
+          {
+            "id": "a-presentation",
+            "type": "check",
+            "points": 10,
+            "label": "Affiche - Cadre « NOTRE ÉQUIPE » : nom de l'équipe, classe, enseignant, école, niveau, photo de l'équipe avec son robot et rôle principal de chaque équipier."
+          },
+          {
+            "id": "a-conception",
+            "type": "check",
+            "points": 10,
+            "label": "Affiche - Cadre « NOTRE ROBOT » : schéma décrivant les fonctions du robot (brique programmable, capteurs, moteurs, outils, structures)."
+          },
+          {
+            "id": "a-programmation",
+            "type": "check",
+            "points": 10,
+            "label": "Affiche - Cadre « NOS PROGRAMMES » : parties significatives et commentées des programmes de l'équipe (boucle, sélecteur, capteurs...)."
+          },
+          {
+            "id": "a-apports",
+            "type": "check",
+            "points": 10,
+            "label": "Affiche - Cadre « LA ROBOTIQUE C'EST... » : au moins une phrase par élève sur ce que le projet lui a apporté."
+          },
+          {
+            "id": "a-equipe",
+            "type": "check",
+            "points": 10,
+            "label": "Affiche - Cadre « LE TRAVAIL EN ÉQUIPE » : importance du travail en équipe, rôle de chacun, état d'esprit, méthodes et outils de travail."
+          }
+        ],
+        "rules": [
+          {
+            "label": "Pas d'affiche : ce cadre ne compte pas",
+            "when": [
+              {
+                "item": "affiche",
+                "equals": false
+              },
+              {
+                "item": "a-presentation",
+                "equals": true
+              }
+            ],
+            "add": -10
+          },
+          {
+            "label": "Pas d'affiche : ce cadre ne compte pas",
+            "when": [
+              {
+                "item": "affiche",
+                "equals": false
+              },
+              {
+                "item": "a-conception",
+                "equals": true
+              }
+            ],
+            "add": -10
+          },
+          {
+            "label": "Pas d'affiche : ce cadre ne compte pas",
+            "when": [
+              {
+                "item": "affiche",
+                "equals": false
+              },
+              {
+                "item": "a-programmation",
+                "equals": true
+              }
+            ],
+            "add": -10
+          },
+          {
+            "label": "Pas d'affiche : ce cadre ne compte pas",
+            "when": [
+              {
+                "item": "affiche",
+                "equals": false
+              },
+              {
+                "item": "a-apports",
+                "equals": true
+              }
+            ],
+            "add": -10
+          },
+          {
+            "label": "Pas d'affiche : ce cadre ne compte pas",
+            "when": [
+              {
+                "item": "affiche",
+                "equals": false
+              },
+              {
+                "item": "a-equipe",
+                "equals": true
+              }
+            ],
+            "add": -10
+          }
+        ]
+      }
+    ]
+  }
+}
