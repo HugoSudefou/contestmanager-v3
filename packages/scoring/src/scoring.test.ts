@@ -118,3 +118,11 @@ test('RoBee mission 4 (honey): same top-down entry as the waste towers', async (
   for (const id of ['n4', 'n3', 'n2', 'fond', 'ruche', 'jardin']) assert.equal(canIncrease(m4, full, id), false, id);
   assert.deepEqual(applyChange(m4, { n2: 1, fond: 1 }, 'n2', 1), { n2: 2, fond: 2 });
 });
+
+test('RoBee mission 2: once 4 seeds are counted, every other line is blocked', async () => {
+  const { canIncrease } = await import('./index.ts');
+  const m2 = JSON.parse((await import('node:fs')).readFileSync(new URL('../../../apps/api/prisma/seed-contests.json', import.meta.url), 'utf8'))[0]
+    .sheet.missions[1];
+  for (const id of ['bonne-zone', 'cour', 'mauvaise-zone', 'pepiniere']) assert.equal(canIncrease(m2, { 'bonne-zone': 4 }, id), false, id);
+  assert.equal(canIncrease(m2, { 'bonne-zone': 3 }, 'cour'), true);
+});

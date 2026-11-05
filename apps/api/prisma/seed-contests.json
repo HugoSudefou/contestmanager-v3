@@ -28,7 +28,7 @@
         {
           "id": "m2",
           "title": "Mission 2 - Création d'un arboretum",
-          "description": "4 graines maximum.",
+          "description": "4 graines maximum : dès que 4 graines sont comptées, les autres lignes se bloquent.",
           "image": "assets/legacy/cycle2/logoMission/mission2.jpg",
           "items": [
             { "id": "bonne-zone", "type": "counter", "label": "Une graine se trouve dans l'arboretum sur la bonne zone de couleur.", "image": "assets/legacy/cycle2/explMission/arboretum_bonne_place_mission2.jpg", "points": 10, "max": 4 },

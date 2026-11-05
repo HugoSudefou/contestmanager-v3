@@ -112,7 +112,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
         {
           "id": "m2",
           "title": "Mission 2 - Création d'un arboretum",
-          "description": "4 graines maximum.",
+          "description": "4 graines maximum : dès que 4 graines sont comptées, les autres lignes se bloquent.",
           "image": "assets/legacy/cycle2/logoMission/mission2.jpg",
           "items": [
             {
