@@ -335,27 +335,96 @@
         {
           "id": "bonus-pedago",
           "title": "Bonus pédagogique",
-          "description": "Les critères de l'affiche ne comptent que si une affiche est présente sur le stand.",
-          "image": "assets/legacy/cycle3/bonus.jpg",
+          "description": "Maximum 100 points. Attitude de l'équipe pendant le défi (5 critères de 10 points) et affiche format raisin sur le stand (5 cadres de 10 points). Cocher un cadre coche aussi « affiche présente » ; sans affiche, les cadres ne comptent pas.",
           "items": [
-            { "id": "presentation", "type": "check", "label": "Les élèves se sont présentés à l'arbitre de manière originale.", "points": 10 },
-            { "id": "relation", "type": "check", "label": "Les élèves ont une bonne relation entre eux.", "points": 10 },
-            { "id": "fair-play", "type": "check", "label": "Les élèves respectent les autres équipes. Ils sont fair-play.", "points": 10 },
-            { "id": "respect", "type": "check", "label": "Les élèves respectent les lieux, le matériel, les personnes qui les accompagnent, les encadrent ou organisent le défi.", "points": 10 },
-            { "id": "progres", "type": "check", "label": "Les élèves prennent en compte les remarques de l'arbitre et progressent pendant la rencontre.", "points": 10 },
-            { "id": "affiche", "type": "check", "label": "Présence d'une affiche (format raisin) sur le stand de l'équipe.", "points": 0 },
-            { "id": "a-equipe", "type": "check", "label": "Affiche : présentation de l'équipe.", "points": 10 },
-            { "id": "a-conception", "type": "check", "label": "Affiche : conception du robot.", "points": 10 },
-            { "id": "a-programmation", "type": "check", "label": "Affiche : programmation du robot.", "points": 10 },
-            { "id": "a-apports", "type": "check", "label": "Affiche : apports du projet robotique.", "points": 10 },
-            { "id": "a-travail", "type": "check", "label": "Affiche : travail dans une équipe de robotique.", "points": 10 }
+            {
+              "id": "att-relations",
+              "type": "check",
+              "points": 10,
+              "label": "Attitude - Bonne relation entre eux, avec les autres équipes et les adultes."
+            },
+            {
+              "id": "att-respect",
+              "type": "check",
+              "points": 10,
+              "label": "Attitude - Respect des lieux et du matériel."
+            },
+            {
+              "id": "att-ensemble",
+              "type": "check",
+              "points": 10,
+              "label": "Attitude - Tous ensemble pour les tests et les matchs."
+            },
+            {
+              "id": "att-encouragements",
+              "type": "check",
+              "points": 10,
+              "label": "Attitude - S'encouragent, sont positifs, prennent en compte les remarques de l'arbitre."
+            },
+            {
+              "id": "att-perseverance",
+              "type": "check",
+              "points": 10,
+              "label": "Attitude - Apprécient le moment, persévèrent même sans réussir."
+            },
+            {
+              "id": "affiche",
+              "type": "check",
+              "points": 0,
+              "label": "Une affiche (format raisin) est présente sur le stand de l'équipe."
+            },
+            {
+              "id": "a-presentation",
+              "type": "check",
+              "points": 10,
+              "label": "Affiche - Cadre « NOTRE ÉQUIPE » : nom de l'équipe, classe, enseignant, école, niveau, photo de l'équipe avec son robot et rôle principal de chaque équipier."
+            },
+            {
+              "id": "a-conception",
+              "type": "check",
+              "points": 10,
+              "label": "Affiche - Cadre « NOTRE ROBOT » : schéma décrivant les fonctions du robot (brique programmable, capteurs, moteurs, outils, structures)."
+            },
+            {
+              "id": "a-programmation",
+              "type": "check",
+              "points": 10,
+              "label": "Affiche - Cadre « NOS PROGRAMMES » : parties significatives et commentées des programmes de l'équipe (boucle, sélecteur, capteurs...)."
+            },
+            {
+              "id": "a-apports",
+              "type": "check",
+              "points": 10,
+              "label": "Affiche - Cadre « LA ROBOTIQUE C'EST... » : au moins une phrase par élève sur ce que le projet lui a apporté."
+            },
+            {
+              "id": "a-equipe",
+              "type": "check",
+              "points": 10,
+              "label": "Affiche - Cadre « LE TRAVAIL EN ÉQUIPE » : importance du travail en équipe, rôle de chacun, état d'esprit, méthodes et outils de travail."
+            }
           ],
-          "rules": [
-            { "label": "Pas d'affiche", "when": [{ "item": "affiche", "equals": false }, { "item": "a-equipe", "equals": true }], "add": -10 },
-            { "label": "Pas d'affiche", "when": [{ "item": "affiche", "equals": false }, { "item": "a-conception", "equals": true }], "add": -10 },
-            { "label": "Pas d'affiche", "when": [{ "item": "affiche", "equals": false }, { "item": "a-programmation", "equals": true }], "add": -10 },
-            { "label": "Pas d'affiche", "when": [{ "item": "affiche", "equals": false }, { "item": "a-apports", "equals": true }], "add": -10 },
-            { "label": "Pas d'affiche", "when": [{ "item": "affiche", "equals": false }, { "item": "a-travail", "equals": true }], "add": -10 }
+          "limits": [
+            {
+              "item": "a-presentation",
+              "notMoreThan": "affiche"
+            },
+            {
+              "item": "a-conception",
+              "notMoreThan": "affiche"
+            },
+            {
+              "item": "a-programmation",
+              "notMoreThan": "affiche"
+            },
+            {
+              "item": "a-apports",
+              "notMoreThan": "affiche"
+            },
+            {
+              "item": "a-equipe",
+              "notMoreThan": "affiche"
+            }
           ]
         }
       ]

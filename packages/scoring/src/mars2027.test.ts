@@ -39,10 +39,10 @@ for (const cycle of [2, 3]) {
   });
 }
 
-test('pedagogical bonus (RoBee, Mars II): 5 attitude criteria + poster frames that need the poster', async () => {
+test('pedagogical bonus (all 4 contests): 5 attitude criteria + poster frames that need the poster', async () => {
   const { applyChange } = await import('./index.ts');
-  const all = seed.filter((c) => c.name !== 'Défi robotique 2019 - Cycle 3');
-  assert.equal(all.length, 3);
+  const all = seed;
+  assert.equal(all.length, 4);
   for (const c of all) {
     const m = c.sheet.missions.find((x) => x.id === 'bonus-pedago')!;
     const sheet = { ...c.sheet, missions: [m] };
