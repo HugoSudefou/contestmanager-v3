@@ -79,3 +79,26 @@ test('compareResults: score first, then time only when the tie-break is on', () 
   assert.equal(compareResults(untimed, { score: 300, timeSeconds: null }, true), 0);
   assert.ok(compareResults({ score: 310, timeSeconds: 500 }, fast, true) < 0); // points always come first
 });
+
+test('limits between lines: towers are entered bottom-up and impossible sheets score 0', async () => {
+  const { canIncrease, canDecrease } = await import('./index.ts');
+  const robee = JSON.parse((await import('node:fs')).readFileSync(new URL('../../../apps/api/prisma/seed-contests.json', import.meta.url), 'utf8'))[0]
+    .sheet.missions[0];
+  const up = (a: Record<string, number>, id: string) => canIncrease(robee, a, id);
+  assert.equal(up({}, 'n2'), false); // no waste on the ground yet
+  assert.equal(up({ sol: 1 }, 'n2'), true);
+  assert.equal(up({ sol: 1, n2: 1 }, 'n3'), true);
+  assert.equal(up({ sol: 1, n2: 1 }, 'n4'), false); // level 4 needs level 3
+  assert.equal(up({ sol: 1, n2: 1, n3: 1 }, 'n3'), false); // never 2 at level 3
+  assert.equal(up({ sol: 2, n2: 1 }, 'n2'), true); // 2 at level 2 => 2 on the ground
+  assert.equal(up({ sol: 2, n2: 2 }, 'ecole'), false); // 4 wastes counted: all counters blocked
+  assert.equal(up({ sol: 1, n2: 1, n3: 1, n4: 1 }, 'sol'), false);
+  assert.equal(canDecrease(robee, { sol: 1, n2: 1 }, 'sol'), false); // remove level 2 first
+  assert.equal(canDecrease(robee, { sol: 1, n2: 1 }, 'n2'), true);
+  // Full tower = 20 + 15 + 10 + 5; a contradictory sheet (forced through the API) scores 0
+  assert.equal(computeSheet({ durationSeconds: 0, penaltyPoints: 4, missions: [robee] }, { m1: { sol: 1, n2: 1, n3: 1, n4: 1 } }, 0).total, 50);
+  const bad = computeSheet({ durationSeconds: 0, penaltyPoints: 4, missions: [robee] }, { m1: { n4: 1 } }, 0);
+  assert.equal(bad.total, 0);
+  assert.match(bad.missions[0].error!, /Saisie impossible/);
+  assert.equal(validateSheet({ durationSeconds: 0, penaltyPoints: 4, missions: [{ ...robee, limits: [{ item: 'x', notMoreThan: 'sol' }] }] }).length, 1);
+});

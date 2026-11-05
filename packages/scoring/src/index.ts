@@ -23,6 +23,12 @@ export interface MissionDef {
   items: ItemDef[];
   /** Shared limit on objects across items (counter value, or 1 per ticked check). Exceeded = mission scores 0. */
   maxObjects?: { items: string[]; max: number };
+  /**
+   * Physical consistency between lines: `item` can never count more than `notMoreThan`
+   * (e.g. a waste at level 3 of a tower needs one at level 2 under it). The sheet blocks
+   * contradictory entries; the server gives 0 to a mission that breaks one.
+   */
+  limits?: { item: string; notMoreThan: string }[];
   rules?: RuleDef[];
 }
 
@@ -75,7 +81,42 @@ function objectCount(item: ItemDef, value: ItemValue | undefined): number {
   return typeof value === 'number' ? 1 : 0;
 }
 
+/** How many objects an item stands for: counter value, 1 per ticked check, 1 per chosen option. */
+export function itemCount(mission: MissionDef, answers: MissionAnswers, itemId: string): number {
+  const item = mission.items.find((i) => i.id === itemId);
+  return item ? objectCount(item, answers[itemId]) : 0;
+}
+
+/** Objects counted in the mission's shared limit (maxObjects), or 0 when there is none. */
+export function objectsUsed(mission: MissionDef, answers: MissionAnswers = {}): number {
+  const ids = mission.maxObjects?.items ?? [];
+  return mission.items.filter((i) => ids.includes(i.id)).reduce((sum, i) => sum + objectCount(i, answers[i.id]), 0);
+}
+
+/** Can the referee add one to this counter (or tick this box) without an impossible sheet? */
+export function canIncrease(mission: MissionDef, answers: MissionAnswers, itemId: string): boolean {
+  const item = mission.items.find((i) => i.id === itemId);
+  if (!item || item.type === 'choice') return true;
+  const n = itemCount(mission, answers, itemId);
+  if (item.type === 'counter' ? n >= item.max : n >= 1) return false;
+  if (mission.maxObjects?.items.includes(itemId) && objectsUsed(mission, answers) >= mission.maxObjects.max) return false;
+  return (mission.limits ?? []).every((l) => l.item !== itemId || n + 1 <= itemCount(mission, answers, l.notMoreThan));
+}
+
+/** Can the referee remove one from this counter (or untick this box) without an impossible sheet? */
+export function canDecrease(mission: MissionDef, answers: MissionAnswers, itemId: string): boolean {
+  const n = itemCount(mission, answers, itemId);
+  if (n <= 0) return false;
+  return (mission.limits ?? []).every((l) => l.notMoreThan !== itemId || itemCount(mission, answers, l.item) <= n - 1);
+}
+
 export function computeMission(mission: MissionDef, answers: MissionAnswers = {}): MissionResult {
+  for (const l of mission.limits ?? []) {
+    if (itemCount(mission, answers, l.item) > itemCount(mission, answers, l.notMoreThan)) {
+      const label = (id: string) => mission.items.find((i) => i.id === id)?.label ?? id;
+      return { id: mission.id, points: 0, error: `Saisie impossible : « ${label(l.item)} » dépasse « ${label(l.notMoreThan)} ».` };
+    }
+  }
   if (mission.maxObjects) {
     const { items, max } = mission.maxObjects;
     const count = mission.items
@@ -161,6 +202,9 @@ export function validateSheet(sheet: unknown): string[] {
     }
     for (const id of m.maxObjects?.items ?? []) {
       if (!itemIds.has(id)) errors.push(`${where} : la limite d'objets cite une ligne inconnue (${id}).`);
+    }
+    for (const l of m.limits ?? []) {
+      if (!itemIds.has(l?.item) || !itemIds.has(l?.notMoreThan)) errors.push(`${where} : une limite entre lignes cite une ligne inconnue.`);
     }
     for (const r of m.rules ?? []) {
       if (!Number.isFinite(r.add)) errors.push(`${where} : bonus de règle invalide.`);

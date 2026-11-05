@@ -2,16 +2,17 @@
   {
     "name": "Défi robotique 2019 - Cycle 2",
     "season": "2018-2019",
-    "description": "Défi RoBee, un robot pollinisateur (cycle 2). Pas de limite de temps : chronomètre libre (en tournoi, l'arbitre peut régler un minuteur). 4 points retirés par pénalité.",
+    "description": "Défi RoBee, un robot pollinisateur (cycle 2). Pas de limite de temps : chronomètre libre (en tournoi, l'arbitre peut régler un minuteur). 4 points retirés par pénalité, 10 pénalités maximum.",
     "published": true,
     "sheet": {
       "durationSeconds": 0,
       "penaltyPoints": 4,
+      "maxPenalties": 10,
       "missions": [
         {
           "id": "m1",
           "title": "Mission 1 - Dépollution de la rivière",
-          "description": "4 déchets maximum. Un déchet au niveau N d'une tour compte aussi les niveaux inférieurs (tour de 4 = 20 + 15 + 10 + 5).",
+          "description": "4 déchets maximum. Un déchet au niveau N d'une tour impose un déchet à chaque niveau en dessous (tour de 4 = 20 + 15 + 10 + 5). Saisir la tour du bas vers le haut : d'abord le sol, puis les niveaux 2, 3 et 4.",
           "image": "assets/legacy/cycle2/logoMission/mission1.jpg",
           "items": [
             { "id": "n4", "type": "counter", "label": "Un déchet se trouve au niveau 4 d'une tour de compactage dans la déchetterie.", "image": "assets/legacy/cycle2/explMission/dechet_quatre.gif", "points": 20, "max": 1 },
@@ -21,7 +22,8 @@
             { "id": "ecole", "type": "counter", "label": "Un déchet se trouve à l'école.", "image": "assets/legacy/cycle2/explMission/école.jpg", "points": 3, "max": 4 },
             { "id": "autre", "type": "counter", "label": "Un déchet se trouve en dehors de la rivière mais ni à l'école ni à la déchetterie.", "image": "assets/legacy/cycle2/explMission/dechet_seul.gif", "points": 1, "max": 4 }
           ],
-          "maxObjects": { "items": ["n4", "n3", "n2", "sol", "ecole", "autre"], "max": 4 }
+          "maxObjects": { "items": ["n4", "n3", "n2", "sol", "ecole", "autre"], "max": 4 },
+          "limits": [{ "item": "n4", "notMoreThan": "n3" }, { "item": "n3", "notMoreThan": "n2" }, { "item": "n2", "notMoreThan": "sol" }]
         },
         {
           "id": "m2",
