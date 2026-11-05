@@ -36,6 +36,8 @@ Les feuilles 2019 (cycle 2 et cycle 3) de l'ancienne appli et les feuilles **Dé
 
 ### Chronomètre et départage au temps
 
+- **Minuteur de l'arbitre** : en tournoi, sur une feuille sans durée fixe, le bouton ⏳ permet de choisir avant chaque partie une durée maximale (aucune, 2 à 10 minutes, ou une autre durée). Le chrono décompte alors et s'arrête à la fin ; le choix est gardé sur l'appareil pour les parties suivantes. À l'entraînement, pas de minuteur : chronomètre libre.
+
 - Avec une durée de 0, le chrono de la feuille arbitre est un **chronomètre libre** : il compte sans limite, se met en pause, et le bouton ↻ le remet à zéro sans effacer la feuille (pratique pour chronométrer le passage complet après des missions validées une par une). Chronométrer reste facultatif : un score envoyé à 00:00 est « non chronométré ».
 - Si l'option **départager au temps** est cochée, à points égaux le temps le plus court l'emporte (classement des groupes, qualification et matchs de la phase finale) ; un passage chronométré passe devant un passage non chronométré.
 

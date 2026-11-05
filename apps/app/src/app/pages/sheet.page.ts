@@ -30,7 +30,7 @@ import {
   ToastController,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { addOutline, pauseOutline, playOutline, refreshOutline, removeOutline } from 'ionicons/icons';
+import { addOutline, hourglassOutline, pauseOutline, playOutline, refreshOutline, removeOutline } from 'ionicons/icons';
 import { computeSheet, type Answers, type ItemValue } from '@contest/scoring';
 import { ApiService, formatTime, practiceHistory, type BuiltinContest, type Contest } from '../api.service';
 import { builtinContest } from '../builtin-contests';
@@ -70,6 +70,11 @@ import { builtinContest } from '../builtin-contests';
         <ion-buttons slot="start"><ion-back-button [defaultHref]="backUrl()"></ion-back-button></ion-buttons>
         <ion-title>{{ teamName() || (contest.hasValue() && contest.value().name) || 'Feuille de mission' }}</ion-title>
         <ion-buttons slot="end">
+          @if (canSetTimer()) {
+            <ion-button (click)="chooseTimer()" [disabled]="running()" aria-label="Minuteur de la partie">
+              <ion-icon slot="start" name="hourglass-outline"></ion-icon>{{ timerLimit() ? timerLimit() / 60 + ' min' : '' }}
+            </ion-button>
+          }
           @if (!running() && elapsed() > 0) {
             <ion-button (click)="resetTimer()" aria-label="Remettre le chrono à zéro"><ion-icon slot="icon-only" name="refresh-outline"></ion-icon></ion-button>
           }
@@ -262,12 +267,21 @@ export class SheetPage implements OnDestroy {
     return c ? computeSheet(c.sheet, this.answers(), this.penalties()) : null;
   });
   duration = computed(() => (this.contest.hasValue() ? this.contest.value().sheet.durationSeconds : 0));
-  finished = computed(() => this.elapsed() >= this.duration() && this.duration() > 0);
-  clock = computed(() => formatTime(this.elapsed()));
+  /**
+   * Optional referee timer (tournament matches only, sheets without a fixed duration): set before each game,
+   * the last choice is kept on this device. The stopwatch still records the elapsed time (tie-break).
+   */
+  timerLimit = signal(Number(localStorage.getItem('refereeTimer')) || 0);
+  canSetTimer = computed(() => !!this.matchId() && this.duration() === 0);
+  /** Seconds after which the stopwatch stops: the sheet's fixed duration, else the referee timer, else none. */
+  limit = computed(() => (this.duration() > 0 ? this.duration() : this.canSetTimer() ? this.timerLimit() : 0));
+  finished = computed(() => this.limit() > 0 && this.elapsed() >= this.limit());
+  /** Counts down when a limit is set (minuteur), up otherwise (chronomètre). */
+  clock = computed(() => formatTime(this.limit() ? Math.max(0, this.limit() - this.elapsed()) : this.elapsed()));
   backUrl = computed(() => (this.tournament() ? `/tournament/${this.tournament()}?mode=referee` : '/training'));
 
   constructor() {
-    addIcons({ addOutline, removeOutline, playOutline, pauseOutline, refreshOutline });
+    addIcons({ addOutline, removeOutline, playOutline, pauseOutline, refreshOutline, hourglassOutline });
   }
 
   value(missionId: string, itemId: string): ItemValue {
@@ -292,12 +306,50 @@ export class SheetPage implements OnDestroy {
     this.startedAt = Date.now();
     this.timer = setInterval(() => {
       const s = this.counted + Math.floor((Date.now() - this.startedAt) / 1000);
-      this.elapsed.set(this.duration() > 0 ? Math.min(s, this.duration()) : s);
+      this.elapsed.set(this.limit() > 0 ? Math.min(s, this.limit()) : s);
       if (this.finished()) {
         this.stopTimer();
         navigator.vibrate?.(800);
+        void this.toast('Temps écoulé : fin de la partie', 'warning');
       }
     }, 250);
+  }
+
+  async chooseTimer() {
+    const presets = [0, 2, 3, 4, 5, 6, 8, 10];
+    const current = this.timerLimit() / 60;
+    const alert = await this.alerts.create({
+      header: 'Minuteur de la partie',
+      message: 'Durée maximale de cette partie (gardée pour les suivantes).',
+      inputs: [
+        ...presets.map((m) => ({ type: 'radio' as const, label: m ? `${m} minutes` : 'Aucun (chronomètre libre)', value: m, checked: m === current })),
+        { type: 'radio' as const, label: 'Autre durée…', value: -1, checked: !presets.includes(current) },
+      ],
+      buttons: [
+        { text: 'Annuler', role: 'cancel' },
+        { text: 'OK', handler: (m: number) => void (m === -1 ? this.customTimer() : this.setTimer(m)) },
+      ],
+    });
+    await alert.present();
+  }
+
+  private async customTimer() {
+    const alert = await this.alerts.create({
+      header: 'Autre durée',
+      inputs: [{ name: 'minutes', type: 'number', min: 0.5, max: 60, placeholder: 'Minutes (ex. 2,5)' }],
+      buttons: [
+        { text: 'Annuler', role: 'cancel' },
+        { text: 'OK', handler: (d: { minutes: string }) => void this.setTimer(Number(String(d.minutes).replace(',', '.'))) },
+      ],
+    });
+    await alert.present();
+  }
+
+  private setTimer(minutes: number) {
+    const seconds = Number.isFinite(minutes) && minutes > 0 ? Math.round(Math.min(minutes, 60) * 60) : 0;
+    this.timerLimit.set(seconds);
+    localStorage.setItem('refereeTimer', String(seconds));
+    this.resetTimer();
   }
 
   /** Free stopwatch: back to 00:00 without touching the answers (e.g. before the timed full run). */
@@ -335,7 +387,7 @@ export class SheetPage implements OnDestroy {
   async save() {
     this.stopTimer();
     const r = this.result()!;
-    const summary = `Score : ${r.total} pts · Temps : ${this.elapsed() > 0 ? this.clock() : 'non chronométré'}`;
+    const summary = `Score : ${r.total} pts · Temps : ${this.elapsed() > 0 ? formatTime(this.elapsed()) : 'non chronométré'}`;
     const warnings = r.missions.filter((m) => m.error).length;
     const message = warnings ? `${summary}\n⚠ ${warnings} mission(s) avec une erreur de saisie.` : summary;
 

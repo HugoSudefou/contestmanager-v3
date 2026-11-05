@@ -7,9 +7,9 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
     "id": "robee",
     "name": "RoBee, un robot pollinisateur",
     "season": "2018-2019",
-    "description": "Feuille de mission cycle 2 (RoBee), reprise de l'application v2. Match de 3 minutes, 4 points retirés par pénalité.",
+    "description": "Défi RoBee, un robot pollinisateur (cycle 2). Pas de limite de temps : chronomètre libre (en tournoi, l'arbitre peut régler un minuteur). 4 points retirés par pénalité.",
     "sheet": {
-      "durationSeconds": 180,
+      "durationSeconds": 0,
       "penaltyPoints": 4,
       "missions": [
         {
