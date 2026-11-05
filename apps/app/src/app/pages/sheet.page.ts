@@ -31,7 +31,7 @@ import {
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { addOutline, hourglassOutline, pauseOutline, playOutline, refreshOutline, removeOutline } from 'ionicons/icons';
-import { canDecrease, canIncrease, computeSheet, type Answers, type ItemValue, type MissionDef } from '@contest/scoring';
+import { applyChange, canDecrease, canIncrease, computeSheet, type Answers, type ItemValue, type MissionDef } from '@contest/scoring';
 import { ApiService, formatTime, practiceHistory, type BuiltinContest, type Contest } from '../api.service';
 import { builtinContest } from '../builtin-contests';
 
@@ -148,7 +148,7 @@ import { builtinContest } from '../builtin-contests';
                           @if (api.imageUrl(item.image); as img) {
                             <img slot="start" [src]="img" alt="" class="thumb" (click)="zoom.set(img)" />
                           }
-                          <ion-checkbox justify="space-between" [checked]="value(m.id, item.id) === true" [disabled]="value(m.id, item.id) === true ? !canDown(m, item.id) : !canUp(m, item.id)" (ionChange)="set(m.id, item.id, $event.detail.checked)">
+                          <ion-checkbox justify="space-between" [checked]="value(m.id, item.id) === true" [disabled]="value(m.id, item.id) === true ? !canDown(m, item.id) : !canUp(m, item.id)" (ionChange)="step(m, item.id, $event.detail.checked ? 1 : -1)">
                             <span class="wrap">{{ item.label }}</span> <ion-note>{{ item.points }} pts</ion-note>
                           </ion-checkbox>
                         </ion-item>
@@ -163,9 +163,9 @@ import { builtinContest } from '../builtin-contests';
                             <p>{{ item.points }} pts × {{ count(m.id, item.id) }} (max {{ item.max }})</p>
                           </ion-label>
                           <div class="counter" slot="end">
-                            <ion-button fill="outline" [disabled]="!canDown(m, item.id)" (click)="set(m.id, item.id, count(m.id, item.id) - 1)" aria-label="Moins"><ion-icon slot="icon-only" name="remove-outline"></ion-icon></ion-button>
+                            <ion-button fill="outline" [disabled]="!canDown(m, item.id)" (click)="step(m, item.id, -1)" aria-label="Moins"><ion-icon slot="icon-only" name="remove-outline"></ion-icon></ion-button>
                             <span class="count">{{ count(m.id, item.id) }}</span>
-                            <ion-button fill="outline" [disabled]="!canUp(m, item.id)" (click)="set(m.id, item.id, count(m.id, item.id) + 1)" aria-label="Plus"><ion-icon slot="icon-only" name="add-outline"></ion-icon></ion-button>
+                            <ion-button fill="outline" [disabled]="!canUp(m, item.id)" (click)="step(m, item.id, 1)" aria-label="Plus"><ion-icon slot="icon-only" name="add-outline"></ion-icon></ion-button>
                           </div>
                         </ion-item>
                       }
@@ -291,6 +291,12 @@ export class SheetPage implements OnDestroy {
 
   canDown(m: MissionDef, itemId: string) {
     return canDecrease(m, this.answers()[m.id] ?? {}, itemId);
+  }
+
+  /** +1 / −1 on a line; dependent lines follow (a tower's lower levels are filled in automatically). */
+  step(m: MissionDef, itemId: string, delta: 1 | -1) {
+    const next = applyChange(m, this.answers()[m.id] ?? {}, itemId, delta);
+    if (next) this.answers.update((a) => ({ ...a, [m.id]: next }));
   }
 
   value(missionId: string, itemId: string): ItemValue {

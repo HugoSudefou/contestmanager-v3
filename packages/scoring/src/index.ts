@@ -25,8 +25,8 @@ export interface MissionDef {
   maxObjects?: { items: string[]; max: number };
   /**
    * Physical consistency between lines: `item` can never count more than `notMoreThan`
-   * (e.g. a waste at level 3 of a tower needs one at level 2 under it). The sheet blocks
-   * contradictory entries; the server gives 0 to a mission that breaks one.
+   * (e.g. a waste at level 3 of a tower needs one at level 2 under it). On the sheet, adding to `item`
+   * also adds to `notMoreThan` (and so on down the chain); the server gives 0 to a mission that breaks one.
    */
   limits?: { item: string; notMoreThan: string }[];
   rules?: RuleDef[];
@@ -93,21 +93,51 @@ export function objectsUsed(mission: MissionDef, answers: MissionAnswers = {}): 
   return mission.items.filter((i) => ids.includes(i.id)).reduce((sum, i) => sum + objectCount(i, answers[i.id]), 0);
 }
 
-/** Can the referee add one to this counter (or tick this box) without an impossible sheet? */
-export function canIncrease(mission: MissionDef, answers: MissionAnswers, itemId: string): boolean {
+/**
+ * The referee's +1 / −1 on a counter (or ticking / unticking a box), with the lines that depend on it kept consistent:
+ * adding a waste at level 3 also counts the levels under it (`limits`), removing a lower level removes what
+ * stood on it. Returns the new answers, or null when the change is impossible (line or object maximum reached).
+ */
+export function applyChange(mission: MissionDef, answers: MissionAnswers, itemId: string, delta: 1 | -1): MissionAnswers | null {
   const item = mission.items.find((i) => i.id === itemId);
-  if (!item || item.type === 'choice') return true;
-  const n = itemCount(mission, answers, itemId);
-  if (item.type === 'counter' ? n >= item.max : n >= 1) return false;
-  if (mission.maxObjects?.items.includes(itemId) && objectsUsed(mission, answers) >= mission.maxObjects.max) return false;
-  return (mission.limits ?? []).every((l) => l.item !== itemId || n + 1 <= itemCount(mission, answers, l.notMoreThan));
+  if (!item || item.type === 'choice') return null;
+  const next: MissionAnswers = { ...answers };
+  const get = (id: string) => itemCount(mission, next, id);
+  const put = (id: string, n: number) => {
+    const it = mission.items.find((i) => i.id === id);
+    if (it) next[id] = it.type === 'check' ? n > 0 : n;
+  };
+  const target = get(itemId) + delta;
+  if (target < 0) return null;
+  put(itemId, target);
+  for (let changed = true, guard = 0; changed && guard < 100; guard++) {
+    changed = false;
+    for (const l of mission.limits ?? []) {
+      const above = get(l.item);
+      const below = get(l.notMoreThan);
+      if (above > below) {
+        if (delta > 0) put(l.notMoreThan, above);
+        else put(l.item, below);
+        changed = true;
+      }
+    }
+  }
+  for (const i of mission.items) {
+    const raw = next[i.id];
+    if (i.type === 'counter' && typeof raw === 'number' && raw > i.max) return null;
+  }
+  if (mission.maxObjects && objectsUsed(mission, next) > mission.maxObjects.max) return null;
+  return next;
 }
 
-/** Can the referee remove one from this counter (or untick this box) without an impossible sheet? */
+/** Can the referee add one here (dependent lines included) without going over a maximum? */
+export function canIncrease(mission: MissionDef, answers: MissionAnswers, itemId: string): boolean {
+  return applyChange(mission, answers, itemId, 1) !== null;
+}
+
+/** Can the referee remove one here? (Lines that depend on it follow.) */
 export function canDecrease(mission: MissionDef, answers: MissionAnswers, itemId: string): boolean {
-  const n = itemCount(mission, answers, itemId);
-  if (n <= 0) return false;
-  return (mission.limits ?? []).every((l) => l.notMoreThan !== itemId || itemCount(mission, answers, l.item) <= n - 1);
+  return applyChange(mission, answers, itemId, -1) !== null;
 }
 
 export function computeMission(mission: MissionDef, answers: MissionAnswers = {}): MissionResult {

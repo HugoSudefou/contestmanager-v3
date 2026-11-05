@@ -11,7 +11,7 @@
       {
         "id": "m1",
         "title": "Mission 1 - Dépollution de la rivière",
-        "description": "4 déchets maximum. Un déchet au niveau N d'une tour impose un déchet à chaque niveau en dessous (tour de 4 = 20 + 15 + 10 + 5). Saisir la tour du bas vers le haut : d'abord le sol, puis les niveaux 2, 3 et 4.",
+        "description": "4 déchets maximum. Un déchet au niveau N d'une tour impose un déchet à chaque niveau en dessous (tour de 4 = 20 + 15 + 10 + 5). Pour chaque tour, cliquer sur son niveau le plus haut : les niveaux du dessous se comptent automatiquement (niveau 4 = la tour complète, 4 déchets).",
         "image": "assets/legacy/cycle2/logoMission/mission1.jpg",
         "items": [
           {
