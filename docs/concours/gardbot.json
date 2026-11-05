@@ -421,34 +421,34 @@
         "description": "Maximum 100 points. Attitude de l'équipe pendant le défi (5 critères de 10 points) et affiche format raisin sur le stand (5 cadres de 10 points). Cocher un cadre coche aussi « affiche présente » ; sans affiche, les cadres ne comptent pas.",
         "items": [
           {
-            "id": "att-relations",
-            "type": "check",
-            "points": 10,
-            "label": "Attitude - Bonne relation entre eux, avec les autres équipes et les adultes."
-          },
-          {
             "id": "att-respect",
             "type": "check",
             "points": 10,
-            "label": "Attitude - Respect des lieux et du matériel."
+            "label": "Attitude - Pendant le défi, les élèves de l'équipe respectent les lieux et le matériel."
           },
           {
-            "id": "att-ensemble",
+            "id": "att-roles",
             "type": "check",
             "points": 10,
-            "label": "Attitude - Tous ensemble pour les tests et les matchs."
+            "label": "Attitude - Pendant le défi, les élèves de l'équipe chacun a un rôle bien défini pendant les tests et les matchs."
           },
           {
-            "id": "att-encouragements",
+            "id": "att-arbitre",
             "type": "check",
             "points": 10,
-            "label": "Attitude - S'encouragent, sont positifs, prennent en compte les remarques de l'arbitre."
+            "label": "Attitude - Pendant le défi, les élèves de l'équipe prennent en compte les remarques de l'arbitre."
           },
           {
             "id": "att-perseverance",
             "type": "check",
             "points": 10,
-            "label": "Attitude - Apprécient le moment, persévèrent même sans réussir."
+            "label": "Attitude - Pendant le défi, les élèves de l'équipe apprécient le moment, sont positifs, s'encouragent, progressent et persévèrent pour réussir toutes les missions."
+          },
+          {
+            "id": "att-autres-equipes",
+            "type": "check",
+            "points": 10,
+            "label": "Attitude - Pendant le défi, les élèves de l'équipe respectent les autres équipes, partagent avec elles leur matériel, leurs connaissances et leurs solutions."
           },
           {
             "id": "affiche",

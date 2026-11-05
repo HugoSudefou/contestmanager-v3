@@ -39,18 +39,20 @@ for (const cycle of [2, 3]) {
   });
 }
 
-test('pedagogical bonus (all 4 contests): 5 attitude criteria + poster frames that need the poster', async () => {
+test('pedagogical bonus, identical in all 4 contests: 5 attitude criteria + poster frames that need the poster', async () => {
   const { applyChange } = await import('./index.ts');
   const all = seed;
   assert.equal(all.length, 4);
+  const ref = JSON.stringify(all[0].sheet.missions.find((x) => x.id === 'bonus-pedago'));
+  for (const c of all) assert.equal(JSON.stringify(c.sheet.missions.find((x) => x.id === 'bonus-pedago')), ref, c.name);
   for (const c of all) {
     const m = c.sheet.missions.find((x) => x.id === 'bonus-pedago')!;
     const sheet = { ...c.sheet, missions: [m] };
-    const att = ['att-relations', 'att-respect', 'att-ensemble', 'att-encouragements', 'att-perseverance'];
+    const att = ['att-respect', 'att-roles', 'att-arbitre', 'att-perseverance', 'att-autres-equipes'];
     const frames = ['a-presentation', 'a-conception', 'a-programmation', 'a-apports', 'a-equipe'];
     const ticked = (ids: string[]) => Object.fromEntries(ids.map((id) => [id, true]));
     assert.equal(computeSheet(sheet, { 'bonus-pedago': ticked(att) }, 0).total, 50, c.name);
-    assert.equal(computeSheet(sheet, { 'bonus-pedago': ticked(['att-respect', 'att-ensemble']) }, 0).total, 20);
+    assert.equal(computeSheet(sheet, { 'bonus-pedago': ticked(['att-respect', 'att-arbitre']) }, 0).total, 20);
     assert.equal(computeSheet(sheet, { 'bonus-pedago': ticked([...att, 'affiche', ...frames]) }, 0).total, 100);
     // Ticking a frame ticks "poster present"; unticking the poster unticks its frames
     const one = applyChange(m, {}, 'a-conception', 1)!;
