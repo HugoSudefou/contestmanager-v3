@@ -32,9 +32,9 @@
           "image": "assets/legacy/cycle2/logoMission/mission2.jpg",
           "items": [
             { "id": "bonne-zone", "type": "counter", "label": "Une graine se trouve dans l'arboretum sur la bonne zone de couleur.", "image": "assets/legacy/cycle2/explMission/arboretum_bonne_place_mission2.jpg", "points": 10, "max": 4 },
-            { "id": "cour", "type": "counter", "label": "Une graine se trouve dans la cour de l'école.", "image": "assets/legacy/cycle2/explMission/arboretum_mauvaise_place_mission2.jpg", "points": 3, "max": 4 },
-            { "id": "mauvaise-zone", "type": "counter", "label": "Une graine se trouve dans l'arboretum sur la mauvaise zone de couleur.", "image": "assets/legacy/cycle2/explMission/graine_verte.gif", "points": 2, "max": 4 },
-            { "id": "pepiniere", "type": "counter", "label": "Une graine se trouve dans la pépinière.", "image": "assets/legacy/cycle2/explMission/pépinière_mission2.jpg", "points": 1, "max": 4 }
+            { "id": "cour", "type": "counter", "label": "Une graine se trouve dans la cour de l'école.", "images": ["assets/legacy/cycle2/explMission/graine_verte.gif", "assets/legacy/cycle2/explMission/école.jpg"], "points": 3, "max": 4 },
+            { "id": "mauvaise-zone", "type": "counter", "label": "Une graine se trouve dans l'arboretum sur la mauvaise zone de couleur.", "image": "assets/legacy/cycle2/explMission/arboretum_mauvaise_place_mission2.jpg", "points": 2, "max": 4 },
+            { "id": "pepiniere", "type": "counter", "label": "Une graine se trouve dans la pépinière.", "images": ["assets/legacy/cycle2/explMission/graine_verte.gif", "assets/legacy/cycle2/explMission/pépinière_mission2.jpg"], "points": 1, "max": 4 }
           ],
           "maxObjects": { "items": ["bonne-zone", "cour", "mauvaise-zone", "pepiniere"], "max": 4 }
         },

@@ -127,7 +127,10 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "cour",
               "type": "counter",
               "label": "Une graine se trouve dans la cour de l'école.",
-              "image": "assets/legacy/cycle2/explMission/arboretum_mauvaise_place_mission2.jpg",
+              "images": [
+                "assets/legacy/cycle2/explMission/graine_verte.gif",
+                "assets/legacy/cycle2/explMission/école.jpg"
+              ],
               "points": 3,
               "max": 4
             },
@@ -135,7 +138,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "mauvaise-zone",
               "type": "counter",
               "label": "Une graine se trouve dans l'arboretum sur la mauvaise zone de couleur.",
-              "image": "assets/legacy/cycle2/explMission/graine_verte.gif",
+              "image": "assets/legacy/cycle2/explMission/arboretum_mauvaise_place_mission2.jpg",
               "points": 2,
               "max": 4
             },
@@ -143,7 +146,10 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "pepiniere",
               "type": "counter",
               "label": "Une graine se trouve dans la pépinière.",
-              "image": "assets/legacy/cycle2/explMission/pépinière_mission2.jpg",
+              "images": [
+                "assets/legacy/cycle2/explMission/graine_verte.gif",
+                "assets/legacy/cycle2/explMission/pépinière_mission2.jpg"
+              ],
               "points": 1,
               "max": 4
             }
