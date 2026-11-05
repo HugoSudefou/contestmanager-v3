@@ -52,7 +52,7 @@
         {
           "id": "m4",
           "title": "Mission 4 - Fabrication du miel",
-          "description": "4 gouttes maximum. Une goutte au niveau N du pot compte aussi les niveaux inférieurs (niveau 4 = 20 + 15 + 10 + 5).",
+          "description": "4 gouttes maximum. Une goutte au niveau N du pot impose une goutte à chaque niveau en dessous (niveau 4 = 20 + 15 + 10 + 5). Cliquer sur le niveau le plus haut de chaque pile : les niveaux du dessous se comptent automatiquement (niveau 4 = la pile complète, 4 gouttes).",
           "image": "assets/legacy/cycle2/logoMission/mission4.jpg",
           "items": [
             { "id": "n4", "type": "counter", "label": "Une goutte de nectar s'est transformée en miel et se trouve au niveau 4 du pot de miel.", "image": "assets/legacy/cycle2/explMission/4_pot_de_miel_mission4.jpg", "points": 20, "max": 1 },
@@ -62,7 +62,8 @@
             { "id": "ruche", "type": "counter", "label": "Une goutte de nectar se trouve dans la ruche.", "image": "assets/legacy/cycle2/explMission/ruche.jpg", "points": 3, "max": 4 },
             { "id": "jardin", "type": "counter", "label": "Une goutte de nectar se trouve dans le jardin anglais.", "image": "assets/legacy/cycle2/explMission/jardin anglais.jpg", "points": 1, "max": 4 }
           ],
-          "maxObjects": { "items": ["n4", "n3", "n2", "fond", "ruche", "jardin"], "max": 4 }
+          "maxObjects": { "items": ["n4", "n3", "n2", "fond", "ruche", "jardin"], "max": 4 },
+          "limits": [{ "item": "n4", "notMoreThan": "n3" }, { "item": "n3", "notMoreThan": "n2" }, { "item": "n2", "notMoreThan": "fond" }]
         },
         {
           "id": "m5",

@@ -108,3 +108,13 @@ test('limits between lines: clicking the top level of a tower counts the levels 
   assert.match(bad.missions[0].error!, /Saisie impossible/);
   assert.equal(validateSheet({ ...sheetOf, missions: [{ ...robee, limits: [{ item: 'x', notMoreThan: 'sol' }] }] }).length, 1);
 });
+
+test('RoBee mission 4 (honey): same top-down entry as the waste towers', async () => {
+  const { applyChange, canIncrease } = await import('./index.ts');
+  const m4 = JSON.parse((await import('node:fs')).readFileSync(new URL('../../../apps/api/prisma/seed-contests.json', import.meta.url), 'utf8'))[0]
+    .sheet.missions[3];
+  const full = applyChange(m4, {}, 'n4', 1)!;
+  assert.deepEqual(full, { n4: 1, n3: 1, n2: 1, fond: 1 });
+  for (const id of ['n4', 'n3', 'n2', 'fond', 'ruche', 'jardin']) assert.equal(canIncrease(m4, full, id), false, id);
+  assert.deepEqual(applyChange(m4, { n2: 1, fond: 1 }, 'n2', 1), { n2: 2, fond: 2 });
+});

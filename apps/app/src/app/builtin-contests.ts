@@ -175,7 +175,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
         {
           "id": "m4",
           "title": "Mission 4 - Fabrication du miel",
-          "description": "4 gouttes maximum. Une goutte au niveau N du pot compte aussi les niveaux inférieurs (niveau 4 = 20 + 15 + 10 + 5).",
+          "description": "4 gouttes maximum. Une goutte au niveau N du pot impose une goutte à chaque niveau en dessous (niveau 4 = 20 + 15 + 10 + 5). Cliquer sur le niveau le plus haut de chaque pile : les niveaux du dessous se comptent automatiquement (niveau 4 = la pile complète, 4 gouttes).",
           "image": "assets/legacy/cycle2/logoMission/mission4.jpg",
           "items": [
             {
@@ -237,7 +237,21 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "jardin"
             ],
             "max": 4
-          }
+          },
+          "limits": [
+            {
+              "item": "n4",
+              "notMoreThan": "n3"
+            },
+            {
+              "item": "n3",
+              "notMoreThan": "n2"
+            },
+            {
+              "item": "n2",
+              "notMoreThan": "fond"
+            }
+          ]
         },
         {
           "id": "m5",
