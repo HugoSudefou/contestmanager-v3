@@ -225,8 +225,9 @@ import { builtinContest } from '../builtin-contests';
     .intro summary { cursor: pointer; font-weight: 600; }
     .intro p { white-space: pre-line; margin: 8px 0 0; }
     .total { display: flex; justify-content: space-between; padding: 0 16px; font-size: 1.1rem; }
-    .mission-img { width: 100%; max-height: 220px; object-fit: cover; cursor: zoom-in; }
-    .thumb { width: 56px; height: 56px; object-fit: cover; border-radius: 4px; cursor: zoom-in; }
+    /* Whole picture, never cropped (the zone plans must be readable); tap to enlarge. */
+    .mission-img { display: block; width: 100%; height: auto; max-height: 60vh; object-fit: contain; cursor: zoom-in; }
+    .thumb { width: 56px; height: 56px; object-fit: contain; border-radius: 4px; cursor: zoom-in; }
     .thumbs { display: flex; flex-direction: column; gap: 4px; }
     .counter { display: flex; align-items: center; gap: 4px; }
     .count { min-width: 2ch; text-align: center; font-size: 1.3rem; font-weight: bold; }

@@ -229,7 +229,10 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "ruche",
               "type": "counter",
               "label": "Une goutte de nectar se trouve dans la ruche.",
-              "image": "assets/legacy/cycle2/explMission/ruche.jpg",
+              "images": [
+                "assets/legacy/cycle2/explMission/nectar_niveau1.jpg",
+                "assets/legacy/cycle2/explMission/ruche.jpg"
+              ],
               "points": 3,
               "max": 4
             },
@@ -237,7 +240,10 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "jardin",
               "type": "counter",
               "label": "Une goutte de nectar se trouve dans le jardin anglais.",
-              "image": "assets/legacy/cycle2/explMission/jardin anglais.jpg",
+              "images": [
+                "assets/legacy/cycle2/explMission/nectar_niveau1.jpg",
+                "assets/legacy/cycle2/explMission/jardin anglais.jpg"
+              ],
               "points": 1,
               "max": 4
             }

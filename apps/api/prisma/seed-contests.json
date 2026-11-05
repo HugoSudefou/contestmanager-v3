@@ -59,8 +59,8 @@
             { "id": "n3", "type": "counter", "label": "Une goutte de nectar s'est transformée en miel et se trouve au niveau 3 du pot de miel.", "image": "assets/legacy/cycle2/explMission/3_pot_de_miel_mission4.jpg", "points": 15, "max": 1 },
             { "id": "n2", "type": "counter", "label": "Une goutte de nectar s'est transformée en miel et se trouve au niveau 2 du pot de miel.", "image": "assets/legacy/cycle2/explMission/2_pot_de_miel_mission4.jpg", "points": 10, "max": 2 },
             { "id": "fond", "type": "counter", "label": "Une goutte de nectar s'est transformée en miel et se trouve au fond du pot de miel.", "image": "assets/legacy/cycle2/explMission/1_pot_de_miel_mission4.jpg", "points": 5, "max": 4 },
-            { "id": "ruche", "type": "counter", "label": "Une goutte de nectar se trouve dans la ruche.", "image": "assets/legacy/cycle2/explMission/ruche.jpg", "points": 3, "max": 4 },
-            { "id": "jardin", "type": "counter", "label": "Une goutte de nectar se trouve dans le jardin anglais.", "image": "assets/legacy/cycle2/explMission/jardin anglais.jpg", "points": 1, "max": 4 }
+            { "id": "ruche", "type": "counter", "label": "Une goutte de nectar se trouve dans la ruche.", "images": ["assets/legacy/cycle2/explMission/nectar_niveau1.jpg", "assets/legacy/cycle2/explMission/ruche.jpg"], "points": 3, "max": 4 },
+            { "id": "jardin", "type": "counter", "label": "Une goutte de nectar se trouve dans le jardin anglais.", "images": ["assets/legacy/cycle2/explMission/nectar_niveau1.jpg", "assets/legacy/cycle2/explMission/jardin anglais.jpg"], "points": 1, "max": 4 }
           ],
           "maxObjects": { "items": ["n4", "n3", "n2", "fond", "ruche", "jardin"], "max": 4 },
           "limits": [{ "item": "n4", "notMoreThan": "n3" }, { "item": "n3", "notMoreThan": "n2" }, { "item": "n2", "notMoreThan": "fond" }]
