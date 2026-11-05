@@ -347,6 +347,101 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "points": 20
             }
           ]
+        },
+        {
+          "id": "bonus-pedago",
+          "title": "Bonus pédagogique",
+          "description": "Maximum 100 points. Attitude de l'équipe pendant le défi (5 critères de 10 points) et affiche format raisin sur le stand (5 cadres de 10 points). Cocher un cadre coche aussi « affiche présente » ; sans affiche, les cadres ne comptent pas.",
+          "items": [
+            {
+              "id": "att-relations",
+              "type": "check",
+              "points": 10,
+              "label": "Attitude - Bonne relation entre eux, avec les autres équipes et les adultes."
+            },
+            {
+              "id": "att-respect",
+              "type": "check",
+              "points": 10,
+              "label": "Attitude - Respect des lieux et du matériel."
+            },
+            {
+              "id": "att-ensemble",
+              "type": "check",
+              "points": 10,
+              "label": "Attitude - Tous ensemble pour les tests et les matchs."
+            },
+            {
+              "id": "att-encouragements",
+              "type": "check",
+              "points": 10,
+              "label": "Attitude - S'encouragent, sont positifs, prennent en compte les remarques de l'arbitre."
+            },
+            {
+              "id": "att-perseverance",
+              "type": "check",
+              "points": 10,
+              "label": "Attitude - Apprécient le moment, persévèrent même sans réussir."
+            },
+            {
+              "id": "affiche",
+              "type": "check",
+              "points": 0,
+              "label": "Une affiche (format raisin) est présente sur le stand de l'équipe."
+            },
+            {
+              "id": "a-presentation",
+              "type": "check",
+              "points": 10,
+              "label": "Affiche - Cadre « NOTRE ÉQUIPE » : nom de l'équipe, classe, enseignant, école, niveau, photo de l'équipe avec son robot et rôle principal de chaque équipier."
+            },
+            {
+              "id": "a-conception",
+              "type": "check",
+              "points": 10,
+              "label": "Affiche - Cadre « NOTRE ROBOT » : schéma décrivant les fonctions du robot (brique programmable, capteurs, moteurs, outils, structures)."
+            },
+            {
+              "id": "a-programmation",
+              "type": "check",
+              "points": 10,
+              "label": "Affiche - Cadre « NOS PROGRAMMES » : parties significatives et commentées des programmes de l'équipe (boucle, sélecteur, capteurs...)."
+            },
+            {
+              "id": "a-apports",
+              "type": "check",
+              "points": 10,
+              "label": "Affiche - Cadre « LA ROBOTIQUE C'EST... » : au moins une phrase par élève sur ce que le projet lui a apporté."
+            },
+            {
+              "id": "a-equipe",
+              "type": "check",
+              "points": 10,
+              "label": "Affiche - Cadre « LE TRAVAIL EN ÉQUIPE » : importance du travail en équipe, rôle de chacun, état d'esprit, méthodes et outils de travail."
+            }
+          ],
+          "limits": [
+            {
+              "item": "a-presentation",
+              "notMoreThan": "affiche"
+            },
+            {
+              "item": "a-conception",
+              "notMoreThan": "affiche"
+            },
+            {
+              "item": "a-programmation",
+              "notMoreThan": "affiche"
+            },
+            {
+              "item": "a-apports",
+              "notMoreThan": "affiche"
+            },
+            {
+              "item": "a-equipe",
+              "notMoreThan": "affiche"
+            }
+          ]
         }
       ]
     }
@@ -1248,13 +1343,37 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
         {
           "id": "bonus-pedago",
           "title": "Bonus pédagogique",
-          "description": "Maximum 100 points. Attitude pendant le défi (50 points) et affiche format raisin sur le stand (5 cadres de 10 points). Les cadres de l'affiche ne comptent que si l'affiche est présente.",
+          "description": "Maximum 100 points. Attitude de l'équipe pendant le défi (5 critères de 10 points) et affiche format raisin sur le stand (5 cadres de 10 points). Cocher un cadre coche aussi « affiche présente » ; sans affiche, les cadres ne comptent pas.",
           "items": [
             {
-              "id": "attitude",
+              "id": "att-relations",
               "type": "check",
-              "points": 50,
-              "label": "Attitude de l'équipe pendant le défi : bonne relation entre eux, avec les autres équipes et les adultes ; respect des lieux et du matériel ; tous ensemble pour les tests et les matchs ; s'encouragent, sont positifs ; prennent en compte les remarques de l'arbitre ; apprécient le moment ; persévèrent même sans réussir."
+              "points": 10,
+              "label": "Attitude - Bonne relation entre eux, avec les autres équipes et les adultes."
+            },
+            {
+              "id": "att-respect",
+              "type": "check",
+              "points": 10,
+              "label": "Attitude - Respect des lieux et du matériel."
+            },
+            {
+              "id": "att-ensemble",
+              "type": "check",
+              "points": 10,
+              "label": "Attitude - Tous ensemble pour les tests et les matchs."
+            },
+            {
+              "id": "att-encouragements",
+              "type": "check",
+              "points": 10,
+              "label": "Attitude - S'encouragent, sont positifs, prennent en compte les remarques de l'arbitre."
+            },
+            {
+              "id": "att-perseverance",
+              "type": "check",
+              "points": 10,
+              "label": "Attitude - Apprécient le moment, persévèrent même sans réussir."
             },
             {
               "id": "affiche",
@@ -1293,76 +1412,26 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "label": "Affiche - Cadre « LE TRAVAIL EN ÉQUIPE » : importance du travail en équipe, rôle de chacun, état d'esprit, méthodes et outils de travail."
             }
           ],
-          "rules": [
+          "limits": [
             {
-              "label": "Pas d'affiche : ce cadre ne compte pas",
-              "when": [
-                {
-                  "item": "affiche",
-                  "equals": false
-                },
-                {
-                  "item": "a-presentation",
-                  "equals": true
-                }
-              ],
-              "add": -10
+              "item": "a-presentation",
+              "notMoreThan": "affiche"
             },
             {
-              "label": "Pas d'affiche : ce cadre ne compte pas",
-              "when": [
-                {
-                  "item": "affiche",
-                  "equals": false
-                },
-                {
-                  "item": "a-conception",
-                  "equals": true
-                }
-              ],
-              "add": -10
+              "item": "a-conception",
+              "notMoreThan": "affiche"
             },
             {
-              "label": "Pas d'affiche : ce cadre ne compte pas",
-              "when": [
-                {
-                  "item": "affiche",
-                  "equals": false
-                },
-                {
-                  "item": "a-programmation",
-                  "equals": true
-                }
-              ],
-              "add": -10
+              "item": "a-programmation",
+              "notMoreThan": "affiche"
             },
             {
-              "label": "Pas d'affiche : ce cadre ne compte pas",
-              "when": [
-                {
-                  "item": "affiche",
-                  "equals": false
-                },
-                {
-                  "item": "a-apports",
-                  "equals": true
-                }
-              ],
-              "add": -10
+              "item": "a-apports",
+              "notMoreThan": "affiche"
             },
             {
-              "label": "Pas d'affiche : ce cadre ne compte pas",
-              "when": [
-                {
-                  "item": "affiche",
-                  "equals": false
-                },
-                {
-                  "item": "a-equipe",
-                  "equals": true
-                }
-              ],
-              "add": -10
+              "item": "a-equipe",
+              "notMoreThan": "affiche"
             }
           ]
         }
@@ -1700,13 +1769,37 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
         {
           "id": "bonus-pedago",
           "title": "Bonus pédagogique",
-          "description": "Maximum 100 points. Attitude pendant le défi (50 points) et affiche format raisin sur le stand (5 cadres de 10 points). Les cadres de l'affiche ne comptent que si l'affiche est présente.",
+          "description": "Maximum 100 points. Attitude de l'équipe pendant le défi (5 critères de 10 points) et affiche format raisin sur le stand (5 cadres de 10 points). Cocher un cadre coche aussi « affiche présente » ; sans affiche, les cadres ne comptent pas.",
           "items": [
             {
-              "id": "attitude",
+              "id": "att-relations",
               "type": "check",
-              "points": 50,
-              "label": "Attitude de l'équipe pendant le défi : bonne relation entre eux, avec les autres équipes et les adultes ; respect des lieux et du matériel ; tous ensemble pour les tests et les matchs ; s'encouragent, sont positifs ; prennent en compte les remarques de l'arbitre ; apprécient le moment ; persévèrent même sans réussir."
+              "points": 10,
+              "label": "Attitude - Bonne relation entre eux, avec les autres équipes et les adultes."
+            },
+            {
+              "id": "att-respect",
+              "type": "check",
+              "points": 10,
+              "label": "Attitude - Respect des lieux et du matériel."
+            },
+            {
+              "id": "att-ensemble",
+              "type": "check",
+              "points": 10,
+              "label": "Attitude - Tous ensemble pour les tests et les matchs."
+            },
+            {
+              "id": "att-encouragements",
+              "type": "check",
+              "points": 10,
+              "label": "Attitude - S'encouragent, sont positifs, prennent en compte les remarques de l'arbitre."
+            },
+            {
+              "id": "att-perseverance",
+              "type": "check",
+              "points": 10,
+              "label": "Attitude - Apprécient le moment, persévèrent même sans réussir."
             },
             {
               "id": "affiche",
@@ -1745,76 +1838,26 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "label": "Affiche - Cadre « LE TRAVAIL EN ÉQUIPE » : importance du travail en équipe, rôle de chacun, état d'esprit, méthodes et outils de travail."
             }
           ],
-          "rules": [
+          "limits": [
             {
-              "label": "Pas d'affiche : ce cadre ne compte pas",
-              "when": [
-                {
-                  "item": "affiche",
-                  "equals": false
-                },
-                {
-                  "item": "a-presentation",
-                  "equals": true
-                }
-              ],
-              "add": -10
+              "item": "a-presentation",
+              "notMoreThan": "affiche"
             },
             {
-              "label": "Pas d'affiche : ce cadre ne compte pas",
-              "when": [
-                {
-                  "item": "affiche",
-                  "equals": false
-                },
-                {
-                  "item": "a-conception",
-                  "equals": true
-                }
-              ],
-              "add": -10
+              "item": "a-conception",
+              "notMoreThan": "affiche"
             },
             {
-              "label": "Pas d'affiche : ce cadre ne compte pas",
-              "when": [
-                {
-                  "item": "affiche",
-                  "equals": false
-                },
-                {
-                  "item": "a-programmation",
-                  "equals": true
-                }
-              ],
-              "add": -10
+              "item": "a-programmation",
+              "notMoreThan": "affiche"
             },
             {
-              "label": "Pas d'affiche : ce cadre ne compte pas",
-              "when": [
-                {
-                  "item": "affiche",
-                  "equals": false
-                },
-                {
-                  "item": "a-apports",
-                  "equals": true
-                }
-              ],
-              "add": -10
+              "item": "a-apports",
+              "notMoreThan": "affiche"
             },
             {
-              "label": "Pas d'affiche : ce cadre ne compte pas",
-              "when": [
-                {
-                  "item": "affiche",
-                  "equals": false
-                },
-                {
-                  "item": "a-equipe",
-                  "equals": true
-                }
-              ],
-              "add": -10
+              "item": "a-equipe",
+              "notMoreThan": "affiche"
             }
           ]
         }

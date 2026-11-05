@@ -39,11 +39,25 @@ for (const cycle of [2, 3]) {
   });
 }
 
-test('Mars II pedagogical bonus: 100 max, poster frames only count with a poster', () => {
-  const sheet = load(3);
-  const all = { attitude: true, affiche: true, 'a-presentation': true, 'a-conception': true, 'a-programmation': true, 'a-apports': true, 'a-equipe': true };
-  const pts = (a: Record<string, boolean>) => computeSheet(sheet, { 'bonus-pedago': a }, 0).total;
-  assert.equal(pts(all), 100);
-  assert.equal(pts({ ...all, affiche: false }), 50);
-  assert.equal(pts({ attitude: true }), 50);
+test('pedagogical bonus (RoBee, Mars II): 5 attitude criteria + poster frames that need the poster', async () => {
+  const { applyChange } = await import('./index.ts');
+  const all = seed.filter((c) => c.name !== 'Défi robotique 2019 - Cycle 3');
+  assert.equal(all.length, 3);
+  for (const c of all) {
+    const m = c.sheet.missions.find((x) => x.id === 'bonus-pedago')!;
+    const sheet = { ...c.sheet, missions: [m] };
+    const att = ['att-relations', 'att-respect', 'att-ensemble', 'att-encouragements', 'att-perseverance'];
+    const frames = ['a-presentation', 'a-conception', 'a-programmation', 'a-apports', 'a-equipe'];
+    const ticked = (ids: string[]) => Object.fromEntries(ids.map((id) => [id, true]));
+    assert.equal(computeSheet(sheet, { 'bonus-pedago': ticked(att) }, 0).total, 50, c.name);
+    assert.equal(computeSheet(sheet, { 'bonus-pedago': ticked(['att-respect', 'att-ensemble']) }, 0).total, 20);
+    assert.equal(computeSheet(sheet, { 'bonus-pedago': ticked([...att, 'affiche', ...frames]) }, 0).total, 100);
+    // Ticking a frame ticks "poster present"; unticking the poster unticks its frames
+    const one = applyChange(m, {}, 'a-conception', 1)!;
+    assert.equal(one.affiche, true);
+    assert.equal(computeSheet(sheet, { 'bonus-pedago': one }, 0).total, 10);
+    assert.equal(applyChange(m, one, 'affiche', -1)!['a-conception'], false);
+    // A frame without the poster (forced through the API) is refused
+    assert.equal(computeSheet(sheet, { 'bonus-pedago': { 'a-conception': true } }, 0).total, 0);
+  }
 });
