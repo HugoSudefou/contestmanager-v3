@@ -23,7 +23,10 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "n4",
               "type": "counter",
               "label": "Un déchet se trouve au niveau 4 d'une tour de compactage dans la déchetterie.",
-              "image": "assets/legacy/cycle2/explMission/dechet_quatre.gif",
+              "images": [
+                "assets/legacy/cycle2/explMission/dechetterie_mission1.jpg",
+                "assets/legacy/cycle2/explMission/dechet_quatre.gif"
+              ],
               "points": 20,
               "max": 1
             },
@@ -31,7 +34,10 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "n3",
               "type": "counter",
               "label": "Un déchet se trouve au niveau 3 d'une tour de compactage dans la déchetterie.",
-              "image": "assets/legacy/cycle2/explMission/dechet_trois.gif",
+              "images": [
+                "assets/legacy/cycle2/explMission/dechetterie_mission1.jpg",
+                "assets/legacy/cycle2/explMission/dechet_trois.gif"
+              ],
               "points": 15,
               "max": 1
             },
@@ -39,7 +45,10 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "n2",
               "type": "counter",
               "label": "Un déchet se trouve au niveau 2 d'une tour de compactage dans la déchetterie.",
-              "image": "assets/legacy/cycle2/explMission/dechet_deux.gif",
+              "images": [
+                "assets/legacy/cycle2/explMission/dechetterie_mission1.jpg",
+                "assets/legacy/cycle2/explMission/dechet_deux.gif"
+              ],
               "points": 10,
               "max": 2
             },
@@ -47,7 +56,10 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "sol",
               "type": "counter",
               "label": "Un déchet se trouve sur le sol de la déchetterie.",
-              "image": "assets/legacy/cycle2/explMission/dechetterie_mission1.jpg",
+              "images": [
+                "assets/legacy/cycle2/explMission/dechetterie_mission1.jpg",
+                "assets/legacy/cycle2/explMission/dechet_seul.gif"
+              ],
               "points": 5,
               "max": 4
             },
@@ -55,7 +67,10 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "ecole",
               "type": "counter",
               "label": "Un déchet se trouve à l'école.",
-              "image": "assets/legacy/cycle2/explMission/école.jpg",
+              "images": [
+                "assets/legacy/cycle2/explMission/école.jpg",
+                "assets/legacy/cycle2/explMission/dechet_seul.gif"
+              ],
               "points": 3,
               "max": 4
             },

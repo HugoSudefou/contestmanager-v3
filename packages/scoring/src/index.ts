@@ -3,10 +3,11 @@
  * The same engine computes scores in the app (live, offline) and in the API (trusted total).
  */
 
+/** `images` (several pictures side by side, e.g. the zone + the object) takes precedence over `image`. */
 export type ItemDef =
-  | { id: string; type: 'check'; label: string; image?: string; points: number }
-  | { id: string; type: 'counter'; label: string; image?: string; points: number; max: number }
-  | { id: string; type: 'choice'; label: string; image?: string; options: { label: string; points: number }[] };
+  | { id: string; type: 'check'; label: string; image?: string; images?: string[]; points: number }
+  | { id: string; type: 'counter'; label: string; image?: string; images?: string[]; points: number; max: number }
+  | { id: string; type: 'choice'; label: string; image?: string; images?: string[]; options: { label: string; points: number }[] };
 
 /** Adds `add` points (can be negative) when every condition matches. Covers the "20 + 70 = 100" style combos. */
 export interface RuleDef {

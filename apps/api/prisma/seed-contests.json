@@ -15,11 +15,11 @@
           "description": "4 déchets maximum. Un déchet au niveau N d'une tour impose un déchet à chaque niveau en dessous (tour de 4 = 20 + 15 + 10 + 5). Pour chaque tour, cliquer sur son niveau le plus haut : les niveaux du dessous se comptent automatiquement (niveau 4 = la tour complète, 4 déchets).",
           "image": "assets/legacy/cycle2/logoMission/mission1.jpg",
           "items": [
-            { "id": "n4", "type": "counter", "label": "Un déchet se trouve au niveau 4 d'une tour de compactage dans la déchetterie.", "image": "assets/legacy/cycle2/explMission/dechet_quatre.gif", "points": 20, "max": 1 },
-            { "id": "n3", "type": "counter", "label": "Un déchet se trouve au niveau 3 d'une tour de compactage dans la déchetterie.", "image": "assets/legacy/cycle2/explMission/dechet_trois.gif", "points": 15, "max": 1 },
-            { "id": "n2", "type": "counter", "label": "Un déchet se trouve au niveau 2 d'une tour de compactage dans la déchetterie.", "image": "assets/legacy/cycle2/explMission/dechet_deux.gif", "points": 10, "max": 2 },
-            { "id": "sol", "type": "counter", "label": "Un déchet se trouve sur le sol de la déchetterie.", "image": "assets/legacy/cycle2/explMission/dechetterie_mission1.jpg", "points": 5, "max": 4 },
-            { "id": "ecole", "type": "counter", "label": "Un déchet se trouve à l'école.", "image": "assets/legacy/cycle2/explMission/école.jpg", "points": 3, "max": 4 },
+            { "id": "n4", "type": "counter", "label": "Un déchet se trouve au niveau 4 d'une tour de compactage dans la déchetterie.", "images": ["assets/legacy/cycle2/explMission/dechetterie_mission1.jpg", "assets/legacy/cycle2/explMission/dechet_quatre.gif"], "points": 20, "max": 1 },
+            { "id": "n3", "type": "counter", "label": "Un déchet se trouve au niveau 3 d'une tour de compactage dans la déchetterie.", "images": ["assets/legacy/cycle2/explMission/dechetterie_mission1.jpg", "assets/legacy/cycle2/explMission/dechet_trois.gif"], "points": 15, "max": 1 },
+            { "id": "n2", "type": "counter", "label": "Un déchet se trouve au niveau 2 d'une tour de compactage dans la déchetterie.", "images": ["assets/legacy/cycle2/explMission/dechetterie_mission1.jpg", "assets/legacy/cycle2/explMission/dechet_deux.gif"], "points": 10, "max": 2 },
+            { "id": "sol", "type": "counter", "label": "Un déchet se trouve sur le sol de la déchetterie.", "images": ["assets/legacy/cycle2/explMission/dechetterie_mission1.jpg", "assets/legacy/cycle2/explMission/dechet_seul.gif"], "points": 5, "max": 4 },
+            { "id": "ecole", "type": "counter", "label": "Un déchet se trouve à l'école.", "images": ["assets/legacy/cycle2/explMission/école.jpg", "assets/legacy/cycle2/explMission/dechet_seul.gif"], "points": 3, "max": 4 },
             { "id": "autre", "type": "counter", "label": "Un déchet se trouve en dehors de la rivière mais ni à l'école ni à la déchetterie.", "image": "assets/legacy/cycle2/explMission/dechet_seul.gif", "points": 1, "max": 4 }
           ],
           "maxObjects": { "items": ["n4", "n3", "n2", "sol", "ecole", "autre"], "max": 4 },

@@ -31,7 +31,7 @@ import {
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { addOutline, hourglassOutline, pauseOutline, playOutline, refreshOutline, removeOutline } from 'ionicons/icons';
-import { applyChange, canDecrease, canIncrease, computeSheet, type Answers, type ItemValue, type MissionDef } from '@contest/scoring';
+import { applyChange, canDecrease, canIncrease, computeSheet, type Answers, type ItemDef, type ItemValue, type MissionDef } from '@contest/scoring';
 import { ApiService, formatTime, practiceHistory, type BuiltinContest, type Contest } from '../api.service';
 import { builtinContest } from '../builtin-contests';
 
@@ -145,8 +145,12 @@ import { builtinContest } from '../builtin-contests';
                     @switch (item.type) {
                       @case ('check') {
                         <ion-item>
-                          @if (api.imageUrl(item.image); as img) {
-                            <img slot="start" [src]="img" alt="" class="thumb" (click)="zoom.set(img)" />
+                          @if (pictures(item).length) {
+                            <div slot="start" class="thumbs">
+                              @for (img of pictures(item); track $index) {
+                                <img [src]="img" alt="" class="thumb" (click)="zoom.set(img)" />
+                              }
+                            </div>
                           }
                           <ion-checkbox justify="space-between" [checked]="value(m.id, item.id) === true" [disabled]="value(m.id, item.id) === true ? !canDown(m, item.id) : !canUp(m, item.id)" (ionChange)="step(m, item.id, $event.detail.checked ? 1 : -1)">
                             <span class="wrap">{{ item.label }}</span> <ion-note>{{ item.points }} pts</ion-note>
@@ -155,8 +159,12 @@ import { builtinContest } from '../builtin-contests';
                       }
                       @case ('counter') {
                         <ion-item>
-                          @if (api.imageUrl(item.image); as img) {
-                            <img slot="start" [src]="img" alt="" class="thumb" (click)="zoom.set(img)" />
+                          @if (pictures(item).length) {
+                            <div slot="start" class="thumbs">
+                              @for (img of pictures(item); track $index) {
+                                <img [src]="img" alt="" class="thumb" (click)="zoom.set(img)" />
+                              }
+                            </div>
                           }
                           <ion-label class="ion-text-wrap">
                             {{ item.label }}
@@ -219,6 +227,7 @@ import { builtinContest } from '../builtin-contests';
     .total { display: flex; justify-content: space-between; padding: 0 16px; font-size: 1.1rem; }
     .mission-img { width: 100%; max-height: 220px; object-fit: cover; cursor: zoom-in; }
     .thumb { width: 56px; height: 56px; object-fit: cover; border-radius: 4px; cursor: zoom-in; }
+    .thumbs { display: flex; flex-direction: column; gap: 4px; }
     .counter { display: flex; align-items: center; gap: 4px; }
     .count { min-width: 2ch; text-align: center; font-size: 1.3rem; font-weight: bold; }
     .wrap { white-space: normal; margin-right: 8px; }
@@ -282,6 +291,11 @@ export class SheetPage implements OnDestroy {
 
   constructor() {
     addIcons({ addOutline, removeOutline, playOutline, pauseOutline, refreshOutline, hourglassOutline });
+  }
+
+  /** Item pictures, side by side (`images`, else the single `image`). */
+  pictures(item: ItemDef): string[] {
+    return (item.images?.length ? item.images : [item.image]).map((i) => this.api.imageUrl(i)).filter((i): i is string => !!i);
   }
 
   /** Blocks entries that would make the sheet impossible (object limit, lines that depend on each other). */

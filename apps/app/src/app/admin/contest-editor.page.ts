@@ -171,8 +171,8 @@ const move = <T,>(list: T[], index: number, delta: number) => {
                           <ion-input class="num" label="Maximum" labelPlacement="stacked" type="number" min="1" [(ngModel)]="it.max"></ion-input>
                         }
                       }
-                      <label class="upload small" [title]="it.image ? 'Changer l’image' : 'Ajouter une image'">
-                        @if (api.imageUrl(it.image); as img) { <img [src]="img" alt="" /> } @else { <ion-icon name="image-outline"></ion-icon> }
+                      <label class="upload small" [title]="it.image || it.images?.length ? 'Changer l’image' : 'Ajouter une image'">
+                        @if (api.imageUrl(it.images?.[0] ?? it.image); as img) { <img [src]="img" alt="" /> } @else { <ion-icon name="image-outline"></ion-icon> }
                         <input type="file" accept="image/*" hidden (change)="upload($event, it)" />
                       </label>
                       <ion-button fill="clear" size="small" (click)="move(m.items, ii, -1)" aria-label="Monter"><ion-icon slot="icon-only" name="arrow-up-outline"></ion-icon></ion-button>
@@ -376,7 +376,7 @@ export class ContestEditorPage implements OnInit {
   changeType(m: MissionDef, index: number, type: ItemDef['type']) {
     const old = m.items[index];
     if (old.type === type) return;
-    m.items[index] = { ...newItem(type), id: old.id, label: old.label, image: old.image } as ItemDef;
+    m.items[index] = { ...newItem(type), id: old.id, label: old.label, image: old.image, images: old.images } as ItemDef;
   }
 
   removeItem(m: MissionDef, index: number) {
@@ -419,11 +419,13 @@ export class ContestEditorPage implements OnInit {
     (m.rules ??= []).push(rule);
   }
 
-  async upload(event: Event, target: { image?: string }) {
+  /** A new picture replaces the line's picture(s): a pair from `images` becomes this single image. */
+  async upload(event: Event, target: { image?: string; images?: string[] }) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!file) return;
     try {
       target.image = await this.api.upload(file);
+      delete target.images;
       this.form.update((f) => f && { ...f });
     } catch (e) {
       await this.toast((e as Error).message, 'danger');
