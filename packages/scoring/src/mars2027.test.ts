@@ -89,3 +89,10 @@ test('penalties are the same in all 4 contests: 5 points each, 10 at most', () =
     assert.equal(computeSheet(c.sheet, {}, 13).penalties, 50, c.name);
   }
 });
+
+test('time is handled the same way in all 4 contests: free stopwatch, ties split by time', () => {
+  for (const c of seed) {
+    assert.equal(c.sheet.durationSeconds, 0, c.name);
+    assert.equal(c.sheet.timeTiebreak, true, c.name);
+  }
+});

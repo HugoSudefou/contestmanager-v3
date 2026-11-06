@@ -466,6 +466,7 @@
           }
         ]
       }
-    ]
+    ],
+    "timeTiebreak": true
   }
 }

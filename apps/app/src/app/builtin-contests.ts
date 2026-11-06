@@ -471,16 +471,17 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
             }
           ]
         }
-      ]
+      ],
+      "timeTiebreak": true
     }
   },
   {
     "id": "gardbot",
     "name": "Une nuit au musée avec GardBot",
     "season": "2018-2019",
-    "description": "Défi « Une nuit au musée avec GardBot » (cycle 3). Match de 3 minutes. 5 points retirés par pénalité, 10 pénalités maximum.",
+    "description": "Défi « Une nuit au musée avec GardBot » (cycle 3). Pas de limite de temps : chronomètre libre (en tournoi, l'arbitre peut régler un minuteur). 5 points retirés par pénalité, 10 pénalités maximum.",
     "sheet": {
-      "durationSeconds": 180,
+      "durationSeconds": 0,
       "penaltyPoints": 5,
       "missions": [
         {
@@ -1001,7 +1002,8 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
           ]
         }
       ],
-      "maxPenalties": 10
+      "maxPenalties": 10,
+      "timeTiebreak": true
     }
   },
   {
