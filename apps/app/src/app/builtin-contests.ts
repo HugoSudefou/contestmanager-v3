@@ -851,7 +851,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "add": 20
             }
           ],
-          "description": "GardBot doit être en sécurité pour passer la nuit et recharger ses batteries pour être en forme la nuit suivante... Il doit donc se hâter, avant que l'aube pointe le bout de son nez, de retourner dans sa loge."
+          "description": "GardBot doit être en sécurité pour passer la journée et recharger ses batteries pour être en forme la nuit suivante... Il doit donc se hâter, avant que l'aube pointe le bout de son nez, de retourner dans sa loge."
         },
         {
           "id": "bonus-techno",
