@@ -483,7 +483,8 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "label": "La momie",
               "images": [
                 "assets/gardbot/m1-momie-tablette-sarcophage.jpg",
-                "assets/gardbot/m1-momie-loge.jpg"
+                "assets/gardbot/m1-momie-loge.jpg",
+                "assets/gardbot/m1-momie-couloirs.jpg"
               ],
               "options": [
                 {
