@@ -88,7 +88,7 @@ test('limits between lines: clicking the top level of a tower counts the levels 
   // Perfect mission: one click on level 4 = the whole tower, 4 wastes, everything else blocked
   const full = applyChange(robee, {}, 'n4', 1)!;
   assert.deepEqual(full, { n4: 1, n3: 1, n2: 1, sol: 1 });
-  assert.equal(computeSheet(sheetOf, { m1: full }, 0).total, 50);
+  assert.equal(computeSheet(sheetOf, { m1: full }, 0).total, 150); // (20 + 15 + 10 + 5) x 3
   for (const id of ['n4', 'n3', 'n2', 'sol', 'ecole', 'autre']) assert.equal(canIncrease(robee, full, id), false, id);
   // Level 3 => levels 2 and ground; level 2 => ground
   assert.deepEqual(applyChange(robee, {}, 'n3', 1), { n3: 1, n2: 1, sol: 1 });

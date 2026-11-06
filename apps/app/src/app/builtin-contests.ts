@@ -16,7 +16,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
         {
           "id": "m1",
           "title": "Mission 1 - Dépollution de la rivière",
-          "description": "4 déchets maximum. Un déchet au niveau N d'une tour impose un déchet à chaque niveau en dessous (tour de 4 = 20 + 15 + 10 + 5). Pour chaque tour, cliquer sur son niveau le plus haut : les niveaux du dessous se comptent automatiquement (niveau 4 = la tour complète, 4 déchets).",
+          "description": "4 déchets maximum. Un déchet au niveau N d'une tour impose un déchet à chaque niveau en dessous (tour de 4 = 60 + 45 + 30 + 15). Pour chaque tour, cliquer sur son niveau le plus haut : les niveaux du dessous se comptent automatiquement (niveau 4 = la tour complète, 4 déchets).",
           "image": "assets/legacy/cycle2/logoMission/mission1.jpg",
           "items": [
             {
@@ -27,7 +27,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
                 "assets/legacy/cycle2/explMission/dechetterie_mission1.jpg",
                 "assets/legacy/cycle2/explMission/dechet_quatre.gif"
               ],
-              "points": 20,
+              "points": 60,
               "max": 1
             },
             {
@@ -38,7 +38,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
                 "assets/legacy/cycle2/explMission/dechetterie_mission1.jpg",
                 "assets/legacy/cycle2/explMission/dechet_trois.gif"
               ],
-              "points": 15,
+              "points": 45,
               "max": 1
             },
             {
@@ -49,7 +49,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
                 "assets/legacy/cycle2/explMission/dechetterie_mission1.jpg",
                 "assets/legacy/cycle2/explMission/dechet_deux.gif"
               ],
-              "points": 10,
+              "points": 30,
               "max": 2
             },
             {
@@ -60,7 +60,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
                 "assets/legacy/cycle2/explMission/dechetterie_mission1.jpg",
                 "assets/legacy/cycle2/explMission/dechet_seul.gif"
               ],
-              "points": 5,
+              "points": 15,
               "max": 4
             },
             {
@@ -71,7 +71,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
                 "assets/legacy/cycle2/explMission/école.jpg",
                 "assets/legacy/cycle2/explMission/dechet_seul.gif"
               ],
-              "points": 3,
+              "points": 9,
               "max": 4
             },
             {
@@ -79,7 +79,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "type": "counter",
               "label": "Un déchet se trouve en dehors de la rivière mais ni à l'école ni à la déchetterie.",
               "image": "assets/legacy/cycle2/explMission/dechet_seul.gif",
-              "points": 1,
+              "points": 3,
               "max": 4
             }
           ],
@@ -120,7 +120,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "type": "counter",
               "label": "Une graine se trouve dans l'arboretum sur la bonne zone de couleur.",
               "image": "assets/legacy/cycle2/explMission/arboretum_bonne_place_mission2.jpg",
-              "points": 10,
+              "points": 30,
               "max": 4
             },
             {
@@ -131,7 +131,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
                 "assets/legacy/cycle2/explMission/graine_verte.gif",
                 "assets/legacy/cycle2/explMission/école.jpg"
               ],
-              "points": 3,
+              "points": 9,
               "max": 4
             },
             {
@@ -139,7 +139,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "type": "counter",
               "label": "Une graine se trouve dans l'arboretum sur la mauvaise zone de couleur.",
               "image": "assets/legacy/cycle2/explMission/arboretum_mauvaise_place_mission2.jpg",
-              "points": 2,
+              "points": 6,
               "max": 4
             },
             {
@@ -150,7 +150,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
                 "assets/legacy/cycle2/explMission/graine_verte.gif",
                 "assets/legacy/cycle2/explMission/pépinière_mission2.jpg"
               ],
-              "points": 1,
+              "points": 3,
               "max": 4
             }
           ],
@@ -175,28 +175,28 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "type": "check",
               "label": "RoBee s'est arrêté sur le pont.",
               "image": "assets/legacy/cycle2/explMission/pont-mission3.jpg",
-              "points": 10
+              "points": 30
             },
             {
               "id": "structure",
               "type": "check",
               "label": "RoBee n'a pas touché la structure du pont.",
               "image": "assets/legacy/cycle2/explMission/pont-structure-mission3.jpg",
-              "points": 10
+              "points": 30
             },
             {
               "id": "musique",
               "type": "check",
               "label": "RoBee a produit l'air de musique demandé.",
               "image": "assets/legacy/cycle2/explMission/jouer_melodie_mission3.jpg",
-              "points": 10
+              "points": 30
             }
           ]
         },
         {
           "id": "m4",
           "title": "Mission 4 - Fabrication du miel",
-          "description": "4 gouttes maximum. Une goutte au niveau N du pot impose une goutte à chaque niveau en dessous (niveau 4 = 20 + 15 + 10 + 5). Cliquer sur le niveau le plus haut de chaque pile : les niveaux du dessous se comptent automatiquement (niveau 4 = la pile complète, 4 gouttes).",
+          "description": "4 gouttes maximum. Une goutte au niveau N du pot impose une goutte à chaque niveau en dessous (niveau 4 = 60 + 45 + 30 + 15). Cliquer sur le niveau le plus haut de chaque pile : les niveaux du dessous se comptent automatiquement (niveau 4 = la pile complète, 4 gouttes).",
           "image": "assets/legacy/cycle2/logoMission/mission4.jpg",
           "items": [
             {
@@ -204,7 +204,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "type": "counter",
               "label": "Une goutte de nectar s'est transformée en miel et se trouve au niveau 4 du pot de miel.",
               "image": "assets/legacy/cycle2/explMission/4_pot_de_miel_mission4.jpg",
-              "points": 20,
+              "points": 60,
               "max": 1
             },
             {
@@ -212,7 +212,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "type": "counter",
               "label": "Une goutte de nectar s'est transformée en miel et se trouve au niveau 3 du pot de miel.",
               "image": "assets/legacy/cycle2/explMission/3_pot_de_miel_mission4.jpg",
-              "points": 15,
+              "points": 45,
               "max": 1
             },
             {
@@ -220,7 +220,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "type": "counter",
               "label": "Une goutte de nectar s'est transformée en miel et se trouve au niveau 2 du pot de miel.",
               "image": "assets/legacy/cycle2/explMission/2_pot_de_miel_mission4.jpg",
-              "points": 10,
+              "points": 30,
               "max": 2
             },
             {
@@ -228,7 +228,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "type": "counter",
               "label": "Une goutte de nectar s'est transformée en miel et se trouve au fond du pot de miel.",
               "image": "assets/legacy/cycle2/explMission/1_pot_de_miel_mission4.jpg",
-              "points": 5,
+              "points": 15,
               "max": 4
             },
             {
@@ -239,7 +239,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
                 "assets/legacy/cycle2/explMission/nectar_niveau1.jpg",
                 "assets/legacy/cycle2/explMission/ruche.jpg"
               ],
-              "points": 3,
+              "points": 9,
               "max": 4
             },
             {
@@ -250,7 +250,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
                 "assets/legacy/cycle2/explMission/nectar_niveau1.jpg",
                 "assets/legacy/cycle2/explMission/jardin anglais.jpg"
               ],
-              "points": 1,
+              "points": 3,
               "max": 4
             }
           ],
@@ -294,11 +294,11 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "options": [
                 {
                   "label": "RoBee a effectué une danse.",
-                  "points": 5
+                  "points": 15
                 },
                 {
                   "label": "RoBee a effectué une danse en forme de huit.",
-                  "points": 10
+                  "points": 30
                 }
               ]
             }
@@ -318,33 +318,61 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "options": [
                 {
                   "label": "RoBee se trouve dans la « Ruche ».",
-                  "points": 10
+                  "points": 30
                 },
                 {
                   "label": "RoBee se trouve dans l'hôtel à insectes situé dans l'école et il est éteint.",
-                  "points": 20
+                  "points": 60
                 }
               ]
             }
           ]
         },
         {
-          "id": "bonus",
-          "title": "Bonus",
+          "id": "bonus-techno",
+          "title": "Bonus technologique",
+          "description": "Maximum 100 points. Jusqu'à 3 capteurs, 2 moteurs supplémentaires et 1 outil imprimé en 3D, à 20 points chacun ; ils doivent servir aux missions du défi.",
           "items": [
             {
               "id": "capteurs",
               "type": "counter",
-              "label": "RoBee a utilisé un capteur pour suivre la ligne noire, différencier les couleurs ou détecter la présence des objets.",
-              "image": "assets/legacy/cycle2/explMission/capteur-lumiere-couleurs.jpg",
-              "points": 10,
+              "label": "Le robot utilise un capteur dans ses missions pour être plus autonome.",
+              "points": 20,
               "max": 3
             },
             {
-              "id": "moteur",
-              "type": "check",
-              "label": "RoBee a utilisé un moteur supplémentaire pour soulever les objets.",
-              "points": 20
+              "id": "moteurs",
+              "type": "counter",
+              "label": "Le robot utilise un moteur supplémentaire pour une action autre que ses déplacements, en lien avec les missions.",
+              "points": 20,
+              "max": 2
+            },
+            {
+              "id": "outils-3d",
+              "type": "counter",
+              "label": "Le robot utilise un outil fabriqué à l'aide d'une imprimante 3D.",
+              "points": 20,
+              "max": 1
+            }
+          ],
+          "rules": [
+            {
+              "label": "Plafond du bonus technologique : 100 points",
+              "when": [
+                {
+                  "item": "capteurs",
+                  "equals": 3
+                },
+                {
+                  "item": "moteurs",
+                  "equals": 2
+                },
+                {
+                  "item": "outils-3d",
+                  "equals": 1
+                }
+              ],
+              "add": -20
             }
           ]
         },
@@ -832,34 +860,48 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
         {
           "id": "bonus-techno",
           "title": "Bonus technologique",
-          "image": "assets/legacy/cycle3/bonus.jpg",
+          "description": "Maximum 100 points. Jusqu'à 3 capteurs, 2 moteurs supplémentaires et 1 outil imprimé en 3D, à 20 points chacun ; ils doivent servir aux missions du défi.",
           "items": [
-            {
-              "id": "moteurs",
-              "type": "counter",
-              "label": "GardBot utilise des moteurs supplémentaires.",
-              "points": 20,
-              "max": 2
-            },
             {
               "id": "capteurs",
               "type": "counter",
-              "label": "GardBot utilise des capteurs.",
+              "label": "Le robot utilise un capteur dans ses missions pour être plus autonome.",
               "points": 20,
-              "max": 4
+              "max": 3
             },
             {
-              "id": "impression-3d",
+              "id": "moteurs",
               "type": "counter",
-              "label": "GardBot utilise un outil fabriqué à l'aide d'une imprimante 3D.",
+              "label": "Le robot utilise un moteur supplémentaire pour une action autre que ses déplacements, en lien avec les missions.",
               "points": 20,
               "max": 2
             },
             {
-              "id": "lestee",
-              "type": "check",
-              "label": "La statue est lestée.",
-              "points": 40
+              "id": "outils-3d",
+              "type": "counter",
+              "label": "Le robot utilise un outil fabriqué à l'aide d'une imprimante 3D.",
+              "points": 20,
+              "max": 1
+            }
+          ],
+          "rules": [
+            {
+              "label": "Plafond du bonus technologique : 100 points",
+              "when": [
+                {
+                  "item": "capteurs",
+                  "equals": 3
+                },
+                {
+                  "item": "moteurs",
+                  "equals": 2
+                },
+                {
+                  "item": "outils-3d",
+                  "equals": 1
+                }
+              ],
+              "add": -20
             }
           ]
         },
@@ -1244,28 +1286,28 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
         {
           "id": "bonus-techno",
           "title": "Bonus technologique",
-          "description": "Maximum 100 points. Moteurs, capteurs et outils doivent servir aux missions du défi.",
+          "description": "Maximum 100 points. Jusqu'à 3 capteurs, 2 moteurs supplémentaires et 1 outil imprimé en 3D, à 20 points chacun ; ils doivent servir aux missions du défi.",
           "items": [
-            {
-              "id": "moteurs",
-              "type": "counter",
-              "label": "Le rover utilise un moteur supplémentaire pour une action autre que ses déplacements, en lien avec les missions.",
-              "points": 20,
-              "max": 2
-            },
             {
               "id": "capteurs",
               "type": "counter",
-              "label": "Le rover utilise un capteur dans ses missions pour être plus autonome.",
+              "label": "Le robot utilise un capteur dans ses missions pour être plus autonome.",
+              "points": 20,
+              "max": 3
+            },
+            {
+              "id": "moteurs",
+              "type": "counter",
+              "label": "Le robot utilise un moteur supplémentaire pour une action autre que ses déplacements, en lien avec les missions.",
               "points": 20,
               "max": 2
             },
             {
               "id": "outils-3d",
               "type": "counter",
-              "label": "Le rover utilise un outil fabriqué à l'aide d'une imprimante 3D.",
+              "label": "Le robot utilise un outil fabriqué à l'aide d'une imprimante 3D.",
               "points": 20,
-              "max": 2
+              "max": 1
             }
           ],
           "rules": [
@@ -1273,16 +1315,16 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "label": "Plafond du bonus technologique : 100 points",
               "when": [
                 {
+                  "item": "capteurs",
+                  "equals": 3
+                },
+                {
                   "item": "moteurs",
                   "equals": 2
                 },
                 {
-                  "item": "capteurs",
-                  "equals": 2
-                },
-                {
                   "item": "outils-3d",
-                  "equals": 2
+                  "equals": 1
                 }
               ],
               "add": -20
@@ -1670,28 +1712,28 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
         {
           "id": "bonus-techno",
           "title": "Bonus technologique",
-          "description": "Maximum 100 points. Moteurs, capteurs et outils doivent servir aux missions du défi.",
+          "description": "Maximum 100 points. Jusqu'à 3 capteurs, 2 moteurs supplémentaires et 1 outil imprimé en 3D, à 20 points chacun ; ils doivent servir aux missions du défi.",
           "items": [
-            {
-              "id": "moteurs",
-              "type": "counter",
-              "label": "Le rover utilise un moteur supplémentaire pour une action autre que ses déplacements, en lien avec les missions.",
-              "points": 20,
-              "max": 2
-            },
             {
               "id": "capteurs",
               "type": "counter",
-              "label": "Le rover utilise un capteur dans ses missions pour être plus autonome.",
+              "label": "Le robot utilise un capteur dans ses missions pour être plus autonome.",
+              "points": 20,
+              "max": 3
+            },
+            {
+              "id": "moteurs",
+              "type": "counter",
+              "label": "Le robot utilise un moteur supplémentaire pour une action autre que ses déplacements, en lien avec les missions.",
               "points": 20,
               "max": 2
             },
             {
               "id": "outils-3d",
               "type": "counter",
-              "label": "Le rover utilise un outil fabriqué à l'aide d'une imprimante 3D.",
+              "label": "Le robot utilise un outil fabriqué à l'aide d'une imprimante 3D.",
               "points": 20,
-              "max": 2
+              "max": 1
             }
           ],
           "rules": [
@@ -1699,16 +1741,16 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "label": "Plafond du bonus technologique : 100 points",
               "when": [
                 {
+                  "item": "capteurs",
+                  "equals": 3
+                },
+                {
                   "item": "moteurs",
                   "equals": 2
                 },
                 {
-                  "item": "capteurs",
-                  "equals": 2
-                },
-                {
                   "item": "outils-3d",
-                  "equals": 2
+                  "equals": 1
                 }
               ],
               "add": -20

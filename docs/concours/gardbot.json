@@ -384,34 +384,48 @@
       {
         "id": "bonus-techno",
         "title": "Bonus technologique",
-        "image": "assets/legacy/cycle3/bonus.jpg",
+        "description": "Maximum 100 points. Jusqu'à 3 capteurs, 2 moteurs supplémentaires et 1 outil imprimé en 3D, à 20 points chacun ; ils doivent servir aux missions du défi.",
         "items": [
-          {
-            "id": "moteurs",
-            "type": "counter",
-            "label": "GardBot utilise des moteurs supplémentaires.",
-            "points": 20,
-            "max": 2
-          },
           {
             "id": "capteurs",
             "type": "counter",
-            "label": "GardBot utilise des capteurs.",
+            "label": "Le robot utilise un capteur dans ses missions pour être plus autonome.",
             "points": 20,
-            "max": 4
+            "max": 3
           },
           {
-            "id": "impression-3d",
+            "id": "moteurs",
             "type": "counter",
-            "label": "GardBot utilise un outil fabriqué à l'aide d'une imprimante 3D.",
+            "label": "Le robot utilise un moteur supplémentaire pour une action autre que ses déplacements, en lien avec les missions.",
             "points": 20,
             "max": 2
           },
           {
-            "id": "lestee",
-            "type": "check",
-            "label": "La statue est lestée.",
-            "points": 40
+            "id": "outils-3d",
+            "type": "counter",
+            "label": "Le robot utilise un outil fabriqué à l'aide d'une imprimante 3D.",
+            "points": 20,
+            "max": 1
+          }
+        ],
+        "rules": [
+          {
+            "label": "Plafond du bonus technologique : 100 points",
+            "when": [
+              {
+                "item": "capteurs",
+                "equals": 3
+              },
+              {
+                "item": "moteurs",
+                "equals": 2
+              },
+              {
+                "item": "outils-3d",
+                "equals": 1
+              }
+            ],
+            "add": -20
           }
         ]
       },
