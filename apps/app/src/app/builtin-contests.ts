@@ -357,7 +357,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "att-respect",
               "type": "check",
               "points": 10,
-              "label": "Attitude - Pendant le défi, les élèves de l'équipe respectent les lieux et le matériel."
+              "label": "Attitude - Pendant le défi, les élèves de l'équipe respectent les lieux et le matériel mis à disposition de l'équipe pendant le temps du défi (robot, outils, ordinateurs, tablettes, tables, chaises, plateau de jeu, matériel d'affichage...)."
             },
             {
               "id": "att-roles",
@@ -872,7 +872,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "att-respect",
               "type": "check",
               "points": 10,
-              "label": "Attitude - Pendant le défi, les élèves de l'équipe respectent les lieux et le matériel."
+              "label": "Attitude - Pendant le défi, les élèves de l'équipe respectent les lieux et le matériel mis à disposition de l'équipe pendant le temps du défi (robot, outils, ordinateurs, tablettes, tables, chaises, plateau de jeu, matériel d'affichage...)."
             },
             {
               "id": "att-roles",
@@ -1298,7 +1298,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "att-respect",
               "type": "check",
               "points": 10,
-              "label": "Attitude - Pendant le défi, les élèves de l'équipe respectent les lieux et le matériel."
+              "label": "Attitude - Pendant le défi, les élèves de l'équipe respectent les lieux et le matériel mis à disposition de l'équipe pendant le temps du défi (robot, outils, ordinateurs, tablettes, tables, chaises, plateau de jeu, matériel d'affichage...)."
             },
             {
               "id": "att-roles",
@@ -1724,7 +1724,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "att-respect",
               "type": "check",
               "points": 10,
-              "label": "Attitude - Pendant le défi, les élèves de l'équipe respectent les lieux et le matériel."
+              "label": "Attitude - Pendant le défi, les élèves de l'équipe respectent les lieux et le matériel mis à disposition de l'équipe pendant le temps du défi (robot, outils, ordinateurs, tablettes, tables, chaises, plateau de jeu, matériel d'affichage...)."
             },
             {
               "id": "att-roles",
