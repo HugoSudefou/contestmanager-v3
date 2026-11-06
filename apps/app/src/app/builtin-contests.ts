@@ -468,7 +468,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
         {
           "id": "m1",
           "title": "Mission 1 - Dépose de la momie et de la tablette magique dans le sarcophage",
-          "image": "assets/legacy/cycle3/mission1.jpg",
+          "image": "assets/gardbot/m1-plan.jpg",
           "items": [
             {
               "id": "tablette",
@@ -505,12 +505,13 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
           "id": "m2",
           "title": "Mission 2 - Restitution de la galerie des personnages historiques",
           "description": "Nombre de personnages (4 maximum).",
-          "image": "assets/legacy/cycle3/mission2.jpg",
+          "image": "assets/gardbot/m2-plan.jpg",
           "items": [
             {
               "id": "debout",
               "type": "counter",
               "label": "Debout dans la vitrine de sa couleur de la galerie des personnages historiques.",
+              "image": "assets/gardbot/m2-personnage-debout-vitrine.jpg",
               "points": 25,
               "max": 4
             },
@@ -558,7 +559,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
           "id": "m3",
           "title": "Mission 3 - Reconstruction de la statue de l'île de Pâques « Gum ! Gum ! »",
           "description": "10 blocs maximum. Si la statue est construite, ne remplir que les lignes « statue construite » (blocs au-dessus des blocs noirs) ; sinon, que les lignes « statue non construite ».",
-          "image": "assets/legacy/cycle3/mission3.jpg",
+          "image": "assets/gardbot/m3-plan.jpg",
           "items": [
             {
               "id": "c-socle",
@@ -619,7 +620,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
           "id": "m4",
           "title": "Mission 4 - Ré-aménagement de la salle des tableaux",
           "description": "Par tableau : 1 critère = 10 (20 pour le support seul), 2 critères = 30, 3 critères = 50.",
-          "image": "assets/legacy/cycle3/mission4.jpg",
+          "image": "assets/gardbot/m4-plan.jpg",
           "items": [
             {
               "id": "t1-oriente",
@@ -737,7 +738,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
           "id": "m5",
           "title": "Mission 5 - Création d'un morceau de musique",
           "description": "Ne remplir que si la mélodie a été entendue.",
-          "image": "assets/legacy/cycle3/mission5.jpg",
+          "image": "assets/gardbot/m5-plan.jpg",
           "items": [
             {
               "id": "quand",
@@ -794,7 +795,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
         {
           "id": "m6",
           "title": "Mission 6 - Recharge des batteries de GardBot",
-          "image": "assets/legacy/cycle3/mission6.jpg",
+          "image": "assets/gardbot/m6-plan.jpg",
           "items": [
             {
               "id": "position",
