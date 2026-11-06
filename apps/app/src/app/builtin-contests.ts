@@ -543,7 +543,11 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "type": "counter",
               "label": "Dans l'atelier ou dans la loge de GardBot.",
               "points": 2,
-              "max": 4
+              "max": 4,
+              "images": [
+                "assets/gardbot/m2-personnage-atelier.jpg",
+                "assets/gardbot/m2-personnage-loge.jpg"
+              ]
             },
             {
               "id": "dehors",
