@@ -568,13 +568,13 @@
         {
           "id": "m3",
           "title": "Mission 3 - Reconstruction de la statue de l'île de Pâques « Gum ! Gum ! »",
-          "description": "Le tyrannosaure Rex est joueur mais aussi très maladroit. En jouant avec GardBot, il a détruit la statue de l'île de Pâques avec sa queue. Il a ensuite rassemblé tous les blocs et les a entassés dans sa cachette secrète : l'auditorium. (1 bloc = 2 briques 2x4)\nAvant la fin de la nuit, GardBot doit vider l'auditorium pour permettre aux visiteurs du musée d'y écouter de la musique dès le lendemain. Puis il doit reconstituer la statue de l'île de Pâques dans l'atelier et la remettre à sa place sur le socle de la statue.\nUn membre de l'équipe tire au sort le modèle de statue à réaliser. Il peut, pendant toute la durée du défi, s'entraîner à le monter le plus rapidement possible. Cependant, au début de chaque match, toutes les briques doivent être replacées à leur position sur le tapis. Pendant le match, il est autorisé à récupérer les blocs dans l'atelier ou dans la loge du gardien et à construire la statue en suivant la fiche modèle tirée.\nIl est possible de transférer la statue de la loge du gardien à l'atelier sans pénalité grâce aux pouvoirs de la tablette.\n\n10 blocs maximum. Si la statue est construite, ne remplir que les lignes « statue construite » (blocs au-dessus des blocs noirs) ; sinon, que les lignes « statue non construite ».",
+          "description": "Le tyrannosaure Rex est joueur mais aussi très maladroit. En jouant avec GardBot, il a détruit la statue de l'île de Pâques avec sa queue. Il a ensuite rassemblé tous les blocs et les a entassés dans sa cachette secrète : l'auditorium. (1 bloc = 2 briques 2x4)\nAvant la fin de la nuit, GardBot doit vider l'auditorium pour permettre aux visiteurs du musée d'y écouter de la musique dès le lendemain. Puis il doit reconstituer la statue de l'île de Pâques dans l'atelier et la remettre à sa place sur le socle de la statue.\nUn membre de l'équipe tire au sort le modèle de statue à réaliser. Il peut, pendant toute la durée du défi, s'entraîner à le monter le plus rapidement possible. Cependant, au début de chaque match, toutes les briques doivent être replacées à leur position sur le tapis. Pendant le match, il est autorisé à récupérer les blocs dans l'atelier ou dans la loge du gardien et à construire la statue en suivant la fiche modèle tirée.\nIl est possible de transférer la statue de la loge du gardien à l'atelier sans pénalité grâce aux pouvoirs de la tablette.\n\nLe socle est la boîte ouverte fixée sur le tapis de la salle de la statue : une statue poussée jusque dans la salle compte « dans la salle » ; une statue portée et déposée dans la boîte compte « dans le socle ».\n10 blocs maximum. Si la statue est construite, ne remplir que les lignes « statue construite » (blocs au-dessus des blocs noirs) ; sinon, que les lignes « statue non construite ».",
           "image": "assets/gardbot/m3-plan.jpg",
           "items": [
             {
               "id": "c-socle",
               "type": "counter",
-              "label": "Statue construite : blocs au-dessus des blocs noirs à l'intérieur du socle.",
+              "label": "Statue construite : blocs au-dessus des blocs noirs, statue posée dans le socle (la boîte fixée sur le tapis).",
               "image": "assets/gardbot/m3-statue.jpg",
               "points": 10,
               "max": 10
@@ -582,7 +582,7 @@
             {
               "id": "c-salle",
               "type": "counter",
-              "label": "Statue construite : blocs au-dessus des blocs noirs dans la salle de la statue.",
+              "label": "Statue construite : blocs au-dessus des blocs noirs, statue poussée dans la salle de la statue mais pas dans le socle.",
               "points": 8,
               "max": 10,
               "image": "assets/gardbot/m3-statue-salle.jpg"
@@ -598,7 +598,7 @@
             {
               "id": "nc-salle",
               "type": "counter",
-              "label": "Statue non construite : blocs dans la salle de la statue.",
+              "label": "Statue non construite : blocs dans la salle de la statue (hors du socle).",
               "image": "assets/gardbot/m3-blocs.jpg",
               "points": 3,
               "max": 10
