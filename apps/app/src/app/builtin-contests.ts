@@ -554,7 +554,8 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "type": "counter",
               "label": "En dehors des couloirs du temps.",
               "points": 1,
-              "max": 4
+              "max": 4,
+              "image": "assets/gardbot/m2-personnage-dehors.jpg"
             }
           ],
           "maxObjects": {
