@@ -460,7 +460,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
     "id": "gardbot",
     "name": "Une nuit au musée avec GardBot",
     "season": "2018-2019",
-    "description": "Défi « Une nuit au musée avec GardBot » (cycle 3). Pas de limite de temps : chronomètre libre (en tournoi, l'arbitre peut régler un minuteur). 5 points retirés par pénalité, 10 pénalités maximum.",
+    "description": "Une nuit au musée avec GardBot\nDepuis qu'elle a été rapatriée d'Égypte, il y a 50 ans, et installée dans la chambre du pharaon Ahkmenrah, la tablette magique du pharaon provoque la zizanie dans le musée. En effet, elle est dotée de pouvoirs magiques : chaque nuit, tous les personnages du musée reprennent vie.\nHeureusement, GardBot a été embauché comme gardien de nuit. Il va tout faire pour que chacun regagne son emplacement au petit matin.\n\nDéfi « Une nuit au musée avec GardBot » (cycle 3). Pas de limite de temps : chronomètre libre (en tournoi, l'arbitre peut régler un minuteur). 5 points retirés par pénalité, 10 pénalités maximum.",
     "sheet": {
       "durationSeconds": 0,
       "penaltyPoints": 5,
@@ -504,12 +504,13 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
                 }
               ]
             }
-          ]
+          ],
+          "description": "La momie du pharaon est sortie de son sarcophage pour retrouver sa tablette avec de machiavéliques idées derrière la tête... Depuis son trône, elle dirige ses gardes à tête de chacal, serviteurs du dieu Anubis, qui sont tout près de toucher au but. S'il ne fait rien, GardBot risque de voir disparaître tous les personnages du musée.\nIl doit donc récupérer la momie du pharaon dans les couloirs du temps et la déposer avec la tablette magique dans son sarcophage."
         },
         {
           "id": "m2",
           "title": "Mission 2 - Restitution de la galerie des personnages historiques",
-          "description": "Nombre de personnages (4 maximum).",
+          "description": "Tous les personnages historiques du musée sont à la recherche de GardBot pour qu'il renonce à sa mission principale : ramener la tablette magique et la momie du pharaon dans le sarcophage. En effet, ils adorent pouvoir revivre et se perdre dans les couloirs du temps du musée.\nGardBot doit donc les récupérer sans leur faire mal et les replacer délicatement debout dans leurs vitrines respectives. (Chaque personnage est associé à une couleur de brique.)\n\nNombre de personnages (4 maximum).",
           "image": "assets/gardbot/m2-plan.jpg",
           "items": [
             {
@@ -564,7 +565,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
         {
           "id": "m3",
           "title": "Mission 3 - Reconstruction de la statue de l'île de Pâques « Gum ! Gum ! »",
-          "description": "10 blocs maximum. Si la statue est construite, ne remplir que les lignes « statue construite » (blocs au-dessus des blocs noirs) ; sinon, que les lignes « statue non construite ».",
+          "description": "Le tyrannosaure Rex est joueur mais aussi très maladroit. En jouant avec GardBot, il a détruit la statue de l'île de Pâques avec sa queue. Il a ensuite rassemblé tous les blocs et les a entassés dans sa cachette secrète : l'auditorium. (1 bloc = 2 briques 2x4)\nAvant la fin de la nuit, GardBot doit vider l'auditorium pour permettre aux visiteurs du musée d'y écouter de la musique dès le lendemain. Puis il doit reconstituer la statue de l'île de Pâques dans l'atelier et la remettre à sa place sur le socle de la statue.\nUn membre de l'équipe tire au sort le modèle de statue à réaliser. Il peut, pendant toute la durée du défi, s'entraîner à le monter le plus rapidement possible. Cependant, au début de chaque match, toutes les briques doivent être replacées à leur position sur le tapis. Pendant le match, il est autorisé à récupérer les blocs dans l'atelier ou dans la loge du gardien et à construire la statue en suivant la fiche modèle tirée.\nIl est possible de transférer la statue de la loge du gardien à l'atelier sans pénalité grâce aux pouvoirs de la tablette.\n\n10 blocs maximum. Si la statue est construite, ne remplir que les lignes « statue construite » (blocs au-dessus des blocs noirs) ; sinon, que les lignes « statue non construite ».",
           "image": "assets/gardbot/m3-plan.jpg",
           "items": [
             {
@@ -627,7 +628,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
         {
           "id": "m4",
           "title": "Mission 4 - Ré-aménagement de la salle des tableaux",
-          "description": "Par tableau : 1 critère = 10 (20 pour le support seul), 2 critères = 30, 3 critères = 50.",
+          "description": "Les singes capucins sont des farceurs. Pendant que GardBot avait le dos tourné, ils ont déplacé toutes les œuvres d'art de la salle des tableaux.\nAvant la fin de la nuit, GardBot doit remettre chaque tableau à sa place et l'orienter pour que les visiteurs puissent les contempler. (Les tableaux doivent être visibles depuis la loge du gardien.)\n\nPar tableau : 1 critère = 10 (20 pour le support seul), 2 critères = 30, 3 critères = 50.",
           "image": "assets/gardbot/m4-plan.jpg",
           "items": [
             {
@@ -747,7 +748,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
         {
           "id": "m5",
           "title": "Mission 5 - Création d'un morceau de musique",
-          "description": "Ne remplir que si la mélodie a été entendue.",
+          "description": "La musique adoucit les mœurs, c'est bien connu... GardBot a grand besoin de ramener le calme dans son musée avant d'ouvrir les portes aux visiteurs. Une fois l'auditorium vidé des blocs qui l'encombrent, GardBot doit venir y siffloter les premières mesures d'un air connu.\nUn membre de l'équipe tire au sort le morceau à composer pour le temps du défi. Il est autorisé à continuer la programmation du morceau pendant les matchs. Il doit intégrer ce programme aux programmes déjà codés en classe.\n\nNe remplir que si la mélodie a été entendue.",
           "image": "assets/gardbot/m5-plan.jpg",
           "items": [
             {
@@ -849,7 +850,8 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               ],
               "add": 20
             }
-          ]
+          ],
+          "description": "GardBot doit être en sécurité pour passer la nuit et recharger ses batteries pour être en forme la nuit suivante... Il doit donc se hâter, avant que l'aube pointe le bout de son nez, de retourner dans sa loge."
         },
         {
           "id": "bonus-techno",
