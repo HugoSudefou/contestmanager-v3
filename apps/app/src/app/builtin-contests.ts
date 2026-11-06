@@ -7,10 +7,10 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
     "id": "robee",
     "name": "RoBee, un robot pollinisateur",
     "season": "2018-2019",
-    "description": "Défi RoBee, un robot pollinisateur (cycle 2). Pas de limite de temps : chronomètre libre (en tournoi, l'arbitre peut régler un minuteur). 4 points retirés par pénalité, 10 pénalités maximum.",
+    "description": "Défi RoBee, un robot pollinisateur (cycle 2). Pas de limite de temps : chronomètre libre (en tournoi, l'arbitre peut régler un minuteur). 5 points retirés par pénalité, 10 pénalités maximum.",
     "sheet": {
       "durationSeconds": 0,
-      "penaltyPoints": 4,
+      "penaltyPoints": 5,
       "maxPenalties": 10,
       "missions": [
         {
@@ -478,10 +478,10 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
     "id": "gardbot",
     "name": "Une nuit au musée avec GardBot",
     "season": "2018-2019",
-    "description": "Feuille de mission cycle 3 (GardBot), reprise de l'application v2. Match de 3 minutes, 10 points retirés par pénalité.",
+    "description": "Défi « Une nuit au musée avec GardBot » (cycle 3). Match de 3 minutes. 5 points retirés par pénalité, 10 pénalités maximum.",
     "sheet": {
       "durationSeconds": 180,
-      "penaltyPoints": 10,
+      "penaltyPoints": 5,
       "missions": [
         {
           "id": "m1",
@@ -1000,7 +1000,8 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
             }
           ]
         }
-      ]
+      ],
+      "maxPenalties": 10
     }
   },
   {

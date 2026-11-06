@@ -81,3 +81,11 @@ test('pedagogical bonus, identical in all 4 contests: 5 attitude criteria + post
     assert.equal(computeSheet(sheet, { 'bonus-pedago': { 'a-conception': true } }, 0).total, 0);
   }
 });
+
+test('penalties are the same in all 4 contests: 5 points each, 10 at most', () => {
+  for (const c of seed) {
+    assert.equal(c.sheet.penaltyPoints, 5, c.name);
+    assert.equal(c.sheet.maxPenalties, 10, c.name);
+    assert.equal(computeSheet(c.sheet, {}, 13).penalties, 50, c.name);
+  }
+});
