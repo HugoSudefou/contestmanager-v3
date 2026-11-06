@@ -524,6 +524,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "couche",
               "type": "counter",
               "label": "Dans la vitrine de sa couleur mais pas debout.",
+              "image": "assets/gardbot/m2-couche-vitrine.jpg",
               "points": 15,
               "max": 4
             },
