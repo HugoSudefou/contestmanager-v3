@@ -118,6 +118,18 @@ Seule la position finale compte, pas la façon dont l'objet y est arrivé (pouss
 Exception : ce qui ne laisse pas de trace sur le tapis (un son, une mélodie, une danse, un arrêt demandé) se note au moment où l'arbitre le constate pendant le match.
 À l'entraînement en classe, l'enseignant applique la même règle.</p>
               </details>
+              <details class="intro rule">
+                <summary>Déroulement d'une partie</summary>
+                <p><strong>Robot bloqué.</strong> Si le robot se bloque et que les élèves doivent le récupérer, le pilote demande à l'arbitre s'il peut le reprendre. L'arbitre valide : « Vous pouvez reprendre le robot, je vous mets une pénalité. » Le robot est replacé dans la zone d'où il venait.</p>
+                <p><strong>Fin de la partie.</strong> Si, avant la fin du temps imparti, l'équipe a terminé tout ce qu'elle voulait faire avec son robot, elle peut décider d'arrêter. Elle éteint le robot si ce n'est pas déjà fait, puis appelle l'arbitre. Le représentant de l'équipe annonce : « Nous avons terminé notre défi. Nous souhaitons être évalués. » On arrête alors le chrono.</p>
+                <p><strong>Évaluation, avec l'équipe.</strong> L'arbitre rassemble l'équipe autour de lui et complète la feuille de missions avec les élèves :</p>
+                <ol>
+                  <li>il annonce d'abord le nombre de pénalités ;</li>
+                  <li>l'évaluation de chaque mission est validée par l'équipe ;</li>
+                  <li>à la fin, il annonce le score de l'équipe ;</li>
+                  <li>il prend le temps de discuter des progrès réalisés et de ce que l'équipe doit faire pour progresser à la prochaine évaluation.</li>
+                </ol>
+              </details>
             </ion-card-content>
           </ion-card>
           <ion-card>
@@ -243,6 +255,7 @@ Exception : ce qui ne laisse pas de trace sur le tapis (un son, une mélodie, un
     .intro summary { cursor: pointer; font-weight: 600; }
     .intro p { white-space: pre-line; margin: 8px 0 0; }
     .intro + .intro { margin-top: 12px; }
+    .intro ol { margin: 6px 0 0; padding-left: 22px; color: var(--ion-color-medium-shade); }
     .total { display: flex; justify-content: space-between; padding: 0 16px; font-size: 1.1rem; }
     /* Whole picture, never cropped (the zone plans must be readable); tap to enlarge. */
     .mission-img { display: block; width: 100%; height: auto; max-height: 60vh; object-fit: contain; cursor: zoom-in; }

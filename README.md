@@ -38,6 +38,10 @@ Les feuilles 2019 (cycle 2 et cycle 3) de l'ancienne appli et les feuilles **Dé
 
 Pendant le match, l'arbitre se concentre sur le robot et les pénalités ; les points se comptent à la fin, d'après la **position finale de chaque objet** (et du robot), jamais d'après la façon dont il y est arrivé. Exception : ce qui ne laisse pas de trace (son, mélodie, danse, arrêt demandé) se note quand l'arbitre le constate. Les libellés des feuilles décrivent donc des positions, pas des actions.
 
+### Déroulement d'une partie (affiché sur chaque feuille)
+
+Robot bloqué : le pilote demande à l'arbitre de le reprendre (1 pénalité), il est replacé dans la zone d'où il venait. Fin : l'équipe éteint son robot et annonce « Nous avons terminé notre défi. Nous souhaitons être évalués. » (chrono arrêté). Évaluation avec l'équipe : pénalités annoncées d'abord, chaque mission validée par l'équipe, score annoncé, puis échange sur les progrès.
+
 ### Chronomètre et départage au temps
 
 - **Minuteur de l'arbitre** : en tournoi, sur une feuille sans durée fixe, le bouton ⏳ permet de choisir avant chaque partie une durée maximale (aucune, 2 à 10 minutes, ou une autre durée). Le chrono décompte alors et s'arrête à la fin ; le choix est gardé sur l'appareil pour les parties suivantes. À l'entraînement, pas de minuteur : chronomètre libre.
