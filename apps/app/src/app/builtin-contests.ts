@@ -474,12 +474,17 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "tablette",
               "type": "check",
               "label": "La tablette est dans le sarcophage.",
+              "image": "assets/gardbot/m1-momie-tablette-sarcophage.jpg",
               "points": 20
             },
             {
               "id": "momie",
               "type": "choice",
               "label": "La momie",
+              "images": [
+                "assets/gardbot/m1-momie-tablette-sarcophage.jpg",
+                "assets/gardbot/m1-momie-depart.jpg"
+              ],
               "options": [
                 {
                   "label": "est allongée dans le sarcophage.",
@@ -565,6 +570,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "c-socle",
               "type": "counter",
               "label": "Statue construite : blocs au-dessus des blocs noirs à l'intérieur du socle.",
+              "image": "assets/gardbot/m3-statue.jpg",
               "points": 10,
               "max": 10
             },
@@ -586,6 +592,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "nc-salle",
               "type": "counter",
               "label": "Statue non construite : blocs dans la salle de la statue.",
+              "image": "assets/gardbot/m3-blocs.jpg",
               "points": 3,
               "max": 10
             },
@@ -626,6 +633,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "t1-oriente",
               "type": "check",
               "label": "Tableau 1 vertical : bien orienté.",
+              "image": "assets/gardbot/m4-tableau-vertical-socle.png",
               "points": 10
             },
             {
@@ -644,6 +652,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "t2-oriente",
               "type": "check",
               "label": "Tableau 2 horizontal : bien orienté.",
+              "image": "assets/gardbot/m4-tableau-horizontal-socle.png",
               "points": 10
             },
             {
@@ -759,6 +768,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "origine",
               "type": "choice",
               "label": "La mélodie est issue",
+              "image": "assets/gardbot/m5-programme.jpg",
               "options": [
                 {
                   "label": "du répertoire du robot.",

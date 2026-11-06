@@ -179,7 +179,16 @@ import { builtinContest } from '../builtin-contests';
                       }
                       @case ('choice') {
                         <ion-radio-group [allowEmptySelection]="true" [value]="value(m.id, item.id)" (ionChange)="set(m.id, item.id, $event.detail.value ?? null)">
-                          <ion-item lines="none"><ion-label class="ion-text-wrap"><strong>{{ item.label }}</strong></ion-label></ion-item>
+                          <ion-item lines="none">
+                            @if (pictures(item).length) {
+                              <div slot="start" class="thumbs">
+                                @for (img of pictures(item); track $index) {
+                                  <img [src]="img" alt="" class="thumb" (click)="zoom.set(img)" />
+                                }
+                              </div>
+                            }
+                            <ion-label class="ion-text-wrap"><strong>{{ item.label }}</strong></ion-label>
+                          </ion-item>
                           @for (o of item.options; track $index) {
                             <ion-item>
                               <ion-radio [value]="$index" justify="space-between">
