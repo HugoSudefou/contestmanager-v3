@@ -653,7 +653,8 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "t1-place",
               "type": "check",
               "label": "Tableau 1 vertical : bien placé.",
-              "points": 10
+              "points": 10,
+              "image": "assets/gardbot/m4-t1-place.jpg"
             },
             {
               "id": "t1-support",
@@ -672,7 +673,8 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "t2-place",
               "type": "check",
               "label": "Tableau 2 horizontal : bien placé.",
-              "points": 10
+              "points": 10,
+              "image": "assets/gardbot/m4-t2-place.jpg"
             },
             {
               "id": "t2-support",
