@@ -34,6 +34,10 @@ Nouvelle version de l'application de gestion du défi robotique (remplace `conte
 
 Les feuilles 2019 (cycle 2 et cycle 3) de l'ancienne appli et les feuilles **Défi Mars II 2027** (cycle 2 et cycle 3) sont importées automatiquement au démarrage (une feuille déjà présente sous le même nom n'est pas recréée).
 
+### Règle de notation (affichée sur chaque feuille)
+
+Pendant le match, l'arbitre se concentre sur le robot et les pénalités ; les points se comptent à la fin, d'après la **position finale de chaque objet** (et du robot), jamais d'après la façon dont il y est arrivé. Exception : ce qui ne laisse pas de trace (son, mélodie, danse, arrêt demandé) se note quand l'arbitre le constate. Les libellés des feuilles décrivent donc des positions, pas des actions.
+
 ### Chronomètre et départage au temps
 
 - **Minuteur de l'arbitre** : en tournoi, sur une feuille sans durée fixe, le bouton ⏳ permet de choisir avant chaque partie une durée maximale (aucune, 2 à 10 minutes, ou une autre durée). Le chrono décompte alors et s'arrête à la fin ; le choix est gardé sur l'appareil pour les parties suivantes. À l'entraînement, pas de minuteur : chronomètre libre.

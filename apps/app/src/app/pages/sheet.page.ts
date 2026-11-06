@@ -101,16 +101,25 @@ import { builtinContest } from '../builtin-contests';
         <ion-text color="danger"><p class="ion-padding">{{ contest.error()?.message }}</p></ion-text>
       } @else if (contest.value(); as c) {
         <div class="narrow">
-          @if (c.description) {
-            <ion-card>
-              <ion-card-content>
+          <ion-card>
+            <ion-card-content>
+              @if (c.description) {
                 <details class="intro">
                   <summary>Présentation du défi</summary>
                   <p>{{ c.description }}</p>
                 </details>
-              </ion-card-content>
-            </ion-card>
-          }
+              }
+              <!-- Same rule for every contest, in class and on tournament day. -->
+              <details class="intro rule">
+                <summary>Règle de notation : on note la position des objets à la fin du match</summary>
+                <p>Pendant le match, l'arbitre se concentre sur le robot et sur les pénalités à donner à l'équipe si besoin.
+Les points se comptent quand le match est terminé (chrono arrêté) : pour chaque objet, et pour le robot, on regarde où il se trouve à ce moment-là et on coche la ligne qui décrit cette position.
+Seule la position finale compte, pas la façon dont l'objet y est arrivé (poussé, porté, déposé...). Un objet déplacé par erreur compte là où il se trouve à la fin.
+Exception : ce qui ne laisse pas de trace sur le tapis (un son, une mélodie, une danse, un arrêt demandé) se note au moment où l'arbitre le constate pendant le match.
+À l'entraînement en classe, l'enseignant applique la même règle.</p>
+              </details>
+            </ion-card-content>
+          </ion-card>
           <ion-card>
             <ion-item lines="none">
               <ion-label>
@@ -233,6 +242,7 @@ import { builtinContest } from '../builtin-contests';
   styles: `
     .intro summary { cursor: pointer; font-weight: 600; }
     .intro p { white-space: pre-line; margin: 8px 0 0; }
+    .intro + .intro { margin-top: 12px; }
     .total { display: flex; justify-content: space-between; padding: 0 16px; font-size: 1.1rem; }
     /* Whole picture, never cropped (the zone plans must be readable); tap to enlarge. */
     .mission-img { display: block; width: 100%; height: auto; max-height: 60vh; object-fit: contain; cursor: zoom-in; }
