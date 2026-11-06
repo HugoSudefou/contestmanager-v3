@@ -130,14 +130,16 @@
             "type": "counter",
             "label": "Statue construite : blocs au-dessus des blocs noirs dans la salle de la statue.",
             "points": 8,
-            "max": 10
+            "max": 10,
+            "image": "assets/gardbot/m3-statue-salle.jpg"
           },
           {
             "id": "c-atelier",
             "type": "counter",
             "label": "Statue construite : blocs au-dessus des blocs noirs dans l'atelier.",
             "points": 6,
-            "max": 10
+            "max": 10,
+            "image": "assets/gardbot/m3-statue-atelier.jpg"
           },
           {
             "id": "nc-salle",
@@ -152,14 +154,16 @@
             "type": "counter",
             "label": "Statue non construite : blocs dans l'atelier.",
             "points": 2,
-            "max": 10
+            "max": 10,
+            "image": "assets/gardbot/m3-blocs-atelier.jpg"
           },
           {
             "id": "nc-dehors",
             "type": "counter",
             "label": "Statue non construite : blocs en dehors de l'auditorium.",
             "points": 1,
-            "max": 10
+            "max": 10,
+            "image": "assets/gardbot/m3-blocs-dehors.jpg"
           }
         ],
         "maxObjects": {
