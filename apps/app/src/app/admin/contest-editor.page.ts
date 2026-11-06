@@ -199,8 +199,9 @@ const move = <T,>(list: T[], index: number, delta: number) => {
                   <ion-button size="small" (click)="m.items.push(newItem('choice'))">+ Choix unique</ion-button>
                 </div>
 
-                <details class="advanced" [open]="!!m.maxObjects || !!m.rules?.length">
+                <details class="advanced" [open]="!!m.maxObjects || !!m.rules?.length || m.maxPoints != null">
                   <summary>Options avancées</summary>
+                  <ion-input class="num" label="Plafond de points de la mission (vide = aucun)" labelPlacement="stacked" type="number" min="0" [(ngModel)]="m.maxPoints"></ion-input>
                   <ion-toggle justify="start" [checked]="!!m.maxObjects" (ionChange)="toggleMaxObjects(m, $event.detail.checked)">
                     Limiter le nombre total d'objets (sinon la mission vaut 0)
                   </ion-toggle>
@@ -383,6 +384,7 @@ export class ContestEditorPage implements OnInit {
     const [removed] = m.items.splice(index, 1);
     if (m.maxObjects) m.maxObjects.items = m.maxObjects.items.filter((id) => id !== removed.id);
     m.rules = m.rules?.map((r) => ({ ...r, when: r.when.filter((c) => c.item !== removed.id) }));
+    m.limits = m.limits?.filter((l) => l.item !== removed.id && l.notMoreThan !== removed.id);
   }
 
   duplicateMission(index: number) {
@@ -395,6 +397,7 @@ export class ContestEditorPage implements OnInit {
     copy.items.forEach((i) => (i.id = ids.get(i.id)!));
     if (copy.maxObjects) copy.maxObjects.items = copy.maxObjects.items.map((id) => ids.get(id) ?? id);
     copy.rules?.forEach((r) => r.when.forEach((c) => (c.item = ids.get(c.item) ?? c.item)));
+    copy.limits?.forEach((l) => ((l.item = ids.get(l.item) ?? l.item), (l.notMoreThan = ids.get(l.notMoreThan) ?? l.notMoreThan)));
     missions.splice(index + 1, 0, copy);
   }
 
@@ -444,6 +447,11 @@ export class ContestEditorPage implements OnInit {
     ) as Sheet;
     if (!sheet.timeTiebreak) delete sheet.timeTiebreak;
     if ((sheet.maxPenalties as unknown) === '' || sheet.maxPenalties === null || sheet.maxPenalties === 0) delete sheet.maxPenalties;
+    // An emptied ceiling field comes back as '' or null: no ceiling.
+    sheet.missions.forEach((m) => {
+      if ((m.maxPoints as unknown) === '' || m.maxPoints === null) delete m.maxPoints;
+      else if (m.maxPoints !== undefined) m.maxPoints = Number(m.maxPoints);
+    });
     sheet.missions.forEach((m) => m.rules?.forEach((r) => r.when.forEach((c) => typeof c.equals === 'string' && (c.equals = Number(c.equals)))));
     const errors = [...(f.name.trim() ? [] : ['Le nom est obligatoire.']), ...validateSheet(sheet)];
     this.errors.set(errors);

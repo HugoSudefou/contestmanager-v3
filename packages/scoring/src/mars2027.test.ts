@@ -35,18 +35,26 @@ for (const cycle of [2, 3]) {
     assert.equal(over.missions[0].points, 0);
     assert.ok(over.missions[0].error);
     // bonus below the cap is not reduced
-    assert.equal(computeSheet(sheet, { 'bonus-techno': { capteurs: 3, moteurs: 2 } }, 0).total, 100);
+    assert.equal(computeSheet(sheet, { 'bonus-techno': { capteurs: 2, moteurs: 2 } }, 0).total, 80);
     assert.equal(computeSheet(sheet, { 'bonus-techno': { capteurs: 2, moteurs: 1, 'outils-3d': 1 } }, 0).total, 80);
   });
 }
 
-test('technology bonus, identical in all 4 contests: 3 sensors, 2 motors, 1 3D-printed tool, 100 max', () => {
-  const ref = JSON.stringify(seed[0].sheet.missions.find((x) => x.id === 'bonus-techno'));
-  for (const c of seed) assert.equal(JSON.stringify(c.sheet.missions.find((x) => x.id === 'bonus-techno')), ref, c.name);
+test('technology bonus, same in all 4 contests (robot name aside): 3 sensors, 2 motors, 2 3D tools, 100 max', () => {
+  const strip = (c: (typeof seed)[number]) => {
+    const m = structuredClone(c.sheet.missions.find((x) => x.id === 'bonus-techno')!);
+    m.items.forEach((i) => (i.label = i.label.replace(/^(RoBee|GardBot|Le rover) /, '')));
+    return JSON.stringify(m);
+  };
+  for (const c of seed) assert.equal(strip(c), strip(seed[0]), c.name);
+  assert.deepEqual(seed.map((c) => c.sheet.missions.find((x) => x.id === 'bonus-techno')!.items[0].label.split(' ')[0]), ['RoBee', 'GardBot', 'Le', 'Le']);
   const m = seed[0].sheet.missions.find((x) => x.id === 'bonus-techno')!;
-  assert.deepEqual(m.items.map((i) => [i.id, i.type === 'counter' ? i.max : 0]), [['capteurs', 3], ['moteurs', 2], ['outils-3d', 1]]);
+  assert.deepEqual(m.items.map((i) => [i.id, i.type === 'counter' ? i.max : 0]), [['capteurs', 3], ['moteurs', 2], ['outils-3d', 2]]);
   const sheet = { ...seed[0].sheet, missions: [m] };
-  assert.equal(computeSheet(sheet, { 'bonus-techno': { capteurs: 3, moteurs: 2, 'outils-3d': 1 } }, 0).total, 100);
+  const pts = (a: Record<string, number>) => computeSheet(sheet, { 'bonus-techno': a }, 0).total;
+  assert.equal(pts({ capteurs: 3, moteurs: 2, 'outils-3d': 2 }), 100); // 140 capped
+  assert.equal(pts({ capteurs: 3, moteurs: 2 }), 100);
+  assert.equal(pts({ capteurs: 2, 'outils-3d': 2 }), 80);
 });
 
 test('RoBee: missions worth 600 points like the other contests (2019 scores x 3)', () => {

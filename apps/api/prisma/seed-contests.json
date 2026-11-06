@@ -327,50 +327,31 @@
         {
           "id": "bonus-techno",
           "title": "Bonus technologique",
-          "description": "Maximum 100 points. Jusqu'à 3 capteurs, 2 moteurs supplémentaires et 1 outil imprimé en 3D, à 20 points chacun ; ils doivent servir aux missions du défi.",
+          "description": "Maximum 100 points. Jusqu'à 3 capteurs, 2 moteurs supplémentaires et 2 outils imprimés en 3D, à 20 points chacun ; ils doivent servir aux missions du défi.",
           "items": [
             {
               "id": "capteurs",
               "type": "counter",
-              "label": "Le robot utilise un capteur dans ses missions pour être plus autonome.",
+              "label": "RoBee utilise des capteurs pour être plus autonome dans ses missions (tactile, de force, de lumière, de couleurs, à ultrasons, gyroscopique, de température, infrarouge...).",
               "points": 20,
               "max": 3
             },
             {
               "id": "moteurs",
               "type": "counter",
-              "label": "Le robot utilise un moteur supplémentaire pour une action autre que ses déplacements, en lien avec les missions.",
+              "label": "RoBee utilise des moteurs supplémentaires pour une action autre que ses déplacements, en lien avec les missions.",
               "points": 20,
               "max": 2
             },
             {
               "id": "outils-3d",
               "type": "counter",
-              "label": "Le robot utilise un outil fabriqué à l'aide d'une imprimante 3D.",
+              "label": "RoBee utilise un outil fabriqué à l'aide d'une imprimante 3D.",
               "points": 20,
-              "max": 1
+              "max": 2
             }
           ],
-          "rules": [
-            {
-              "label": "Plafond du bonus technologique : 100 points",
-              "when": [
-                {
-                  "item": "capteurs",
-                  "equals": 3
-                },
-                {
-                  "item": "moteurs",
-                  "equals": 2
-                },
-                {
-                  "item": "outils-3d",
-                  "equals": 1
-                }
-              ],
-              "add": -20
-            }
-          ]
+          "maxPoints": 100
         },
         {
           "id": "bonus-pedago",
@@ -857,50 +838,31 @@
         {
           "id": "bonus-techno",
           "title": "Bonus technologique",
-          "description": "Maximum 100 points. Jusqu'à 3 capteurs, 2 moteurs supplémentaires et 1 outil imprimé en 3D, à 20 points chacun ; ils doivent servir aux missions du défi.",
+          "description": "Maximum 100 points. Jusqu'à 3 capteurs, 2 moteurs supplémentaires et 2 outils imprimés en 3D, à 20 points chacun ; ils doivent servir aux missions du défi.",
           "items": [
             {
               "id": "capteurs",
               "type": "counter",
-              "label": "Le robot utilise un capteur dans ses missions pour être plus autonome.",
+              "label": "GardBot utilise des capteurs pour être plus autonome dans ses missions (tactile, de force, de lumière, de couleurs, à ultrasons, gyroscopique, de température, infrarouge...).",
               "points": 20,
               "max": 3
             },
             {
               "id": "moteurs",
               "type": "counter",
-              "label": "Le robot utilise un moteur supplémentaire pour une action autre que ses déplacements, en lien avec les missions.",
+              "label": "GardBot utilise des moteurs supplémentaires pour une action autre que ses déplacements, en lien avec les missions.",
               "points": 20,
               "max": 2
             },
             {
               "id": "outils-3d",
               "type": "counter",
-              "label": "Le robot utilise un outil fabriqué à l'aide d'une imprimante 3D.",
+              "label": "GardBot utilise un outil fabriqué à l'aide d'une imprimante 3D.",
               "points": 20,
-              "max": 1
+              "max": 2
             }
           ],
-          "rules": [
-            {
-              "label": "Plafond du bonus technologique : 100 points",
-              "when": [
-                {
-                  "item": "capteurs",
-                  "equals": 3
-                },
-                {
-                  "item": "moteurs",
-                  "equals": 2
-                },
-                {
-                  "item": "outils-3d",
-                  "equals": 1
-                }
-              ],
-              "add": -20
-            }
-          ]
+          "maxPoints": 100
         },
         {
           "id": "bonus-pedago",
@@ -1285,50 +1247,31 @@
         {
           "id": "bonus-techno",
           "title": "Bonus technologique",
-          "description": "Maximum 100 points. Jusqu'à 3 capteurs, 2 moteurs supplémentaires et 1 outil imprimé en 3D, à 20 points chacun ; ils doivent servir aux missions du défi.",
+          "description": "Maximum 100 points. Jusqu'à 3 capteurs, 2 moteurs supplémentaires et 2 outils imprimés en 3D, à 20 points chacun ; ils doivent servir aux missions du défi.",
           "items": [
             {
               "id": "capteurs",
               "type": "counter",
-              "label": "Le robot utilise un capteur dans ses missions pour être plus autonome.",
+              "label": "Le rover utilise des capteurs pour être plus autonome dans ses missions (tactile, de force, de lumière, de couleurs, à ultrasons, gyroscopique, de température, infrarouge...).",
               "points": 20,
               "max": 3
             },
             {
               "id": "moteurs",
               "type": "counter",
-              "label": "Le robot utilise un moteur supplémentaire pour une action autre que ses déplacements, en lien avec les missions.",
+              "label": "Le rover utilise des moteurs supplémentaires pour une action autre que ses déplacements, en lien avec les missions.",
               "points": 20,
               "max": 2
             },
             {
               "id": "outils-3d",
               "type": "counter",
-              "label": "Le robot utilise un outil fabriqué à l'aide d'une imprimante 3D.",
+              "label": "Le rover utilise un outil fabriqué à l'aide d'une imprimante 3D.",
               "points": 20,
-              "max": 1
+              "max": 2
             }
           ],
-          "rules": [
-            {
-              "label": "Plafond du bonus technologique : 100 points",
-              "when": [
-                {
-                  "item": "capteurs",
-                  "equals": 3
-                },
-                {
-                  "item": "moteurs",
-                  "equals": 2
-                },
-                {
-                  "item": "outils-3d",
-                  "equals": 1
-                }
-              ],
-              "add": -20
-            }
-          ]
+          "maxPoints": 100
         },
         {
           "id": "bonus-pedago",
@@ -1711,50 +1654,31 @@
         {
           "id": "bonus-techno",
           "title": "Bonus technologique",
-          "description": "Maximum 100 points. Jusqu'à 3 capteurs, 2 moteurs supplémentaires et 1 outil imprimé en 3D, à 20 points chacun ; ils doivent servir aux missions du défi.",
+          "description": "Maximum 100 points. Jusqu'à 3 capteurs, 2 moteurs supplémentaires et 2 outils imprimés en 3D, à 20 points chacun ; ils doivent servir aux missions du défi.",
           "items": [
             {
               "id": "capteurs",
               "type": "counter",
-              "label": "Le robot utilise un capteur dans ses missions pour être plus autonome.",
+              "label": "Le rover utilise des capteurs pour être plus autonome dans ses missions (tactile, de force, de lumière, de couleurs, à ultrasons, gyroscopique, de température, infrarouge...).",
               "points": 20,
               "max": 3
             },
             {
               "id": "moteurs",
               "type": "counter",
-              "label": "Le robot utilise un moteur supplémentaire pour une action autre que ses déplacements, en lien avec les missions.",
+              "label": "Le rover utilise des moteurs supplémentaires pour une action autre que ses déplacements, en lien avec les missions.",
               "points": 20,
               "max": 2
             },
             {
               "id": "outils-3d",
               "type": "counter",
-              "label": "Le robot utilise un outil fabriqué à l'aide d'une imprimante 3D.",
+              "label": "Le rover utilise un outil fabriqué à l'aide d'une imprimante 3D.",
               "points": 20,
-              "max": 1
+              "max": 2
             }
           ],
-          "rules": [
-            {
-              "label": "Plafond du bonus technologique : 100 points",
-              "when": [
-                {
-                  "item": "capteurs",
-                  "equals": 3
-                },
-                {
-                  "item": "moteurs",
-                  "equals": 2
-                },
-                {
-                  "item": "outils-3d",
-                  "equals": 1
-                }
-              ],
-              "add": -20
-            }
-          ]
+          "maxPoints": 100
         },
         {
           "id": "bonus-pedago",

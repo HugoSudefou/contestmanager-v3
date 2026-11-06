@@ -24,6 +24,8 @@ export interface MissionDef {
   items: ItemDef[];
   /** Shared limit on objects across items (counter value, or 1 per ticked check). Exceeded = mission scores 0. */
   maxObjects?: { items: string[]; max: number };
+  /** Ceiling on the mission's points (e.g. technology bonus: 100 points at most). */
+  maxPoints?: number;
   /**
    * Physical consistency between lines: `item` can never count more than `notMoreThan`
    * (e.g. a waste at level 3 of a tower needs one at level 2 under it). On the sheet, adding to `item`
@@ -163,6 +165,7 @@ export function computeMission(mission: MissionDef, answers: MissionAnswers = {}
       points += rule.add;
     }
   }
+  if (mission.maxPoints != null && mission.maxPoints >= 0) points = Math.min(points, mission.maxPoints);
   return { id: mission.id, points };
 }
 
@@ -234,6 +237,7 @@ export function validateSheet(sheet: unknown): string[] {
     for (const id of m.maxObjects?.items ?? []) {
       if (!itemIds.has(id)) errors.push(`${where} : la limite d'objets cite une ligne inconnue (${id}).`);
     }
+    if (m.maxPoints != null && !(Number.isFinite(m.maxPoints) && m.maxPoints >= 0)) errors.push(`${where} : plafond de points invalide.`);
     for (const l of m.limits ?? []) {
       if (!itemIds.has(l?.item) || !itemIds.has(l?.notMoreThan)) errors.push(`${where} : une limite entre lignes cite une ligne inconnue.`);
     }
