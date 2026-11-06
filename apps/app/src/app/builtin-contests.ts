@@ -533,6 +533,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "galerie",
               "type": "counter",
               "label": "Dans la galerie des personnages historiques mais pas dans la vitrine de sa couleur.",
+              "image": "assets/gardbot/m2-mauvaise-vitrine.jpg",
               "points": 10,
               "max": 4
             },
