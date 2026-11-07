@@ -646,7 +646,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "t1-oriente",
               "type": "check",
               "label": "Tableau 1 vertical : bien orienté.",
-              "image": "assets/gardbot/m4-tableau-vertical-socle.png",
+              "image": "assets/gardbot/m4-t1-oriente.png",
               "points": 10
             },
             {
@@ -660,13 +660,14 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "t1-support",
               "type": "check",
               "label": "Tableau 1 vertical : sur son support (niveau expert).",
-              "points": 20
+              "points": 20,
+              "image": "assets/gardbot/m4-t1-support.png"
             },
             {
               "id": "t2-oriente",
               "type": "check",
               "label": "Tableau 2 horizontal : bien orienté.",
-              "image": "assets/gardbot/m4-tableau-horizontal-socle.png",
+              "image": "assets/gardbot/m4-t2-oriente.png",
               "points": 10
             },
             {
@@ -680,7 +681,8 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "t2-support",
               "type": "check",
               "label": "Tableau 2 horizontal : sur son support (niveau expert).",
-              "points": 20
+              "points": 20,
+              "image": "assets/gardbot/m4-t2-support.png"
             }
           ],
           "rules": [
