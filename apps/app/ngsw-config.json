@@ -14,7 +14,7 @@
       "installMode": "prefetch",
       "updateMode": "prefetch",
       "resources": {
-        "files": ["/assets/legacy/**", "/assets/mars2027/**", "/assets/gardbot/**"]
+        "files": ["/assets/legacy/**", "/assets/mars2027/**", "/assets/gardbot/**", "/assets/robee/**"]
       }
     },
     {

@@ -290,7 +290,6 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "danse",
               "type": "choice",
               "label": "Danse de RoBee",
-              "image": "assets/legacy/cycle2/explMission/RoBee_danse_mission5.jpg",
               "options": [
                 {
                   "label": "RoBee a effectué une danse.",
@@ -300,6 +299,10 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
                   "label": "RoBee a effectué une danse en forme de huit.",
                   "points": 30
                 }
+              ],
+              "images": [
+                "assets/robee/m5-danse.jpg",
+                "assets/robee/m5-danse-huit.jpg"
               ]
             }
           ]
