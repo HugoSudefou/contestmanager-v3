@@ -104,3 +104,13 @@ test('time is handled the same way in all 4 contests: free stopwatch, ties split
     assert.equal(c.sheet.timeTiebreak, true, c.name);
   }
 });
+
+test('GardBot mission 6: workshop 30 / lodge 50 / other 0, then switched off yes 50 / no 0', () => {
+  const m6 = seed.find((c) => c.name === 'Défi robotique 2019 - Cycle 3')!.sheet.missions[5];
+  const sheet = { durationSeconds: 0, penaltyPoints: 5, missions: [m6] };
+  const pts = (position: number, eteint: number) => computeSheet(sheet, { m6: { position, eteint } }, 0).total;
+  assert.equal(pts(1, 0), 100);
+  assert.equal(pts(0, 0), 80);
+  assert.equal(pts(1, 1), 50);
+  assert.equal(pts(2, 1), 0);
+});

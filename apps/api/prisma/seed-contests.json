@@ -835,11 +835,11 @@
               "options": [
                 {
                   "label": "dans l'atelier.",
-                  "points": 50
+                  "points": 30
                 },
                 {
                   "label": "dans la loge.",
-                  "points": 80
+                  "points": 50
                 },
                 {
                   "label": "Autre situation.",
@@ -849,25 +849,18 @@
             },
             {
               "id": "eteint",
-              "type": "check",
-              "label": "GardBot est éteint dans la loge du gardien.",
-              "points": 0
-            }
-          ],
-          "rules": [
-            {
-              "label": "Dans la loge et éteint = 100",
-              "when": [
+              "type": "choice",
+              "label": "GardBot est éteint",
+              "options": [
                 {
-                  "item": "position",
-                  "equals": 1
+                  "label": "Oui.",
+                  "points": 50
                 },
                 {
-                  "item": "eteint",
-                  "equals": true
+                  "label": "Non.",
+                  "points": 0
                 }
-              ],
-              "add": 20
+              ]
             }
           ],
           "description": "GardBot doit être en sécurité pour passer la journée et recharger ses batteries pour être en forme la nuit suivante... Il doit donc se hâter, avant que l'aube pointe le bout de son nez, de retourner dans sa loge."
