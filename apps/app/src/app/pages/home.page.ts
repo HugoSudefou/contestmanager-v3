@@ -66,7 +66,8 @@ import { ApiService } from '../api.service';
     </ion-content>
   `,
   styles: `
-    .home { max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+    .home { max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; }
+    .home > * + * { margin-top: 12px; }
     .logo { max-height: 140px; object-fit: contain; margin: 12px auto 24px; }
   `,
 })

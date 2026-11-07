@@ -1,15 +1,17 @@
-# This file is used by the build system to adjust CSS and JS output to support the specified browsers below.
-# For additional information regarding the format and rule options, please see:
-# https://github.com/browserslist/browserslist#queries
+# Navigateurs visés par la compilation (syntaxe JavaScript et CSS).
+#
+# L'appli doit tourner sur d'anciennes tablettes Android pendant les défis.
+# Dans l'APK, c'est la « WebView Android » de la tablette qui affiche l'appli.
+# Chrome 66 (2018) est le minimum : testé avec Chromium 66, 67, 68, 70, 72 (OK)
+# et 64, 65 (écran blanc). Dans l'APK, une WebView plus ancienne affiche
+# src/webview-trop-ancienne.html (réglage minWebViewVersion de capacitor.config.ts).
+# Les fonctions manquantes sont ajoutées par src/polyfills.ts (core-js).
+# Voir aussi build.mjs (étape de regroupement désactivée).
+#
+# Vérifier la liste obtenue : npx browserslist
 
-# For the full list of supported browsers by the Angular framework, please see:
-# https://angular.dev/reference/versions#browser-support
-
-# You can see what browsers were selected by your queries by running:
-#   npx browserslist
-
-Chrome >=107
-Firefox >=106
-Edge >=107
-Safari >=16.1
-iOS >=16.1
+Chrome >=66
+Edge >=79
+Firefox >=91
+Safari >=15
+iOS >=15

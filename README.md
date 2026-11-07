@@ -152,3 +152,17 @@ apps/app/             Ionic Angular : pages arbitre / équipe / entraînement / 
   android/            projet Android Capacitor
 docker-compose.yml    db + api + web (nginx)
 ```
+
+## Anciennes tablettes
+
+L'appli doit aussi tourner sur d'anciennes tablettes Android pendant les défis.
+
+- Elle est compilée pour **Chrome / Android System WebView 66 et plus** (`apps/app/.browserslistrc`).
+  Testé avec Chromium 66, 67, 68, 70 et 72 : les 4 feuilles s'affichent, les images se chargent, la saisie fonctionne.
+- `apps/app/src/polyfills.ts` (core-js) ajoute les fonctions récentes qui manquent aux anciennes WebView.
+- `npm run build` lance `apps/app/build.mjs`. Ce script désactive l'étape de regroupement d'Angular 22
+  (`NG_BUILD_OPTIMIZE_CHUNKS=0`), qui remettait une syntaxe trop récente (écran blanc).
+  Le build échoue s'il reste de la syntaxe trop récente.
+- L'APK s'installe à partir d'Android 7.0. Si la WebView de la tablette est plus ancienne que la version 66,
+  l'appli affiche `webview-trop-ancienne.html`, qui explique comment la mettre à jour depuis le Play Store.
+- Sur les écrans de terrain, les espacements utilisent des marges, pas `gap`, qui n'existe pas avant Chrome 84.

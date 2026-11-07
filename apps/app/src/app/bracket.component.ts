@@ -32,12 +32,15 @@ import { roundName, type Match } from './api.service';
     </div>
   `,
   styles: `
-    .bracket { display: flex; gap: 12px; overflow-x: auto; padding: 8px 16px; }
+    .bracket { display: flex; overflow-x: auto; padding: 8px 16px; }
+    .bracket > * + * { margin-left: 12px; }
     .round { min-width: 200px; display: flex; flex-direction: column; }
-    .matches { flex: 1; display: flex; flex-direction: column; justify-content: space-around; gap: 8px; }
+    .matches { flex: 1; display: flex; flex-direction: column; justify-content: space-around; }
+    .matches > * + * { margin-top: 8px; }
     h3 { font-size: 0.95rem; margin: 0 0 4px; text-align: center; }
     .match { border: 1px solid var(--ion-color-step-200, #ddd); border-radius: 8px; padding: 6px 8px; }
-    .team { display: flex; justify-content: space-between; gap: 8px; padding: 2px 0; }
+    .team { display: flex; justify-content: space-between; padding: 2px 0; }
+    .team > * + * { margin-left: 8px; }
     .winner { font-weight: bold; color: var(--ion-color-success); }
     .tbd { color: var(--ion-color-medium); font-style: italic; }
   `,

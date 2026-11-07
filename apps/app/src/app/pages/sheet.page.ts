@@ -268,10 +268,14 @@ Exception : ce qui ne laisse pas de trace sur le tapis (un son, une mélodie, un
     .mission-img { display: block; width: 100%; height: auto; max-height: 60vh; object-fit: contain; cursor: zoom-in; }
     .thumb { width: 52px; height: 52px; object-fit: contain; border-radius: 4px; cursor: zoom-in; }
     /* Pictures side by side, two per row (a third one wraps under them). */
-    .thumbs { display: flex; flex-wrap: wrap; gap: 4px; max-width: 108px; margin-inline-end: 10px; }
-    .counter-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 4px; }
+    /* Margins instead of flex 'gap', which old tablets (WebView < 84) ignore. */
+    .thumbs { display: flex; flex-wrap: wrap; max-width: 112px; margin-right: 6px; }
+    .thumbs .thumb { margin: 0 4px 4px 0; }
+    .counter-row { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+    .counter-row > * + * { margin-left: 8px; }
     .counter-row .pts { color: var(--ion-color-medium-shade); font-size: 0.85rem; }
-    .counter { display: flex; align-items: center; gap: 4px; }
+    .counter { display: flex; align-items: center; }
+    .counter > * + * { margin-left: 4px; }
     .count { min-width: 2ch; text-align: center; font-size: 1.3rem; font-weight: bold; }
     .wrap { white-space: normal; margin-right: 8px; }
     .desc { white-space: pre-line; margin-bottom: 8px; }

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mise à jour nécessaire</title>
+  <style>
+    body { font-family: sans-serif; margin: 0; padding: 24px; color: #222; line-height: 1.5; }
+    h1 { font-size: 1.4em; color: #0054e9; }
+    ol li { margin-bottom: 8px; }
+    .note { color: #666; font-size: 0.9em; }
+  </style>
+</head>
+<body>
+  <!-- Page affichée par Capacitor quand la WebView de la tablette est trop ancienne
+       (réglage android.minWebViewVersion dans capacitor.config.ts). Pas de JavaScript ici. -->
+  <h1>Contest Manager : mise à jour nécessaire</h1>
+  <p>Cette tablette affiche les pages avec un composant Android trop ancien,
+    <strong>Android System WebView</strong>. L'appli a besoin de la version 66 ou plus récente.</p>
+  <ol>
+    <li>Connecter la tablette à Internet (Wi-Fi).</li>
+    <li>Ouvrir le <strong>Play Store</strong>.</li>
+    <li>Chercher <strong>Android System WebView</strong>, puis appuyer sur <strong>Mettre à jour</strong>.</li>
+    <li>Sur Android 7 à 9 : mettre aussi à jour <strong>Google Chrome</strong>.</li>
+    <li>Fermer Contest Manager puis le rouvrir.</li>
+  </ol>
+  <p class="note">Si le Play Store ne propose pas de mise à jour, cette tablette ne peut pas faire fonctionner l'appli.
+    Utiliser une autre tablette ou un téléphone pour arbitrer.</p>
+</body>
+</html>

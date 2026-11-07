@@ -132,7 +132,7 @@ import { BracketComponent } from '../bracket.component';
       </div>
     </ion-content>
   `,
-  styles: `.teams { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }`,
+  styles: `.teams { display: flex; flex-wrap: wrap; margin-top: 4px; } .teams > * { margin: 0 4px 4px 0; }`,
 })
 export class TournamentPage implements ViewWillEnter {
   api = inject(ApiService);
