@@ -317,7 +317,6 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "abri",
               "type": "choice",
               "label": "Position de RoBee",
-              "image": "assets/legacy/cycle2/explMission/RoBee-Ruche.jpg",
               "options": [
                 {
                   "label": "RoBee se trouve dans la « Ruche ».",
@@ -331,6 +330,11 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
                   "label": "RoBee se trouve ailleurs.",
                   "points": 0
                 }
+              ],
+              "images": [
+                "assets/robee/m6-ruche.jpg",
+                "assets/robee/m6-hotel.jpg",
+                "assets/robee/m6-ailleurs.jpg"
               ]
             },
             {
@@ -346,7 +350,8 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
                   "label": "Non.",
                   "points": 0
                 }
-              ]
+              ],
+              "image": "assets/robee/m6-eteint.png"
             }
           ]
         },
