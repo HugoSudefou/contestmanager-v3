@@ -779,6 +779,10 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
                   "label": "quand GardBot était à l'extérieur de l'auditorium.",
                   "points": 10
                 }
+              ],
+              "images": [
+                "assets/gardbot/m5-auditorium-dedans.jpg",
+                "assets/gardbot/m5-auditorium-dehors.jpg"
               ]
             },
             {
