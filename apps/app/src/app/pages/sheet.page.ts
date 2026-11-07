@@ -163,6 +163,9 @@ Exception : ce qui ne laisse pas de trace sur le tapis (un son, une mélodie, un
                 }
                 <ion-list>
                   @for (item of m.items; track item.id) {
+                    @if (item.section) {
+                      <div class="section">{{ item.section }}</div>
+                    }
                     @switch (item.type) {
                       @case ('check') {
                         <ion-item>
@@ -280,6 +283,7 @@ Exception : ce qui ne laisse pas de trace sur le tapis (un son, une mélodie, un
     .wrap { white-space: normal; margin-right: 8px; }
     .desc { white-space: pre-line; margin-bottom: 8px; }
     .error { font-weight: bold; }
+    .section { padding: 14px 16px 4px; font-weight: bold; font-size: 1.05rem; color: var(--ion-color-primary); border-bottom: 1px solid var(--ion-color-step-150, #ddd); }
     .zoomed { width: 100%; height: 100%; object-fit: contain; }
   `,
 })

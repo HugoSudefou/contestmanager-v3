@@ -393,67 +393,69 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "att-respect",
               "type": "check",
               "points": 10,
-              "label": "Attitude - Pendant le défi, les élèves de l'équipe respectent les lieux et le matériel mis à disposition de l'équipe pendant le temps du défi (robot, outils, ordinateurs, tablettes, tables, chaises, plateau de jeu, matériel d'affichage...)."
+              "label": "Respectent les lieux et le matériel mis à disposition de l'équipe pendant le temps du défi (robot, outils, ordinateurs, tablettes, tables, chaises, plateau de jeu, matériel d'affichage...).",
+              "section": "1 - Attitude des élèves pendant le défi"
             },
             {
               "id": "att-roles",
               "type": "check",
               "points": 10,
-              "label": "Attitude - Pendant le défi, les élèves de l'équipe chacun a un rôle bien défini pendant les tests et les matchs."
+              "label": "Chacun a un rôle bien défini pendant les tests et les matchs."
             },
             {
               "id": "att-arbitre",
               "type": "check",
               "points": 10,
-              "label": "Attitude - Pendant le défi, les élèves de l'équipe prennent en compte les remarques de l'arbitre."
+              "label": "Prennent en compte les remarques de l'arbitre."
             },
             {
               "id": "att-perseverance",
               "type": "check",
               "points": 10,
-              "label": "Attitude - Pendant le défi, les élèves de l'équipe apprécient le moment, sont positifs, s'encouragent, progressent et persévèrent pour réussir toutes les missions."
+              "label": "Apprécient le moment, sont positifs, s'encouragent, progressent et persévèrent pour réussir toutes les missions."
             },
             {
               "id": "att-autres-equipes",
               "type": "check",
               "points": 10,
-              "label": "Attitude - Pendant le défi, les élèves de l'équipe respectent les autres équipes, partagent avec elles leur matériel, leurs connaissances et leurs solutions."
+              "label": "Respectent les autres équipes, partagent avec elles leur matériel, leurs connaissances et leurs solutions."
             },
             {
               "id": "affiche",
               "type": "check",
               "points": 0,
-              "label": "Une affiche (format raisin) est présente sur le stand de l'équipe."
+              "label": "Une affiche (format raisin) est présente sur le stand de l'équipe.",
+              "section": "2 - Affiche préparée par les élèves de l'équipe"
             },
             {
               "id": "a-presentation",
               "type": "check",
               "points": 10,
-              "label": "Affiche - Cadre « NOTRE ÉQUIPE » : nom de l'équipe, classe, enseignant, école, niveau, photo de l'équipe avec son robot et rôle principal de chaque équipier."
+              "label": "Cadre « NOTRE ÉQUIPE » : nom de l'équipe, classe, enseignant, école, niveau, photo de l'équipe avec son robot et rôle principal de chaque équipier."
             },
             {
               "id": "a-conception",
               "type": "check",
               "points": 10,
-              "label": "Affiche - Cadre « NOTRE ROBOT » : schéma décrivant les fonctions du robot (brique programmable, capteurs, moteurs, outils, structures)."
+              "label": "Cadre « NOTRE ROBOT » : schéma décrivant les fonctions du robot (brique programmable, capteurs, moteurs, outils, structures)."
             },
             {
               "id": "a-programmation",
               "type": "check",
               "points": 10,
-              "label": "Affiche - Cadre « NOS PROGRAMMES » : parties significatives et commentées des programmes de l'équipe (boucle, sélecteur, capteurs...)."
+              "label": "Cadre « NOS PROGRAMMES » : parties significatives et commentées des programmes de l'équipe (boucle, sélecteur, capteurs...)."
             },
             {
               "id": "a-apports",
               "type": "check",
               "points": 10,
-              "label": "Affiche - Cadre « LA ROBOTIQUE C'EST... » : au moins une phrase par élève sur ce que le projet lui a apporté."
+              "label": "Cadre « LA ROBOTIQUE C'EST... » : au moins une phrase par élève sur ce que le projet lui a apporté."
             },
             {
               "id": "a-equipe",
               "type": "check",
               "points": 10,
-              "label": "Affiche - Cadre « LE TRAVAIL EN ÉQUIPE » : importance du travail en équipe, rôle de chacun, état d'esprit, méthodes et outils de travail."
+              "label": "Cadre « LE TRAVAIL EN ÉQUIPE » : importance du travail en équipe, rôle de chacun, état d'esprit, méthodes et outils de travail."
             }
           ],
           "limits": [
@@ -940,67 +942,69 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "att-respect",
               "type": "check",
               "points": 10,
-              "label": "Attitude - Pendant le défi, les élèves de l'équipe respectent les lieux et le matériel mis à disposition de l'équipe pendant le temps du défi (robot, outils, ordinateurs, tablettes, tables, chaises, plateau de jeu, matériel d'affichage...)."
+              "label": "Respectent les lieux et le matériel mis à disposition de l'équipe pendant le temps du défi (robot, outils, ordinateurs, tablettes, tables, chaises, plateau de jeu, matériel d'affichage...).",
+              "section": "1 - Attitude des élèves pendant le défi"
             },
             {
               "id": "att-roles",
               "type": "check",
               "points": 10,
-              "label": "Attitude - Pendant le défi, les élèves de l'équipe chacun a un rôle bien défini pendant les tests et les matchs."
+              "label": "Chacun a un rôle bien défini pendant les tests et les matchs."
             },
             {
               "id": "att-arbitre",
               "type": "check",
               "points": 10,
-              "label": "Attitude - Pendant le défi, les élèves de l'équipe prennent en compte les remarques de l'arbitre."
+              "label": "Prennent en compte les remarques de l'arbitre."
             },
             {
               "id": "att-perseverance",
               "type": "check",
               "points": 10,
-              "label": "Attitude - Pendant le défi, les élèves de l'équipe apprécient le moment, sont positifs, s'encouragent, progressent et persévèrent pour réussir toutes les missions."
+              "label": "Apprécient le moment, sont positifs, s'encouragent, progressent et persévèrent pour réussir toutes les missions."
             },
             {
               "id": "att-autres-equipes",
               "type": "check",
               "points": 10,
-              "label": "Attitude - Pendant le défi, les élèves de l'équipe respectent les autres équipes, partagent avec elles leur matériel, leurs connaissances et leurs solutions."
+              "label": "Respectent les autres équipes, partagent avec elles leur matériel, leurs connaissances et leurs solutions."
             },
             {
               "id": "affiche",
               "type": "check",
               "points": 0,
-              "label": "Une affiche (format raisin) est présente sur le stand de l'équipe."
+              "label": "Une affiche (format raisin) est présente sur le stand de l'équipe.",
+              "section": "2 - Affiche préparée par les élèves de l'équipe"
             },
             {
               "id": "a-presentation",
               "type": "check",
               "points": 10,
-              "label": "Affiche - Cadre « NOTRE ÉQUIPE » : nom de l'équipe, classe, enseignant, école, niveau, photo de l'équipe avec son robot et rôle principal de chaque équipier."
+              "label": "Cadre « NOTRE ÉQUIPE » : nom de l'équipe, classe, enseignant, école, niveau, photo de l'équipe avec son robot et rôle principal de chaque équipier."
             },
             {
               "id": "a-conception",
               "type": "check",
               "points": 10,
-              "label": "Affiche - Cadre « NOTRE ROBOT » : schéma décrivant les fonctions du robot (brique programmable, capteurs, moteurs, outils, structures)."
+              "label": "Cadre « NOTRE ROBOT » : schéma décrivant les fonctions du robot (brique programmable, capteurs, moteurs, outils, structures)."
             },
             {
               "id": "a-programmation",
               "type": "check",
               "points": 10,
-              "label": "Affiche - Cadre « NOS PROGRAMMES » : parties significatives et commentées des programmes de l'équipe (boucle, sélecteur, capteurs...)."
+              "label": "Cadre « NOS PROGRAMMES » : parties significatives et commentées des programmes de l'équipe (boucle, sélecteur, capteurs...)."
             },
             {
               "id": "a-apports",
               "type": "check",
               "points": 10,
-              "label": "Affiche - Cadre « LA ROBOTIQUE C'EST... » : au moins une phrase par élève sur ce que le projet lui a apporté."
+              "label": "Cadre « LA ROBOTIQUE C'EST... » : au moins une phrase par élève sur ce que le projet lui a apporté."
             },
             {
               "id": "a-equipe",
               "type": "check",
               "points": 10,
-              "label": "Affiche - Cadre « LE TRAVAIL EN ÉQUIPE » : importance du travail en équipe, rôle de chacun, état d'esprit, méthodes et outils de travail."
+              "label": "Cadre « LE TRAVAIL EN ÉQUIPE » : importance du travail en équipe, rôle de chacun, état d'esprit, méthodes et outils de travail."
             }
           ],
           "limits": [
@@ -1349,67 +1353,69 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "att-respect",
               "type": "check",
               "points": 10,
-              "label": "Attitude - Pendant le défi, les élèves de l'équipe respectent les lieux et le matériel mis à disposition de l'équipe pendant le temps du défi (robot, outils, ordinateurs, tablettes, tables, chaises, plateau de jeu, matériel d'affichage...)."
+              "label": "Respectent les lieux et le matériel mis à disposition de l'équipe pendant le temps du défi (robot, outils, ordinateurs, tablettes, tables, chaises, plateau de jeu, matériel d'affichage...).",
+              "section": "1 - Attitude des élèves pendant le défi"
             },
             {
               "id": "att-roles",
               "type": "check",
               "points": 10,
-              "label": "Attitude - Pendant le défi, les élèves de l'équipe chacun a un rôle bien défini pendant les tests et les matchs."
+              "label": "Chacun a un rôle bien défini pendant les tests et les matchs."
             },
             {
               "id": "att-arbitre",
               "type": "check",
               "points": 10,
-              "label": "Attitude - Pendant le défi, les élèves de l'équipe prennent en compte les remarques de l'arbitre."
+              "label": "Prennent en compte les remarques de l'arbitre."
             },
             {
               "id": "att-perseverance",
               "type": "check",
               "points": 10,
-              "label": "Attitude - Pendant le défi, les élèves de l'équipe apprécient le moment, sont positifs, s'encouragent, progressent et persévèrent pour réussir toutes les missions."
+              "label": "Apprécient le moment, sont positifs, s'encouragent, progressent et persévèrent pour réussir toutes les missions."
             },
             {
               "id": "att-autres-equipes",
               "type": "check",
               "points": 10,
-              "label": "Attitude - Pendant le défi, les élèves de l'équipe respectent les autres équipes, partagent avec elles leur matériel, leurs connaissances et leurs solutions."
+              "label": "Respectent les autres équipes, partagent avec elles leur matériel, leurs connaissances et leurs solutions."
             },
             {
               "id": "affiche",
               "type": "check",
               "points": 0,
-              "label": "Une affiche (format raisin) est présente sur le stand de l'équipe."
+              "label": "Une affiche (format raisin) est présente sur le stand de l'équipe.",
+              "section": "2 - Affiche préparée par les élèves de l'équipe"
             },
             {
               "id": "a-presentation",
               "type": "check",
               "points": 10,
-              "label": "Affiche - Cadre « NOTRE ÉQUIPE » : nom de l'équipe, classe, enseignant, école, niveau, photo de l'équipe avec son robot et rôle principal de chaque équipier."
+              "label": "Cadre « NOTRE ÉQUIPE » : nom de l'équipe, classe, enseignant, école, niveau, photo de l'équipe avec son robot et rôle principal de chaque équipier."
             },
             {
               "id": "a-conception",
               "type": "check",
               "points": 10,
-              "label": "Affiche - Cadre « NOTRE ROBOT » : schéma décrivant les fonctions du robot (brique programmable, capteurs, moteurs, outils, structures)."
+              "label": "Cadre « NOTRE ROBOT » : schéma décrivant les fonctions du robot (brique programmable, capteurs, moteurs, outils, structures)."
             },
             {
               "id": "a-programmation",
               "type": "check",
               "points": 10,
-              "label": "Affiche - Cadre « NOS PROGRAMMES » : parties significatives et commentées des programmes de l'équipe (boucle, sélecteur, capteurs...)."
+              "label": "Cadre « NOS PROGRAMMES » : parties significatives et commentées des programmes de l'équipe (boucle, sélecteur, capteurs...)."
             },
             {
               "id": "a-apports",
               "type": "check",
               "points": 10,
-              "label": "Affiche - Cadre « LA ROBOTIQUE C'EST... » : au moins une phrase par élève sur ce que le projet lui a apporté."
+              "label": "Cadre « LA ROBOTIQUE C'EST... » : au moins une phrase par élève sur ce que le projet lui a apporté."
             },
             {
               "id": "a-equipe",
               "type": "check",
               "points": 10,
-              "label": "Affiche - Cadre « LE TRAVAIL EN ÉQUIPE » : importance du travail en équipe, rôle de chacun, état d'esprit, méthodes et outils de travail."
+              "label": "Cadre « LE TRAVAIL EN ÉQUIPE » : importance du travail en équipe, rôle de chacun, état d'esprit, méthodes et outils de travail."
             }
           ],
           "limits": [
@@ -1756,67 +1762,69 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "att-respect",
               "type": "check",
               "points": 10,
-              "label": "Attitude - Pendant le défi, les élèves de l'équipe respectent les lieux et le matériel mis à disposition de l'équipe pendant le temps du défi (robot, outils, ordinateurs, tablettes, tables, chaises, plateau de jeu, matériel d'affichage...)."
+              "label": "Respectent les lieux et le matériel mis à disposition de l'équipe pendant le temps du défi (robot, outils, ordinateurs, tablettes, tables, chaises, plateau de jeu, matériel d'affichage...).",
+              "section": "1 - Attitude des élèves pendant le défi"
             },
             {
               "id": "att-roles",
               "type": "check",
               "points": 10,
-              "label": "Attitude - Pendant le défi, les élèves de l'équipe chacun a un rôle bien défini pendant les tests et les matchs."
+              "label": "Chacun a un rôle bien défini pendant les tests et les matchs."
             },
             {
               "id": "att-arbitre",
               "type": "check",
               "points": 10,
-              "label": "Attitude - Pendant le défi, les élèves de l'équipe prennent en compte les remarques de l'arbitre."
+              "label": "Prennent en compte les remarques de l'arbitre."
             },
             {
               "id": "att-perseverance",
               "type": "check",
               "points": 10,
-              "label": "Attitude - Pendant le défi, les élèves de l'équipe apprécient le moment, sont positifs, s'encouragent, progressent et persévèrent pour réussir toutes les missions."
+              "label": "Apprécient le moment, sont positifs, s'encouragent, progressent et persévèrent pour réussir toutes les missions."
             },
             {
               "id": "att-autres-equipes",
               "type": "check",
               "points": 10,
-              "label": "Attitude - Pendant le défi, les élèves de l'équipe respectent les autres équipes, partagent avec elles leur matériel, leurs connaissances et leurs solutions."
+              "label": "Respectent les autres équipes, partagent avec elles leur matériel, leurs connaissances et leurs solutions."
             },
             {
               "id": "affiche",
               "type": "check",
               "points": 0,
-              "label": "Une affiche (format raisin) est présente sur le stand de l'équipe."
+              "label": "Une affiche (format raisin) est présente sur le stand de l'équipe.",
+              "section": "2 - Affiche préparée par les élèves de l'équipe"
             },
             {
               "id": "a-presentation",
               "type": "check",
               "points": 10,
-              "label": "Affiche - Cadre « NOTRE ÉQUIPE » : nom de l'équipe, classe, enseignant, école, niveau, photo de l'équipe avec son robot et rôle principal de chaque équipier."
+              "label": "Cadre « NOTRE ÉQUIPE » : nom de l'équipe, classe, enseignant, école, niveau, photo de l'équipe avec son robot et rôle principal de chaque équipier."
             },
             {
               "id": "a-conception",
               "type": "check",
               "points": 10,
-              "label": "Affiche - Cadre « NOTRE ROBOT » : schéma décrivant les fonctions du robot (brique programmable, capteurs, moteurs, outils, structures)."
+              "label": "Cadre « NOTRE ROBOT » : schéma décrivant les fonctions du robot (brique programmable, capteurs, moteurs, outils, structures)."
             },
             {
               "id": "a-programmation",
               "type": "check",
               "points": 10,
-              "label": "Affiche - Cadre « NOS PROGRAMMES » : parties significatives et commentées des programmes de l'équipe (boucle, sélecteur, capteurs...)."
+              "label": "Cadre « NOS PROGRAMMES » : parties significatives et commentées des programmes de l'équipe (boucle, sélecteur, capteurs...)."
             },
             {
               "id": "a-apports",
               "type": "check",
               "points": 10,
-              "label": "Affiche - Cadre « LA ROBOTIQUE C'EST... » : au moins une phrase par élève sur ce que le projet lui a apporté."
+              "label": "Cadre « LA ROBOTIQUE C'EST... » : au moins une phrase par élève sur ce que le projet lui a apporté."
             },
             {
               "id": "a-equipe",
               "type": "check",
               "points": 10,
-              "label": "Affiche - Cadre « LE TRAVAIL EN ÉQUIPE » : importance du travail en équipe, rôle de chacun, état d'esprit, méthodes et outils de travail."
+              "label": "Cadre « LE TRAVAIL EN ÉQUIPE » : importance du travail en équipe, rôle de chacun, état d'esprit, méthodes et outils de travail."
             }
           ],
           "limits": [

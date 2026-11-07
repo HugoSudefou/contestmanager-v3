@@ -162,6 +162,7 @@ const move = <T,>(list: T[], index: number, delta: number) => {
                         <ion-select-option value="choice">Choix unique</ion-select-option>
                       </ion-select>
                       <ion-input class="grow" label="Libellé" labelPlacement="stacked" [(ngModel)]="it.label"></ion-input>
+                      <ion-input class="grow" label="Sous-titre affiché avant cette ligne (facultatif)" labelPlacement="stacked" [(ngModel)]="it.section"></ion-input>
                       @switch (it.type) {
                         @case ('check') {
                           <ion-input class="num" label="Points" labelPlacement="stacked" type="number" [(ngModel)]="it.points"></ion-input>
