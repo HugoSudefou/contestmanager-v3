@@ -189,19 +189,22 @@ Exception : ce qui ne laisse pas de trace sur le tapis (un son, une mélodie, un
                           }
                           <ion-label class="ion-text-wrap">
                             {{ item.label }}
-                            <p>{{ item.points }} pts × {{ count(m.id, item.id) }} (max {{ item.max }})</p>
+                            <!-- Counter under the text: the full width goes to the label and the pictures. -->
+                            <div class="counter-row">
+                              <span class="pts">{{ item.points }} pts × {{ count(m.id, item.id) }} <small>(max {{ item.max }})</small></span>
+                              <div class="counter">
+                                <ion-button fill="outline" size="small" [disabled]="!canDown(m, item.id)" (click)="step(m, item.id, -1)" aria-label="Moins"><ion-icon slot="icon-only" name="remove-outline"></ion-icon></ion-button>
+                                <span class="count">{{ count(m.id, item.id) }}</span>
+                                <ion-button fill="outline" size="small" [disabled]="!canUp(m, item.id)" (click)="step(m, item.id, 1)" aria-label="Plus"><ion-icon slot="icon-only" name="add-outline"></ion-icon></ion-button>
+                              </div>
+                            </div>
                           </ion-label>
-                          <div class="counter" slot="end">
-                            <ion-button fill="outline" [disabled]="!canDown(m, item.id)" (click)="step(m, item.id, -1)" aria-label="Moins"><ion-icon slot="icon-only" name="remove-outline"></ion-icon></ion-button>
-                            <span class="count">{{ count(m.id, item.id) }}</span>
-                            <ion-button fill="outline" [disabled]="!canUp(m, item.id)" (click)="step(m, item.id, 1)" aria-label="Plus"><ion-icon slot="icon-only" name="add-outline"></ion-icon></ion-button>
-                          </div>
                         </ion-item>
                       }
                       @case ('choice') {
                         <ion-radio-group [allowEmptySelection]="true" [value]="value(m.id, item.id)" (ionChange)="set(m.id, item.id, $event.detail.value ?? null)">
                           <ion-item lines="none">
-                            @if (pictures(item).length) {
+                            @if (pictures(item).length && !perOption(item)) {
                               <div slot="start" class="thumbs">
                                 @for (img of pictures(item); track $index) {
                                   <img [src]="img" alt="" class="thumb" (click)="zoom.set(img)" />
@@ -212,6 +215,10 @@ Exception : ce qui ne laisse pas de trace sur le tapis (un son, une mélodie, un
                           </ion-item>
                           @for (o of item.options; track $index) {
                             <ion-item>
+                              <!-- One picture per option: shown next to the option it illustrates. -->
+                              @if (perOption(item); as pics) {
+                                <img slot="start" [src]="pics[$index]" alt="" class="thumb" (click)="zoom.set(pics[$index])" />
+                              }
                               <ion-radio [value]="$index" justify="space-between">
                                 <span class="wrap">{{ o.label }}</span> <ion-note>{{ o.points }} pts</ion-note>
                               </ion-radio>
@@ -259,8 +266,11 @@ Exception : ce qui ne laisse pas de trace sur le tapis (un son, une mélodie, un
     .total { display: flex; justify-content: space-between; padding: 0 16px; font-size: 1.1rem; }
     /* Whole picture, never cropped (the zone plans must be readable); tap to enlarge. */
     .mission-img { display: block; width: 100%; height: auto; max-height: 60vh; object-fit: contain; cursor: zoom-in; }
-    .thumb { width: 56px; height: 56px; object-fit: contain; border-radius: 4px; cursor: zoom-in; }
-    .thumbs { display: flex; flex-direction: column; gap: 4px; }
+    .thumb { width: 52px; height: 52px; object-fit: contain; border-radius: 4px; cursor: zoom-in; }
+    /* Pictures side by side, two per row (a third one wraps under them). */
+    .thumbs { display: flex; flex-wrap: wrap; gap: 4px; max-width: 108px; margin-inline-end: 10px; }
+    .counter-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 4px; }
+    .counter-row .pts { color: var(--ion-color-medium-shade); font-size: 0.85rem; }
     .counter { display: flex; align-items: center; gap: 4px; }
     .count { min-width: 2ch; text-align: center; font-size: 1.3rem; font-weight: bold; }
     .wrap { white-space: normal; margin-right: 8px; }
@@ -329,6 +339,12 @@ export class SheetPage implements OnDestroy {
   /** Item pictures, side by side (`images`, else the single `image`). */
   pictures(item: ItemDef): string[] {
     return (item.images?.length ? item.images : [item.image]).map((i) => this.api.imageUrl(i)).filter((i): i is string => !!i);
+  }
+
+  /** For a choice line with exactly one picture per option, the pictures in option order (else null). */
+  perOption(item: ItemDef): string[] | null {
+    const pics = this.pictures(item);
+    return item.type === 'choice' && pics.length > 1 && pics.length === item.options.length ? pics : null;
   }
 
   /** Blocks entries that would make the sheet impossible (object limit, lines that depend on each other). */
