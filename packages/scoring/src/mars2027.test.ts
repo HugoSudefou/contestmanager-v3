@@ -59,7 +59,7 @@ test('technology bonus, same in all 4 contests (robot name aside): 3 sensors, 2 
 
 test('RoBee: missions worth 600 points like the other contests (2019 scores x 3)', () => {
   const robee = seed.find((c) => c.name === 'Défi robotique 2019 - Cycle 2')!.sheet;
-  const best = { m1: { n4: 1, n3: 1, n2: 1, sol: 1 }, m2: { 'bonne-zone': 4 }, m3: { arret: true, structure: true, musique: true }, m4: { n4: 1, n3: 1, n2: 1, fond: 1 }, m5: { danse: 1 }, m6: { abri: 1 } };
+  const best = { m1: { n4: 1, n3: 1, n2: 1, sol: 1 }, m2: { 'bonne-zone': 4 }, m3: { arret: true, structure: true, musique: true }, m4: { n4: 1, n3: 1, n2: 1, fond: 1 }, m5: { danse: 1 }, m6: { abri: 1, eteint: 0 } };
   const r = computeSheet(robee, best, 0);
   assert.deepEqual(r.missions.slice(0, 6).map((m) => m.points), [150, 120, 90, 150, 30, 60]);
   assert.equal(r.total, 600);

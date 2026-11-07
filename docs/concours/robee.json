@@ -316,11 +316,30 @@
             "options": [
               {
                 "label": "RoBee se trouve dans la « Ruche ».",
+                "points": 10
+              },
+              {
+                "label": "RoBee se trouve dans l'hôtel à insectes de l'école.",
                 "points": 30
               },
               {
-                "label": "RoBee se trouve dans l'hôtel à insectes situé dans l'école et il est éteint.",
-                "points": 60
+                "label": "RoBee se trouve ailleurs.",
+                "points": 0
+              }
+            ]
+          },
+          {
+            "id": "eteint",
+            "type": "choice",
+            "label": "RoBee est éteint",
+            "options": [
+              {
+                "label": "Oui.",
+                "points": 30
+              },
+              {
+                "label": "Non.",
+                "points": 0
               }
             ]
           }
