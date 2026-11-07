@@ -138,7 +138,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "mauvaise-zone",
               "type": "counter",
               "label": "Une graine se trouve dans l'arboretum sur la mauvaise zone de couleur.",
-              "image": "assets/legacy/cycle2/explMission/arboretum_mauvaise_place_mission2.jpg",
+              "image": "assets/robee/m2-mauvaise-zone.jpg",
               "points": 6,
               "max": 4
             },
