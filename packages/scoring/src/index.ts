@@ -4,11 +4,13 @@
  */
 
 /** `images` (several pictures side by side, e.g. the zone + the object) takes precedence over `image`.
- *  `section`: optional sub-heading shown just before the item (e.g. « 1 - Attitude des élèves pendant le défi »). */
+ *  `section`: optional sub-heading shown just before the item (e.g. « 1 - Attitude des élèves pendant le défi »).
+ *  `showIf`: id of a check item of the same mission; the line is shown only once that box is ticked
+ *  (pair it with a limit item ≤ showIf so unticking the box also clears the hidden line). */
 export type ItemDef =
-  | { id: string; type: 'check'; label: string; section?: string; image?: string; images?: string[]; points: number }
-  | { id: string; type: 'counter'; label: string; section?: string; image?: string; images?: string[]; points: number; max: number }
-  | { id: string; type: 'choice'; label: string; section?: string; image?: string; images?: string[]; options: { label: string; points: number }[] };
+  | { id: string; type: 'check'; label: string; section?: string; showIf?: string; image?: string; images?: string[]; points: number }
+  | { id: string; type: 'counter'; label: string; section?: string; showIf?: string; image?: string; images?: string[]; points: number; max: number }
+  | { id: string; type: 'choice'; label: string; section?: string; showIf?: string; image?: string; images?: string[]; options: { label: string; points: number }[] };
 
 /** Adds `add` points (can be negative) when every condition matches. Covers the "20 + 70 = 100" style combos. */
 export interface RuleDef {
@@ -239,6 +241,10 @@ export function validateSheet(sheet: unknown): string[] {
       if (!itemIds.has(id)) errors.push(`${where} : la limite d'objets cite une ligne inconnue (${id}).`);
     }
     if (m.maxPoints != null && !(Number.isFinite(m.maxPoints) && m.maxPoints >= 0)) errors.push(`${where} : plafond de points invalide.`);
+    for (const it of m.items ?? []) {
+      if (it?.showIf != null && !m.items.some((o: ItemDef) => o.id === it.showIf && o.type === 'check'))
+        errors.push(`${where} : « ${it.label} » dépend d'une case à cocher inconnue (${it.showIf}).`);
+    }
     for (const l of m.limits ?? []) {
       if (!itemIds.has(l?.item) || !itemIds.has(l?.notMoreThan)) errors.push(`${where} : une limite entre lignes cite une ligne inconnue.`);
     }

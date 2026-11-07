@@ -77,16 +77,25 @@ test('pedagogical bonus, identical in all 4 contests: 5 attitude criteria + post
     const att = ['att-respect', 'att-roles', 'att-arbitre', 'att-perseverance', 'att-autres-equipes'];
     const frames = ['a-presentation', 'a-conception', 'a-programmation', 'a-apports', 'a-equipe'];
     const ticked = (ids: string[]) => Object.fromEntries(ids.map((id) => [id, true]));
-    assert.equal(computeSheet(sheet, { 'bonus-pedago': ticked(att) }, 0).total, 50, c.name);
-    assert.equal(computeSheet(sheet, { 'bonus-pedago': ticked(['att-respect', 'att-arbitre']) }, 0).total, 20);
-    assert.equal(computeSheet(sheet, { 'bonus-pedago': ticked([...att, 'affiche', ...frames]) }, 0).total, 100);
-    // Ticking a frame ticks "poster present"; unticking the poster unticks its frames
-    const one = applyChange(m, {}, 'a-conception', 1)!;
-    assert.equal(one.affiche, true);
+    // Two parts, each opened by its own box: "Attitude des élèves de l'équipe" and "Une affiche est présente..."
+    for (const id of att) assert.equal(m.items.find((i) => i.id === id)!.showIf, 'attitude', id);
+    for (const id of frames) assert.equal(m.items.find((i) => i.id === id)!.showIf, 'affiche', id);
+    assert.deepEqual(validateSheet(sheet), []);
+    assert.equal(computeSheet(sheet, { 'bonus-pedago': ticked(['attitude', ...att]) }, 0).total, 50, c.name);
+    assert.equal(computeSheet(sheet, { 'bonus-pedago': ticked(['attitude', 'att-respect', 'att-arbitre']) }, 0).total, 20);
+    assert.equal(computeSheet(sheet, { 'bonus-pedago': ticked(['attitude', ...att, 'affiche', ...frames]) }, 0).total, 100);
+    // Opening boxes are worth nothing by themselves
+    assert.equal(computeSheet(sheet, { 'bonus-pedago': ticked(['attitude', 'affiche']) }, 0).total, 0);
+    // Unticking an opening box unticks its hidden lines
+    const open = applyChange(m, applyChange(m, {}, 'attitude', 1)!, 'att-roles', 1)!;
+    assert.equal(computeSheet(sheet, { 'bonus-pedago': open }, 0).total, 10);
+    assert.equal(applyChange(m, open, 'attitude', -1)!['att-roles'], false);
+    const one = applyChange(m, applyChange(m, {}, 'affiche', 1)!, 'a-conception', 1)!;
     assert.equal(computeSheet(sheet, { 'bonus-pedago': one }, 0).total, 10);
     assert.equal(applyChange(m, one, 'affiche', -1)!['a-conception'], false);
-    // A frame without the poster (forced through the API) is refused
+    // A line without its opening box (forced through the API) is refused
     assert.equal(computeSheet(sheet, { 'bonus-pedago': { 'a-conception': true } }, 0).total, 0);
+    assert.equal(computeSheet(sheet, { 'bonus-pedago': { 'att-roles': true } }, 0).total, 0);
   }
 });
 

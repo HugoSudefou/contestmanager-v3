@@ -163,71 +163,73 @@ Exception : ce qui ne laisse pas de trace sur le tapis (un son, une mélodie, un
                 }
                 <ion-list>
                   @for (item of m.items; track item.id) {
-                    @if (item.section) {
-                      <div class="section">{{ item.section }}</div>
-                    }
-                    @switch (item.type) {
-                      @case ('check') {
-                        <ion-item>
-                          @if (pictures(item).length) {
-                            <div slot="start" class="thumbs">
-                              @for (img of pictures(item); track $index) {
-                                <img [src]="img" alt="" class="thumb" (click)="zoom.set(img)" />
-                              }
-                            </div>
-                          }
-                          <ion-checkbox justify="space-between" [checked]="value(m.id, item.id) === true" [disabled]="value(m.id, item.id) === true ? !canDown(m, item.id) : !canUp(m, item.id)" (ionChange)="step(m, item.id, $event.detail.checked ? 1 : -1)">
-                            <span class="wrap">{{ item.label }}</span> <ion-note>{{ item.points }} pts</ion-note>
-                          </ion-checkbox>
-                        </ion-item>
+                    @if (shown(m, item)) {
+                      @if (item.section) {
+                        <div class="section">{{ item.section }}</div>
                       }
-                      @case ('counter') {
-                        <ion-item>
-                          @if (pictures(item).length) {
-                            <div slot="start" class="thumbs">
-                              @for (img of pictures(item); track $index) {
-                                <img [src]="img" alt="" class="thumb" (click)="zoom.set(img)" />
-                              }
-                            </div>
-                          }
-                          <ion-label class="ion-text-wrap">
-                            {{ item.label }}
-                            <!-- Counter under the text: the full width goes to the label and the pictures. -->
-                            <div class="counter-row">
-                              <span class="pts">{{ item.points }} pts × {{ count(m.id, item.id) }} <small>(max {{ item.max }})</small></span>
-                              <div class="counter">
-                                <ion-button fill="outline" size="small" [disabled]="!canDown(m, item.id)" (click)="step(m, item.id, -1)" aria-label="Moins"><ion-icon slot="icon-only" name="remove-outline"></ion-icon></ion-button>
-                                <span class="count">{{ count(m.id, item.id) }}</span>
-                                <ion-button fill="outline" size="small" [disabled]="!canUp(m, item.id)" (click)="step(m, item.id, 1)" aria-label="Plus"><ion-icon slot="icon-only" name="add-outline"></ion-icon></ion-button>
-                              </div>
-                            </div>
-                          </ion-label>
-                        </ion-item>
-                      }
-                      @case ('choice') {
-                        <ion-radio-group [allowEmptySelection]="true" [value]="value(m.id, item.id)" (ionChange)="set(m.id, item.id, $event.detail.value ?? null)">
-                          <ion-item lines="none">
-                            @if (pictures(item).length && !perOption(item)) {
+                      @switch (item.type) {
+                        @case ('check') {
+                          <ion-item>
+                            @if (pictures(item).length) {
                               <div slot="start" class="thumbs">
                                 @for (img of pictures(item); track $index) {
                                   <img [src]="img" alt="" class="thumb" (click)="zoom.set(img)" />
                                 }
                               </div>
                             }
-                            <ion-label class="ion-text-wrap"><strong>{{ item.label }}</strong></ion-label>
+                            <ion-checkbox justify="space-between" [checked]="value(m.id, item.id) === true" [disabled]="value(m.id, item.id) === true ? !canDown(m, item.id) : !canUp(m, item.id)" (ionChange)="step(m, item.id, $event.detail.checked ? 1 : -1)">
+                              <span class="wrap" [class.gate]="isGate(m, item)">{{ item.label }}</span> @if (item.points) {<ion-note>{{ item.points }} pts</ion-note>}
+                            </ion-checkbox>
                           </ion-item>
-                          @for (o of item.options; track $index) {
-                            <ion-item>
-                              <!-- One picture per option: shown next to the option it illustrates. -->
-                              @if (perOption(item); as pics) {
-                                <img slot="start" [src]="pics[$index]" alt="" class="thumb" (click)="zoom.set(pics[$index])" />
+                        }
+                        @case ('counter') {
+                          <ion-item>
+                            @if (pictures(item).length) {
+                              <div slot="start" class="thumbs">
+                                @for (img of pictures(item); track $index) {
+                                  <img [src]="img" alt="" class="thumb" (click)="zoom.set(img)" />
+                                }
+                              </div>
+                            }
+                            <ion-label class="ion-text-wrap">
+                              {{ item.label }}
+                              <!-- Counter under the text: the full width goes to the label and the pictures. -->
+                              <div class="counter-row">
+                                <span class="pts">{{ item.points }} pts × {{ count(m.id, item.id) }} <small>(max {{ item.max }})</small></span>
+                                <div class="counter">
+                                  <ion-button fill="outline" size="small" [disabled]="!canDown(m, item.id)" (click)="step(m, item.id, -1)" aria-label="Moins"><ion-icon slot="icon-only" name="remove-outline"></ion-icon></ion-button>
+                                  <span class="count">{{ count(m.id, item.id) }}</span>
+                                  <ion-button fill="outline" size="small" [disabled]="!canUp(m, item.id)" (click)="step(m, item.id, 1)" aria-label="Plus"><ion-icon slot="icon-only" name="add-outline"></ion-icon></ion-button>
+                                </div>
+                              </div>
+                            </ion-label>
+                          </ion-item>
+                        }
+                        @case ('choice') {
+                          <ion-radio-group [allowEmptySelection]="true" [value]="value(m.id, item.id)" (ionChange)="set(m.id, item.id, $event.detail.value ?? null)">
+                            <ion-item lines="none">
+                              @if (pictures(item).length && !perOption(item)) {
+                                <div slot="start" class="thumbs">
+                                  @for (img of pictures(item); track $index) {
+                                    <img [src]="img" alt="" class="thumb" (click)="zoom.set(img)" />
+                                  }
+                                </div>
                               }
-                              <ion-radio [value]="$index" justify="space-between">
-                                <span class="wrap">{{ o.label }}</span> <ion-note>{{ o.points }} pts</ion-note>
-                              </ion-radio>
+                              <ion-label class="ion-text-wrap"><strong>{{ item.label }}</strong></ion-label>
                             </ion-item>
-                          }
-                        </ion-radio-group>
+                            @for (o of item.options; track $index) {
+                              <ion-item>
+                                <!-- One picture per option: shown next to the option it illustrates. -->
+                                @if (perOption(item); as pics) {
+                                  <img slot="start" [src]="pics[$index]" alt="" class="thumb" (click)="zoom.set(pics[$index])" />
+                                }
+                                <ion-radio [value]="$index" justify="space-between">
+                                  <span class="wrap">{{ o.label }}</span> <ion-note>{{ o.points }} pts</ion-note>
+                                </ion-radio>
+                              </ion-item>
+                            }
+                          </ion-radio-group>
+                        }
                       }
                     }
                   }
@@ -283,6 +285,7 @@ Exception : ce qui ne laisse pas de trace sur le tapis (un son, une mélodie, un
     .wrap { white-space: normal; margin-right: 8px; }
     .desc { white-space: pre-line; margin-bottom: 8px; }
     .error { font-weight: bold; }
+    .gate { font-weight: bold; }
     .section { padding: 14px 16px 4px; font-weight: bold; font-size: 1.05rem; color: var(--ion-color-primary); border-bottom: 1px solid var(--ion-color-step-150, #ddd); }
     .zoomed { width: 100%; height: 100%; object-fit: contain; }
   `,
@@ -345,6 +348,16 @@ export class SheetPage implements OnDestroy {
   }
 
   /** Item pictures, side by side (`images`, else the single `image`). */
+  /** A line with showIf stays hidden until its opening box is ticked (e.g. the 5 poster frames). */
+  shown(m: MissionDef, item: ItemDef): boolean {
+    return !item.showIf || this.value(m.id, item.showIf) === true;
+  }
+
+  /** Opening box of a group of lines (shown in bold). */
+  isGate(m: MissionDef, item: ItemDef): boolean {
+    return m.items.some((i) => i.showIf === item.id);
+  }
+
   pictures(item: ItemDef): string[] {
     return (item.images?.length ? item.images : [item.image]).map((i) => this.api.imageUrl(i)).filter((i): i is string => !!i);
   }

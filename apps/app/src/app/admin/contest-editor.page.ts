@@ -163,6 +163,14 @@ const move = <T,>(list: T[], index: number, delta: number) => {
                       </ion-select>
                       <ion-input class="grow" label="Libellé" labelPlacement="stacked" [(ngModel)]="it.label"></ion-input>
                       <ion-input class="grow" label="Sous-titre affiché avant cette ligne (facultatif)" labelPlacement="stacked" [(ngModel)]="it.section"></ion-input>
+                      <ion-select class="grow" label="Afficher seulement si cette case est cochée" labelPlacement="stacked" interface="popover" [(ngModel)]="it.showIf">
+                        <ion-select-option [value]="undefined">Toujours affichée</ion-select-option>
+                        @for (g of m.items; track g.id) {
+                          @if (g.type === 'check' && g.id !== it.id) {
+                            <ion-select-option [value]="g.id">{{ g.label || '(sans libellé)' }}</ion-select-option>
+                          }
+                        }
+                      </ion-select>
                       @switch (it.type) {
                         @case ('check') {
                           <ion-input class="num" label="Points" labelPlacement="stacked" type="number" [(ngModel)]="it.points"></ion-input>
@@ -386,6 +394,7 @@ export class ContestEditorPage implements OnInit {
     if (m.maxObjects) m.maxObjects.items = m.maxObjects.items.filter((id) => id !== removed.id);
     m.rules = m.rules?.map((r) => ({ ...r, when: r.when.filter((c) => c.item !== removed.id) }));
     m.limits = m.limits?.filter((l) => l.item !== removed.id && l.notMoreThan !== removed.id);
+    for (const it of m.items) if (it.showIf === removed.id) delete it.showIf;
   }
 
   duplicateMission(index: number) {
@@ -399,6 +408,7 @@ export class ContestEditorPage implements OnInit {
     if (copy.maxObjects) copy.maxObjects.items = copy.maxObjects.items.map((id) => ids.get(id) ?? id);
     copy.rules?.forEach((r) => r.when.forEach((c) => (c.item = ids.get(c.item) ?? c.item)));
     copy.limits?.forEach((l) => ((l.item = ids.get(l.item) ?? l.item), (l.notMoreThan = ids.get(l.notMoreThan) ?? l.notMoreThan)));
+    copy.items.forEach((it) => { if (it.showIf) it.showIf = ids.get(it.showIf) ?? it.showIf; });
     missions.splice(index + 1, 0, copy);
   }
 
