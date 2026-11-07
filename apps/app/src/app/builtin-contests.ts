@@ -849,6 +849,11 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
                   "label": "Autre situation.",
                   "points": 0
                 }
+              ],
+              "images": [
+                "assets/gardbot/m6-atelier.jpg",
+                "assets/gardbot/m6-loge.jpg",
+                "assets/gardbot/m6-autre.jpg"
               ]
             },
             {
@@ -864,7 +869,8 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
                   "label": "Non.",
                   "points": 0
                 }
-              ]
+              ],
+              "image": "assets/gardbot/m6-eteint.png"
             }
           ],
           "description": "GardBot doit être en sécurité pour passer la journée et recharger ses batteries pour être en forme la nuit suivante... Il doit donc se hâter, avant que l'aube pointe le bout de son nez, de retourner dans sa loge."
