@@ -330,15 +330,15 @@
             "image": "assets/gardbot/m5-programme.jpg",
             "options": [
               {
-                "label": "du répertoire du robot.",
+                "label": "d'un son du répertoire du robot.",
                 "points": 0
               },
               {
-                "label": "d'une carte musique tirée au sort par l'équipe.",
+                "label": "d'une mélodie composée en classe par l'équipe.",
                 "points": 40
               },
               {
-                "label": "d'une mélodie composée par l'équipe.",
+                "label": "de la nouvelle mélodie imposée pour le défi et composée par l'équipe le jour même.",
                 "points": 70
               }
             ]
