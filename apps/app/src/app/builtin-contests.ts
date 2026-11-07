@@ -603,7 +603,7 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "nc-salle",
               "type": "counter",
               "label": "Statue non construite : blocs dans la salle de la statue (hors du socle).",
-              "image": "assets/gardbot/m3-blocs.jpg",
+              "image": "assets/gardbot/m3-blocs-salle.jpg",
               "points": 3,
               "max": 10
             },
