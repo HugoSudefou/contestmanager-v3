@@ -789,7 +789,6 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "id": "origine",
               "type": "choice",
               "label": "La mélodie est issue",
-              "image": "assets/gardbot/m5-programme.jpg",
               "options": [
                 {
                   "label": "d'un son du répertoire du robot.",
@@ -803,6 +802,11 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
                   "label": "de la nouvelle mélodie imposée pour le défi et composée par l'équipe le jour même.",
                   "points": 70
                 }
+              ],
+              "images": [
+                "assets/gardbot/m5-son-repertoire.jpg",
+                "assets/gardbot/m5-melodie-classe.jpg",
+                "assets/gardbot/m5-melodie-defi.jpg"
               ]
             }
           ],
