@@ -19,9 +19,27 @@ export interface RuleDef {
   add: number;
 }
 
+/**
+ * Who scores what. A team is evaluated in four separate parts:
+ * - match: the missions and penalties, scored by the referee at each match (only the best match counts);
+ * - attitude: scored once by the referee, after the team's last match;
+ * - pedagogique: poster and oral presentation, scored once by the educational advisers;
+ * - technologique: scored once by the digital-education referents.
+ * Final score = best match + attitude + pedagogique + technologique.
+ */
+export type EvalPart = 'match' | 'attitude' | 'pedagogique' | 'technologique';
+export const EVAL_PARTS: { part: EvalPart; title: string; who: string }[] = [
+  { part: 'match', title: 'Matchs', who: "L'arbitre, à chaque match" },
+  { part: 'attitude', title: 'Bonus Attitude', who: "L'arbitre, après le dernier match de l'équipe" },
+  { part: 'pedagogique', title: 'Bonus pédagogique', who: 'Les conseillers pédagogiques' },
+  { part: 'technologique', title: 'Bonus technologique', who: 'Les référents numériques' },
+];
+
 export interface MissionDef {
   id: string;
   title: string;
+  /** Evaluation part this mission belongs to; absent = 'match'. */
+  part?: EvalPart;
   description?: string;
   image?: string;
   items: ItemDef[];
@@ -185,6 +203,34 @@ export function computeSheet(sheet: Sheet, answers: Answers, penaltyCount: numbe
   return { missions, penalties, total };
 }
 
+/** The part a mission belongs to (missions without `part` are match missions). */
+export function partOf(mission: Pick<MissionDef, 'part'>): EvalPart {
+  return mission.part ?? 'match';
+}
+
+/** The sheet restricted to one part. Penalties only exist in matches. */
+export function sheetForPart(sheet: Sheet, part: EvalPart): Sheet {
+  const missions = sheet.missions.filter((m) => partOf(m) === part);
+  return part === 'match' ? { ...sheet, missions } : { ...sheet, missions, penaltyPoints: 0, maxPenalties: 0 };
+}
+
+/** Score of one part: a match (missions − penalties) or a bonus evaluated once per team. */
+export function computePart(sheet: Sheet, part: EvalPart, answers: Answers, penaltyCount = 0): SheetResult {
+  return computeSheet(sheetForPart(sheet, part), answers, part === 'match' ? penaltyCount : 0);
+}
+
+/** Parts that actually have missions in this sheet (a contest without bonus shows only the matches). */
+export function partsOf(sheet: Sheet): EvalPart[] {
+  return EVAL_PARTS.map((p) => p.part).filter((p) => sheet.missions.some((m) => partOf(m) === p));
+}
+
+/** Final score: the best match plus each bonus evaluated once. null while nothing has been scored. */
+export function finalScore(bestMatch: number | null, bonuses: (number | null | undefined)[]): number | null {
+  const scored = bonuses.filter((b): b is number => typeof b === 'number');
+  if (bestMatch === null && scored.length === 0) return null;
+  return (bestMatch ?? 0) + scored.reduce((a, b) => a + b, 0);
+}
+
 export interface Performance {
   score: number | null;
   timeSeconds?: number | null;
@@ -221,6 +267,7 @@ export function validateSheet(sheet: unknown): string[] {
     if (!m?.id || missionIds.has(m.id)) errors.push(`${where} : identifiant manquant ou en double.`);
     missionIds.add(m?.id);
     if (!m?.title) errors.push(`${where} : titre manquant.`);
+    if (m?.part != null && !EVAL_PARTS.some((p) => p.part === m.part)) errors.push(`${where} : partie d'évaluation inconnue (${m.part}).`);
     if (!Array.isArray(m?.items) || m.items.length === 0) {
       errors.push(`${where} : ajoutez au moins une ligne de score.`);
       continue;

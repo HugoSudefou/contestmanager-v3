@@ -27,6 +27,8 @@ export const routes: Routes = [
     canActivate: [requireRole('TEACHER', 'ADMIN')],
     loadComponent: () => import('./pages/teacher.page').then((m) => m.TeacherPage),
   },
+  // Menu before the sheet: matches, attitude, educational bonus, technology bonus.
+  { path: 'evaluate/:contestId', loadComponent: () => import('./pages/evaluate.page').then((m) => m.EvaluatePage) },
   { path: 'sheet/:contestId', loadComponent: () => import('./pages/sheet.page').then((m) => m.SheetPage) },
   {
     path: 'admin',

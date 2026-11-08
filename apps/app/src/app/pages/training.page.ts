@@ -1,3 +1,4 @@
+import { sheetForPart } from '@contest/scoring';
 import { Component, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -16,7 +17,7 @@ import {
   IonToolbar,
   ViewWillEnter,
 } from '@ionic/angular';
-import { formatTime, practiceHistory } from '../api.service';
+import { formatTime, practiceHistory, type BuiltinContest } from '../api.service';
 import { BUILTIN_CONTESTS } from '../builtin-contests';
 
 @Component({
@@ -34,10 +35,10 @@ import { BUILTIN_CONTESTS } from '../builtin-contests';
         <ion-list>
           <ion-list-header>Choisissez la feuille de mission</ion-list-header>
           @for (c of contests; track c.id) {
-            <ion-item button [routerLink]="['/sheet', c.id]">
+            <ion-item button [routerLink]="['/evaluate', c.id]">
               <ion-label>
                 <h2>{{ c.name }}</h2>
-                <p>{{ c.season }} · {{ c.sheet.missions.length }} missions · {{ c.sheet.durationSeconds ? time(c.sheet.durationSeconds) : 'chrono libre' }}</p>
+                <p>{{ c.season }} · {{ matchMissions(c) }} missions · {{ c.sheet.durationSeconds ? time(c.sheet.durationSeconds) : 'chrono libre' }}</p>
               </ion-label>
             </ion-item>
           }
@@ -70,6 +71,8 @@ export class TrainingPage implements ViewWillEnter {
   contests = BUILTIN_CONTESTS;
   history = signal(practiceHistory.list());
   time = formatTime;
+  /** Match missions only (the bonuses are evaluated apart, from the menu). */
+  matchMissions = (c: BuiltinContest) => sheetForPart(c.sheet, 'match').missions.length;
 
   ionViewWillEnter() {
     this.history.set(practiceHistory.list());

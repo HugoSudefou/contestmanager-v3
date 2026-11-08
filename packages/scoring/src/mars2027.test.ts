@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { computeSheet, validateSheet, type Sheet } from './index.ts';
+import { applyChange, computePart, computeSheet, finalScore, partsOf, validateSheet, type Sheet } from './index.ts';
 
 const seed = JSON.parse(readFileSync(new URL('../../../apps/api/prisma/seed-contests.json', import.meta.url), 'utf8')) as {
   name: string;
@@ -65,38 +65,45 @@ test('RoBee: missions worth 600 points like the other contests (2019 scores x 3)
   assert.equal(r.total, 600);
 });
 
-test('pedagogical bonus, identical in all 4 contests: 5 attitude criteria + poster frames that need the poster', async () => {
-  const { applyChange } = await import('./index.ts');
+test('bonuses, identical in all 4 contests: attitude (referee), poster (advisers), technology (referents)', () => {
   const all = seed;
   assert.equal(all.length, 4);
-  const ref = JSON.stringify(all[0].sheet.missions.find((x) => x.id === 'bonus-pedago'));
-  for (const c of all) assert.equal(JSON.stringify(c.sheet.missions.find((x) => x.id === 'bonus-pedago')), ref, c.name);
-  for (const c of all) {
-    const m = c.sheet.missions.find((x) => x.id === 'bonus-pedago')!;
-    const sheet = { ...c.sheet, missions: [m] };
-    const att = ['att-respect', 'att-roles', 'att-arbitre', 'att-perseverance', 'att-autres-equipes'];
-    const frames = ['a-presentation', 'a-conception', 'a-programmation', 'a-apports', 'a-equipe'];
-    const ticked = (ids: string[]) => Object.fromEntries(ids.map((id) => [id, true]));
-    // Two parts, each opened by its own box: "Attitude des élèves de l'équipe" and "Une affiche est présente..."
-    for (const id of att) assert.equal(m.items.find((i) => i.id === id)!.showIf, 'attitude', id);
-    for (const id of frames) assert.equal(m.items.find((i) => i.id === id)!.showIf, 'affiche', id);
-    assert.deepEqual(validateSheet(sheet), []);
-    assert.equal(computeSheet(sheet, { 'bonus-pedago': ticked(['attitude', ...att]) }, 0).total, 50, c.name);
-    assert.equal(computeSheet(sheet, { 'bonus-pedago': ticked(['attitude', 'att-respect', 'att-arbitre']) }, 0).total, 20);
-    assert.equal(computeSheet(sheet, { 'bonus-pedago': ticked(['attitude', ...att, 'affiche', ...frames]) }, 0).total, 100);
-    // Opening boxes are worth nothing by themselves
-    assert.equal(computeSheet(sheet, { 'bonus-pedago': ticked(['attitude', 'affiche']) }, 0).total, 0);
-    // Unticking an opening box unticks its hidden lines
-    const open = applyChange(m, applyChange(m, {}, 'attitude', 1)!, 'att-roles', 1)!;
-    assert.equal(computeSheet(sheet, { 'bonus-pedago': open }, 0).total, 10);
-    assert.equal(applyChange(m, open, 'attitude', -1)!['att-roles'], false);
-    const one = applyChange(m, applyChange(m, {}, 'affiche', 1)!, 'a-conception', 1)!;
-    assert.equal(computeSheet(sheet, { 'bonus-pedago': one }, 0).total, 10);
-    assert.equal(applyChange(m, one, 'affiche', -1)!['a-conception'], false);
-    // A line without its opening box (forced through the API) is refused
-    assert.equal(computeSheet(sheet, { 'bonus-pedago': { 'a-conception': true } }, 0).total, 0);
-    assert.equal(computeSheet(sheet, { 'bonus-pedago': { 'att-roles': true } }, 0).total, 0);
+  for (const id of ['bonus-attitude', 'bonus-pedago']) {
+    const ref = JSON.stringify(all[0].sheet.missions.find((x) => x.id === id));
+    for (const c of all) assert.equal(JSON.stringify(c.sheet.missions.find((x) => x.id === id)), ref, `${c.name} ${id}`);
   }
+  for (const c of all) {
+    // Attitude: scored by the referee after the matches, 5 criteria worth 10 points
+    const att = c.sheet.missions.find((x) => x.id === 'bonus-attitude')!;
+    assert.equal(att.part, 'attitude');
+    const ids = att.items.map((i) => i.id);
+    const ticked = (list: string[]) => Object.fromEntries(list.map((id) => [id, true]));
+    assert.equal(computePart(c.sheet, 'attitude', { 'bonus-attitude': ticked(ids) }).total, 50, c.name);
+    // Poster: scored by the educational advisers, its 5 frames open once "poster present" is ticked
+    const m = c.sheet.missions.find((x) => x.id === 'bonus-pedago')!;
+    assert.equal(m.part, 'pedagogique');
+    const frames = ['a-presentation', 'a-conception', 'a-programmation', 'a-apports', 'a-equipe'];
+    for (const id of frames) assert.equal(m.items.find((i) => i.id === id)!.showIf, 'affiche', id);
+    assert.equal(computePart(c.sheet, 'pedagogique', { 'bonus-pedago': ticked(['affiche', ...frames]) }).total, 50);
+    assert.equal(computePart(c.sheet, 'pedagogique', { 'bonus-pedago': ticked(['affiche']) }).total, 0);
+    const one = applyChange(m, applyChange(m, {}, 'affiche', 1)!, 'a-conception', 1)!;
+    assert.equal(applyChange(m, one, 'affiche', -1)!['a-conception'], false);
+    assert.equal(computePart(c.sheet, 'pedagogique', { 'bonus-pedago': { 'a-conception': true } }).total, 0);
+    // Technology: scored by the digital-education referents
+    assert.equal(c.sheet.missions.find((x) => x.id === 'bonus-techno')!.part, 'technologique');
+    // A match only counts the missions and penalties: bonus answers sent with a match are ignored
+    assert.equal(computePart(c.sheet, 'match', { 'bonus-attitude': ticked(ids) }, 2).total, -10, c.name);
+    assert.deepEqual(partsOf(c.sheet), ['match', 'attitude', 'pedagogique', 'technologique']);
+    // Bonuses never get penalties
+    assert.equal(computePart(c.sheet, 'technologique', {}, 5).total, 0);
+  }
+});
+
+test('final score = best match + the three bonuses', () => {
+  assert.equal(finalScore(420, [40, 50, 100]), 610);
+  assert.equal(finalScore(420, [null, undefined, 60]), 480);
+  assert.equal(finalScore(null, [30]), 30);
+  assert.equal(finalScore(null, [null]), null);
 });
 
 test('penalties are the same in all 4 contests: 5 points each, 10 at most', () => {

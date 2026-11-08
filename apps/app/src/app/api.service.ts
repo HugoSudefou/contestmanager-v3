@@ -1,5 +1,5 @@
 import { Injectable, computed, signal } from '@angular/core';
-import type { Answers, Sheet } from '@contest/scoring';
+import { compareResults, finalScore, type Answers, type EvalPart, type Sheet } from '@contest/scoring';
 import { environment } from '../environments/environment';
 
 export type Role = 'ADMIN' | 'REFEREE' | 'TEACHER';
@@ -27,7 +27,10 @@ export interface Team {
   school: { name: string } | null;
   teacherId: number | null;
   groupId: number;
+  /** Bonuses scored once for the team (attitude, pedagogique, technologique). */
+  evaluations?: TeamEvaluation[];
 }
+export interface TeamEvaluation { part: EvalPart; score: number; scoredAt: string; answers?: Answers }
 export interface Student { id?: number; firstName: string; lastName: string; role: string | null }
 export interface Participant {
   id: number;
@@ -58,7 +61,12 @@ export interface Group {
   matches: Match[];
 }
 export interface TournamentDetail extends Tournament { groups: Group[] }
+/**
+ * A match score, or a bonus scored once for the team (`part` other than 'match': attitude, pedagogique,
+ * technologique; matchId is then 0). Both wait in the same outbox when offline.
+ */
 export interface ScoreSubmission {
+  part?: EvalPart;
   matchId: number;
   teamId: number;
   answers: Answers;
@@ -66,6 +74,11 @@ export interface ScoreSubmission {
   timeSeconds: number;
   /** For display in the pending list only. */
   label: string;
+}
+
+/** Same match for the same team, or the same bonus for the same team: the newer one replaces the older. */
+export function sameSubmission(a: ScoreSubmission, b: ScoreSubmission): boolean {
+  return a.teamId === b.teamId && (a.part ?? 'match') === (b.part ?? 'match') && a.matchId === b.matchId;
 }
 
 /** Thrown when the server could not be reached (as opposed to the server refusing the request). */
@@ -159,7 +172,7 @@ export class ApiService {
       return true;
     } catch (e) {
       if (!(e instanceof OfflineError)) throw e;
-      this.setOutbox([...this.outbox().filter((o) => !(o.matchId === s.matchId && o.teamId === s.teamId)), s]);
+      this.setOutbox([...this.outbox().filter((o) => !sameSubmission(o, s)), s]);
       return false;
     }
   }
@@ -188,7 +201,8 @@ export class ApiService {
     this.setOutbox(this.outbox().filter((o) => o !== s));
   }
 
-  private postScore({ matchId, label: _label, ...body }: ScoreSubmission) {
+  private postScore({ matchId, label: _label, part, ...body }: ScoreSubmission) {
+    if (part && part !== 'match') return this.request('POST', `/teams/${body.teamId}/evaluations`, { part, answers: body.answers });
     return this.request('POST', `/matches/${matchId}/scores`, body);
   }
 
@@ -253,6 +267,18 @@ export const practiceHistory = {
 };
 
 export const FINALS_GROUP = 'Phase finale';
+
+/** Best match of a team in its group (time splits equal scores when the sheet says so). null = no match scored. */
+export function bestMatch(g: Group, team: Team): Participant | null {
+  const tie = !!g.contest?.sheet?.timeTiebreak;
+  const scored = g.matches.flatMap((m) => m.participants).filter((p) => p.teamId === team.id && p.score !== null);
+  return [...scored].sort((a, b) => compareResults(a, b, tie))[0] ?? null;
+}
+
+/** Final score of a team: its best match + the bonuses scored once (attitude, pedagogique, technologique). */
+export function teamFinal(g: Group, team: Team): number | null {
+  return finalScore(bestMatch(g, team)?.score ?? null, (team.evaluations ?? []).map((e) => e.score));
+}
 export const roundName = (round: number) =>
   ({ 1: 'Finale', 2: 'Demi-finales', 3: 'Quarts de finale', 4: 'Huitièmes de finale' })[round] ?? `Tour ${round}`;
 export const canScore = (u: User | null) => u?.role === 'REFEREE' || u?.role === 'ADMIN';

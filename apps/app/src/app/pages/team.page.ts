@@ -1,3 +1,4 @@
+import { EVAL_PARTS, finalScore, type EvalPart } from '@contest/scoring';
 import { Component, computed, inject, input, resource } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import {
@@ -79,7 +80,11 @@ interface TeamDetail extends Team {
             <ion-card-content>
               @if (t.school) { <p>{{ t.school.name }}</p> }
               <p>Feuille de mission : {{ t.group.contest.name }}</p>
-              <p><strong>Meilleur score : {{ best() ?? '—' }}</strong></p>
+              <p>Meilleur match : {{ best() ?? '—' }}{{ best() !== null ? ' pts' : '' }}</p>
+              @for (b of bonusParts; track b.part) {
+                @if (bonus(b.part); as e) { <p>{{ b.title }} : {{ e.score }} pts</p> }
+              }
+              <p><strong>Score final : {{ final() ?? '—' }}{{ final() !== null ? ' pts' : '' }}</strong></p>
             </ion-card-content>
           </ion-card>
 
@@ -115,6 +120,15 @@ export class TeamPage {
     params: () => this.id(),
     loader: ({ params }) => this.api.get<TeamDetail>(`/teams/${params}`),
   });
+
+  bonusParts = EVAL_PARTS.filter((p) => p.part !== 'match');
+
+  bonus(part: EvalPart) {
+    return this.team.hasValue() ? (this.team.value().evaluations?.find((e) => e.part === part) ?? null) : null;
+  }
+
+  /** Best match + the bonuses scored once for the team. */
+  final = computed(() => (this.team.hasValue() ? finalScore(this.best(), (this.team.value().evaluations ?? []).map((e) => e.score)) : null));
 
   best = computed(() => {
     if (!this.team.hasValue()) return null;

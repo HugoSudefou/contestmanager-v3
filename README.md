@@ -166,3 +166,23 @@ L'appli doit aussi tourner sur d'anciennes tablettes Android pendant les défis.
 - L'APK s'installe à partir d'Android 7.0. Si la WebView de la tablette est plus ancienne que la version 66,
   l'appli affiche `webview-trop-ancienne.html`, qui explique comment la mettre à jour depuis le Play Store.
 - Sur les écrans de terrain, les espacements utilisent des marges, pas `gap`, qui n'existe pas avant Chrome 84.
+
+## Qui évalue quoi : menu avant la feuille
+
+Une équipe est évaluée en quatre parties séparées (champ `part` des missions) :
+
+| Partie | Qui évalue | Quand |
+| --- | --- | --- |
+| Matchs (missions + pénalités) | l'arbitre (en général un parent par équipe) | à chaque match ; **seul le meilleur match compte** |
+| Bonus Attitude | l'arbitre | une fois les matchs de l'équipe terminés |
+| Bonus pédagogique (affiche, présentation orale) | les conseillers pédagogiques | une fois |
+| Bonus technologique | les référents numériques | une fois |
+
+**Score final = meilleur match + Bonus Attitude + Bonus pédagogique + Bonus technologique.**
+
+- Arbitre en tournoi : onglet « Équipes », choisir l'équipe, puis le menu propose ses matchs, le bouton
+  « Évaluation des matchs terminée : l'arbitre passe à l'évaluation de l'attitude de l'équipe » et les trois bonus.
+- En classe (entraînement, sans serveur) : le même menu, pour chaque défi.
+- Serveur : les bonus sont enregistrés dans la table `TeamEvaluation` (`POST /teams/:id/evaluations`),
+  les matchs ne comptent que les missions de match et les pénalités.
+- Les phases finales (quarts, demies, finale) se jouent toujours sur les scores de match.

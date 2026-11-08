@@ -23,7 +23,7 @@ import {
   IonToolbar,
   ViewWillEnter,
 } from '@ionic/angular';
-import { ApiService, FINALS_GROUP, canScore, type Group, type Match, type Participant, type TournamentDetail } from '../api.service';
+import { ApiService, FINALS_GROUP, canScore, teamFinal, type Group, type Match, type Participant, type Team, type TournamentDetail } from '../api.service';
 import { BracketComponent } from '../bracket.component';
 
 @Component({
@@ -64,11 +64,17 @@ import { BracketComponent } from '../bracket.component';
         </ion-toolbar>
       } @else {
         <ion-toolbar>
-          <ion-segment [value]="showDone() ? 'all' : 'todo'" (ionChange)="showDone.set($event.detail.value === 'all')">
+          <ion-segment [value]="view()" (ionChange)="view.set($any($event.detail.value))">
+            <ion-segment-button value="teams"><ion-label>Équipes</ion-label></ion-segment-button>
             <ion-segment-button value="todo"><ion-label>À noter</ion-label></ion-segment-button>
-            <ion-segment-button value="all"><ion-label>Tous les matchs</ion-label></ion-segment-button>
+            <ion-segment-button value="all"><ion-label>Tous</ion-label></ion-segment-button>
           </ion-segment>
         </ion-toolbar>
+        @if (view() === 'teams') {
+          <ion-toolbar>
+            <ion-searchbar placeholder="Rechercher l'équipe à évaluer" [value]="search()" (ionInput)="search.set($any($event).detail.value ?? '')"></ion-searchbar>
+          </ion-toolbar>
+        }
       }
     </ion-header>
     <ion-content>
@@ -87,6 +93,22 @@ import { BracketComponent } from '../bracket.component';
               <ion-button expand="block" routerLink="/login" [queryParams]="{ redirect: currentUrl }">Connexion arbitre</ion-button>
             </div>
           }
+          @if (view() === 'teams') {
+            <p class="ion-padding-horizontal hint">Choisissez l'équipe, puis ce que vous évaluez : ses matchs, son attitude ou un bonus.</p>
+            <ion-list>
+              @for (t of teams(); track t.id) {
+                <ion-item button detail="true" [disabled]="!canScore(api.user())" (click)="evaluate(t)">
+                  <ion-label>
+                    <h2>{{ t.name }}</h2>
+                    <p>{{ t.group }}{{ t.school ? ' · ' + t.school.name : '' }}</p>
+                  </ion-label>
+                  @if (t.final !== null) { <ion-note slot="end">{{ t.final }} pts</ion-note> }
+                </ion-item>
+              } @empty {
+                <ion-item><ion-note>Aucune équipe trouvée.</ion-note></ion-item>
+              }
+            </ion-list>
+          } @else {
             @for (g of data.value()?.groups; track g.id) {
                 <ion-list>
                   <ion-list-header><ion-label>{{ g.name }} <ion-note>· {{ g.contest.name }}</ion-note></ion-label></ion-list-header>
@@ -111,6 +133,7 @@ import { BracketComponent } from '../bracket.component';
                   }
                 </ion-list>
             }
+          }
         } @else {
           @if (finals(); as f) {
             <ion-list-header><ion-label>Phase finale</ion-label></ion-list-header>
@@ -132,7 +155,7 @@ import { BracketComponent } from '../bracket.component';
       </div>
     </ion-content>
   `,
-  styles: `.teams { display: flex; flex-wrap: wrap; margin-top: 4px; } .teams > * { margin: 0 4px 4px 0; }`,
+  styles: `.hint { color: var(--ion-color-medium-shade); font-size: 0.9rem; } .teams { display: flex; flex-wrap: wrap; margin-top: 4px; } .teams > * { margin: 0 4px 4px 0; }`,
 })
 export class TournamentPage implements ViewWillEnter {
   api = inject(ApiService);
@@ -141,7 +164,9 @@ export class TournamentPage implements ViewWillEnter {
   mode = input<'referee' | 'team'>('team');
   canScore = canScore;
   search = signal('');
-  showDone = signal(false);
+  /** Referee mode: by team (then the evaluation menu), matches still to score, or all matches. */
+  view = signal<'teams' | 'todo' | 'all'>('teams');
+  showDone = computed(() => this.view() === 'all');
   currentUrl = this.router.url;
 
   data = resource({
@@ -154,7 +179,7 @@ export class TournamentPage implements ViewWillEnter {
   teams = computed(() => {
     const q = this.search().trim().toLowerCase();
     return (this.data.hasValue() ? this.data.value().groups : [])
-      .flatMap((g) => g.teams.map((t) => ({ ...t, group: g.name })))
+      .flatMap((g) => g.teams.map((t) => ({ ...t, group: g.name, contestId: g.contestId, final: teamFinal(g, t) })))
       .filter((t) => !q || `${t.name} ${t.school?.name ?? ''}`.toLowerCase().includes(q))
       .sort((a, b) => a.name.localeCompare(b.name));
   });
@@ -177,6 +202,11 @@ export class TournamentPage implements ViewWillEnter {
 
   pending(m: Match, p: Participant) {
     return this.api.outbox().some((s) => s.matchId === m.id && s.teamId === p.teamId);
+  }
+
+  /** Evaluation menu of the team: matches, attitude, educational and technology bonuses. */
+  evaluate(t: Team & { contestId: number }) {
+    void this.router.navigate(['/evaluate', t.contestId], { queryParams: { team: t.id, teamName: t.name, tournament: this.id() } });
   }
 
   score(g: Group, m: Match, p: Participant) {

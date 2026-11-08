@@ -31,7 +31,7 @@ import {
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { addOutline, hourglassOutline, pauseOutline, playOutline, refreshOutline, removeOutline } from 'ionicons/icons';
-import { applyChange, canDecrease, canIncrease, computeSheet, type Answers, type ItemDef, type ItemValue, type MissionDef } from '@contest/scoring';
+import { EVAL_PARTS, applyChange, canDecrease, canIncrease, computePart, sheetForPart, type Answers, type EvalPart, type ItemDef, type ItemValue, type MissionDef } from '@contest/scoring';
 import { ApiService, formatTime, practiceHistory, type BuiltinContest, type Contest } from '../api.service';
 import { builtinContest } from '../builtin-contests';
 
@@ -68,7 +68,8 @@ import { builtinContest } from '../builtin-contests';
     <ion-header>
       <ion-toolbar color="primary">
         <ion-buttons slot="start"><ion-back-button [defaultHref]="backUrl()"></ion-back-button></ion-buttons>
-        <ion-title>{{ teamName() || (contest.hasValue() && contest.value().name) || 'Feuille de mission' }}</ion-title>
+        <ion-title>{{ title() }}</ion-title>
+        @if (isMatch()) {
         <ion-buttons slot="end">
           @if (canSetTimer()) {
             <ion-button (click)="chooseTimer()" [disabled]="running()" aria-label="Minuteur de la partie">
@@ -83,11 +84,12 @@ import { builtinContest } from '../builtin-contests';
             {{ clock() }}
           </ion-button>
         </ion-buttons>
+        }
       </ion-toolbar>
       @if (result(); as r) {
         <ion-toolbar color="light">
           <div class="total">
-            <span>Pénalités : {{ penalties() }} (−{{ r.penalties }})</span>
+            <span>@if (isMatch()) {Pénalités : {{ penalties() }} (−{{ r.penalties }})} @else {{{ partInfo().title }}}</span>
             <strong>Total : {{ r.total }} pts</strong>
           </div>
         </ion-toolbar>
@@ -101,6 +103,15 @@ import { builtinContest } from '../builtin-contests';
         <ion-text color="danger"><p class="ion-padding">{{ contest.error()?.message }}</p></ion-text>
       } @else if (contest.value(); as c) {
         <div class="narrow">
+          @if (!isMatch()) {
+            <ion-card>
+              <ion-card-content>
+                <p><strong>{{ partInfo().title }}</strong> — {{ partInfo().who }}.</p>
+                @if (teamName()) { <p>Équipe : {{ teamName() }}</p> }
+                <p>Ce bonus est évalué une seule fois pour l'équipe.</p>
+              </ion-card-content>
+            </ion-card>
+          } @else {
           <ion-card>
             <ion-card-content>
               @if (c.description) {
@@ -145,8 +156,9 @@ Exception : ce qui ne laisse pas de trace sur le tapis (un son, une mélodie, un
               </div>
             </ion-item>
           </ion-card>
+          }
 
-          @for (m of c.sheet.missions; track m.id; let i = $index) {
+          @for (m of sheet()!.missions; track m.id; let i = $index) {
             <ion-card>
               @if (api.imageUrl(m.image); as img) {
                 <img [src]="img" alt="" class="mission-img" (click)="zoom.set(img)" />
@@ -257,7 +269,7 @@ Exception : ce qui ne laisse pas de trace sur le tapis (un son, une mélodie, un
         <ion-buttons slot="start"><ion-button color="medium" (click)="reset()">Réinitialiser</ion-button></ion-buttons>
         <ion-buttons slot="end">
           <ion-button fill="solid" color="primary" [disabled]="!contest.hasValue() || saving()" (click)="save()">
-            {{ matchId() ? 'Envoyer le score' : 'Enregistrer' }}
+            {{ matchId() || isTeamBonus() ? 'Envoyer le score' : 'Enregistrer' }}
           </ion-button>
         </ion-buttons>
       </ion-toolbar>
@@ -304,6 +316,18 @@ export class SheetPage implements OnDestroy {
   teamName = input<string>();
   tournament = input<string>();
   matchId = computed(() => Number(this.match()) || null);
+  /** What is evaluated on this sheet (chosen in the menu before it): a match, or one of the bonuses. */
+  part = input<string>();
+  evalPart = computed<EvalPart>(() => (EVAL_PARTS.some((p) => p.part === this.part()) ? (this.part() as EvalPart) : 'match'));
+  isMatch = computed(() => this.evalPart() === 'match');
+  partInfo = computed(() => EVAL_PARTS.find((p) => p.part === this.evalPart())!);
+  /** Bonus sent for a tournament team (no match). */
+  isTeamBonus = computed(() => !this.isMatch() && !!this.team() && !!this.tournament());
+  sheet = computed(() => (this.contest.hasValue() ? sheetForPart(this.contest.value().sheet, this.evalPart()) : null));
+  title = computed(() => {
+    const name = this.teamName() || (this.contest.hasValue() ? this.contest.value().name : '') || 'Feuille de mission';
+    return this.isMatch() ? name : `${this.partInfo().title} · ${name}`;
+  });
 
   contest = resource({
     params: () => this.contestId(),
@@ -327,7 +351,7 @@ export class SheetPage implements OnDestroy {
 
   result = computed(() => {
     const c = this.contest.hasValue() ? this.contest.value() : null;
-    return c ? computeSheet(c.sheet, this.answers(), this.penalties()) : null;
+    return c ? computePart(c.sheet, this.evalPart(), this.answers(), this.penalties()) : null;
   });
   duration = computed(() => (this.contest.hasValue() ? this.contest.value().sheet.durationSeconds : 0));
   /**
@@ -341,7 +365,14 @@ export class SheetPage implements OnDestroy {
   finished = computed(() => this.limit() > 0 && this.elapsed() >= this.limit());
   /** Counts down when a limit is set (minuteur), up otherwise (chronomètre). */
   clock = computed(() => formatTime(this.limit() ? Math.max(0, this.limit() - this.elapsed()) : this.elapsed()));
-  backUrl = computed(() => (this.tournament() ? `/tournament/${this.tournament()}?mode=referee` : '/training'));
+  /** Back to the evaluation menu of the team (tournament) or of the contest (training). */
+  backUrl = computed(() => {
+    if (this.tournament() && this.team()) {
+      const q = new URLSearchParams({ team: this.team()!, teamName: this.teamName() ?? '', tournament: this.tournament()! });
+      return `/evaluate/${this.contestId()}?${q}`;
+    }
+    return this.tournament() ? `/tournament/${this.tournament()}?mode=referee` : `/evaluate/${this.contestId()}`;
+  });
 
   constructor() {
     addIcons({ addOutline, removeOutline, playOutline, pauseOutline, refreshOutline, hourglassOutline });
@@ -486,13 +517,15 @@ export class SheetPage implements OnDestroy {
   async save() {
     this.stopTimer();
     const r = this.result()!;
-    const summary = `Score : ${r.total} pts · Temps : ${this.elapsed() > 0 ? formatTime(this.elapsed()) : 'non chronométré'}`;
+    const summary = this.isMatch()
+      ? `Score : ${r.total} pts · Temps : ${this.elapsed() > 0 ? formatTime(this.elapsed()) : 'non chronométré'}`
+      : `${this.partInfo().title} : ${r.total} pts`;
     const warnings = r.missions.filter((m) => m.error).length;
     const message = warnings ? `${summary}\n⚠ ${warnings} mission(s) avec une erreur de saisie.` : summary;
 
-    if (this.matchId()) {
+    if (this.matchId() || this.isTeamBonus()) {
       const alert = await this.alerts.create({
-        header: `Envoyer le score de ${this.teamName()} ?`,
+        header: this.isMatch() ? `Envoyer le score de ${this.teamName()} ?` : `Envoyer le ${this.partInfo().title} de ${this.teamName()} ?`,
         message,
         buttons: [{ text: 'Annuler', role: 'cancel' }, { text: 'Envoyer', handler: () => void this.sendScore(r.total) }],
       });
@@ -512,7 +545,7 @@ export class SheetPage implements OnDestroy {
             const c = this.contest.value()!;
             practiceHistory.add({
               contestId: c.id,
-              contestName: c.name,
+              contestName: this.isMatch() ? c.name : `${c.name} · ${this.partInfo().title}`,
               team: data.team.trim(),
               total: r.total,
               timeSeconds: this.elapsed(),
@@ -531,12 +564,13 @@ export class SheetPage implements OnDestroy {
     this.saving.set(true);
     try {
       const sent = await this.api.submitScore({
-        matchId: this.matchId()!,
+        part: this.evalPart(),
+        matchId: this.isMatch() ? this.matchId()! : 0,
         teamId: Number(this.team()),
         answers: this.answers(),
         penalties: this.penalties(),
         timeSeconds: this.elapsed(),
-        label: `${this.teamName()} · match ${this.matchId()} · ${total} pts`,
+        label: this.isMatch() ? `${this.teamName()} · match ${this.matchId()} · ${total} pts` : `${this.teamName()} · ${this.partInfo().title} · ${total} pts`,
       });
       await this.toast(sent ? 'Score envoyé' : 'Hors ligne : score gardé, il sera envoyé au retour du réseau', sent ? 'success' : 'warning');
       await this.router.navigateByUrl(this.backUrl(), { replaceUrl: true });

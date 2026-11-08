@@ -356,87 +356,56 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
           ]
         },
         {
-          "id": "bonus-techno",
-          "title": "Bonus technologique",
-          "description": "Maximum 100 points. Jusqu'à 3 capteurs, 2 moteurs supplémentaires et 2 outils imprimés en 3D, à 20 points chacun ; ils doivent servir aux missions du défi.",
+          "id": "bonus-attitude",
+          "part": "attitude",
+          "title": "Bonus Attitude",
+          "description": "Noté par l'arbitre une fois les matchs de l'équipe terminés : la qualité du temps passé avec l'équipe pendant le défi. 10 points par critère, 50 points maximum.",
           "items": [
-            {
-              "id": "capteurs",
-              "type": "counter",
-              "label": "RoBee utilise des capteurs pour être plus autonome dans ses missions (tactile, de force, de lumière, de couleurs, à ultrasons, gyroscopique, de température, infrarouge...).",
-              "points": 20,
-              "max": 3
-            },
-            {
-              "id": "moteurs",
-              "type": "counter",
-              "label": "RoBee utilise des moteurs supplémentaires pour une action autre que ses déplacements, en lien avec les missions.",
-              "points": 20,
-              "max": 2
-            },
-            {
-              "id": "outils-3d",
-              "type": "counter",
-              "label": "RoBee utilise un outil fabriqué à l'aide d'une imprimante 3D.",
-              "points": 20,
-              "max": 2
-            }
-          ],
-          "maxPoints": 100
-        },
-        {
-          "id": "bonus-pedago",
-          "title": "Bonus pédagogique",
-          "description": "Maximum 100 points. Cocher « Attitude des élèves de l'équipe » pour noter les 5 critères d'attitude (10 points chacun). Cocher « Une affiche est présente sur le stand de l'équipe » pour noter les 5 cadres de l'affiche format raisin (10 points chacun).",
-          "items": [
-            {
-              "id": "attitude",
-              "type": "check",
-              "points": 0,
-              "label": "Attitude des élèves de l'équipe",
-              "section": "1 - Attitude des élèves pendant le défi"
-            },
             {
               "id": "att-respect",
               "type": "check",
               "points": 10,
               "label": "Respectent les lieux et le matériel mis à disposition de l'équipe pendant le temps du défi (robot, outils, ordinateurs, tablettes, tables, chaises, plateau de jeu, matériel d'affichage...).",
-              "showIf": "attitude"
+              "section": "Pendant le défi, les élèves de l'équipe :"
             },
             {
               "id": "att-roles",
               "type": "check",
               "points": 10,
-              "label": "Chacun a un rôle bien défini pendant les tests et les matchs.",
-              "showIf": "attitude"
+              "label": "Chacun a un rôle bien défini pendant les tests et les matchs."
             },
             {
               "id": "att-arbitre",
               "type": "check",
               "points": 10,
-              "label": "Prennent en compte les remarques de l'arbitre.",
-              "showIf": "attitude"
+              "label": "Prennent en compte les remarques de l'arbitre."
             },
             {
               "id": "att-perseverance",
               "type": "check",
               "points": 10,
-              "label": "Apprécient le moment, sont positifs, s'encouragent, progressent et persévèrent pour réussir toutes les missions.",
-              "showIf": "attitude"
+              "label": "Apprécient le moment, sont positifs, s'encouragent, progressent et persévèrent pour réussir toutes les missions."
             },
             {
               "id": "att-autres-equipes",
               "type": "check",
               "points": 10,
-              "label": "Respectent les autres équipes, partagent avec elles leur matériel, leurs connaissances et leurs solutions.",
-              "showIf": "attitude"
-            },
+              "label": "Respectent les autres équipes, partagent avec elles leur matériel, leurs connaissances et leurs solutions."
+            }
+          ]
+        },
+        {
+          "id": "bonus-pedago",
+          "part": "pedagogique",
+          "title": "Bonus pédagogique",
+          "description": "Noté par les conseillers pédagogiques. Cocher « Une affiche est présente sur le stand de l'équipe » pour noter les 5 cadres de l'affiche format raisin (10 points chacun).",
+          "items": [
             {
               "id": "affiche",
               "type": "check",
               "points": 0,
               "label": "Une affiche est présente sur le stand de l'équipe.",
-              "section": "2 - Affiche préparée par les élèves de l'équipe"
+              "section": "1 - Affiche préparée par les élèves de l'équipe"
             },
             {
               "id": "a-presentation",
@@ -476,26 +445,6 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
           ],
           "limits": [
             {
-              "item": "att-respect",
-              "notMoreThan": "attitude"
-            },
-            {
-              "item": "att-roles",
-              "notMoreThan": "attitude"
-            },
-            {
-              "item": "att-arbitre",
-              "notMoreThan": "attitude"
-            },
-            {
-              "item": "att-perseverance",
-              "notMoreThan": "attitude"
-            },
-            {
-              "item": "att-autres-equipes",
-              "notMoreThan": "attitude"
-            },
-            {
               "item": "a-presentation",
               "notMoreThan": "affiche"
             },
@@ -516,6 +465,36 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "notMoreThan": "affiche"
             }
           ]
+        },
+        {
+          "id": "bonus-techno",
+          "part": "technologique",
+          "title": "Bonus technologique",
+          "description": "Noté par les référents numériques. Maximum 100 points. Jusqu'à 3 capteurs, 2 moteurs supplémentaires et 2 outils imprimés en 3D, à 20 points chacun ; ils doivent servir aux missions du défi.",
+          "items": [
+            {
+              "id": "capteurs",
+              "type": "counter",
+              "label": "RoBee utilise des capteurs pour être plus autonome dans ses missions (tactile, de force, de lumière, de couleurs, à ultrasons, gyroscopique, de température, infrarouge...).",
+              "points": 20,
+              "max": 3
+            },
+            {
+              "id": "moteurs",
+              "type": "counter",
+              "label": "RoBee utilise des moteurs supplémentaires pour une action autre que ses déplacements, en lien avec les missions.",
+              "points": 20,
+              "max": 2
+            },
+            {
+              "id": "outils-3d",
+              "type": "counter",
+              "label": "RoBee utilise un outil fabriqué à l'aide d'une imprimante 3D.",
+              "points": 20,
+              "max": 2
+            }
+          ],
+          "maxPoints": 100
         }
       ],
       "timeTiebreak": true
@@ -941,87 +920,56 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
           "description": "GardBot doit être en sécurité pour passer la journée et recharger ses batteries pour être en forme la nuit suivante... Il doit donc se hâter, avant que l'aube pointe le bout de son nez, de retourner dans sa loge."
         },
         {
-          "id": "bonus-techno",
-          "title": "Bonus technologique",
-          "description": "Maximum 100 points. Jusqu'à 3 capteurs, 2 moteurs supplémentaires et 2 outils imprimés en 3D, à 20 points chacun ; ils doivent servir aux missions du défi.",
+          "id": "bonus-attitude",
+          "part": "attitude",
+          "title": "Bonus Attitude",
+          "description": "Noté par l'arbitre une fois les matchs de l'équipe terminés : la qualité du temps passé avec l'équipe pendant le défi. 10 points par critère, 50 points maximum.",
           "items": [
-            {
-              "id": "capteurs",
-              "type": "counter",
-              "label": "GardBot utilise des capteurs pour être plus autonome dans ses missions (tactile, de force, de lumière, de couleurs, à ultrasons, gyroscopique, de température, infrarouge...).",
-              "points": 20,
-              "max": 3
-            },
-            {
-              "id": "moteurs",
-              "type": "counter",
-              "label": "GardBot utilise des moteurs supplémentaires pour une action autre que ses déplacements, en lien avec les missions.",
-              "points": 20,
-              "max": 2
-            },
-            {
-              "id": "outils-3d",
-              "type": "counter",
-              "label": "GardBot utilise un outil fabriqué à l'aide d'une imprimante 3D.",
-              "points": 20,
-              "max": 2
-            }
-          ],
-          "maxPoints": 100
-        },
-        {
-          "id": "bonus-pedago",
-          "title": "Bonus pédagogique",
-          "description": "Maximum 100 points. Cocher « Attitude des élèves de l'équipe » pour noter les 5 critères d'attitude (10 points chacun). Cocher « Une affiche est présente sur le stand de l'équipe » pour noter les 5 cadres de l'affiche format raisin (10 points chacun).",
-          "items": [
-            {
-              "id": "attitude",
-              "type": "check",
-              "points": 0,
-              "label": "Attitude des élèves de l'équipe",
-              "section": "1 - Attitude des élèves pendant le défi"
-            },
             {
               "id": "att-respect",
               "type": "check",
               "points": 10,
               "label": "Respectent les lieux et le matériel mis à disposition de l'équipe pendant le temps du défi (robot, outils, ordinateurs, tablettes, tables, chaises, plateau de jeu, matériel d'affichage...).",
-              "showIf": "attitude"
+              "section": "Pendant le défi, les élèves de l'équipe :"
             },
             {
               "id": "att-roles",
               "type": "check",
               "points": 10,
-              "label": "Chacun a un rôle bien défini pendant les tests et les matchs.",
-              "showIf": "attitude"
+              "label": "Chacun a un rôle bien défini pendant les tests et les matchs."
             },
             {
               "id": "att-arbitre",
               "type": "check",
               "points": 10,
-              "label": "Prennent en compte les remarques de l'arbitre.",
-              "showIf": "attitude"
+              "label": "Prennent en compte les remarques de l'arbitre."
             },
             {
               "id": "att-perseverance",
               "type": "check",
               "points": 10,
-              "label": "Apprécient le moment, sont positifs, s'encouragent, progressent et persévèrent pour réussir toutes les missions.",
-              "showIf": "attitude"
+              "label": "Apprécient le moment, sont positifs, s'encouragent, progressent et persévèrent pour réussir toutes les missions."
             },
             {
               "id": "att-autres-equipes",
               "type": "check",
               "points": 10,
-              "label": "Respectent les autres équipes, partagent avec elles leur matériel, leurs connaissances et leurs solutions.",
-              "showIf": "attitude"
-            },
+              "label": "Respectent les autres équipes, partagent avec elles leur matériel, leurs connaissances et leurs solutions."
+            }
+          ]
+        },
+        {
+          "id": "bonus-pedago",
+          "part": "pedagogique",
+          "title": "Bonus pédagogique",
+          "description": "Noté par les conseillers pédagogiques. Cocher « Une affiche est présente sur le stand de l'équipe » pour noter les 5 cadres de l'affiche format raisin (10 points chacun).",
+          "items": [
             {
               "id": "affiche",
               "type": "check",
               "points": 0,
               "label": "Une affiche est présente sur le stand de l'équipe.",
-              "section": "2 - Affiche préparée par les élèves de l'équipe"
+              "section": "1 - Affiche préparée par les élèves de l'équipe"
             },
             {
               "id": "a-presentation",
@@ -1061,26 +1009,6 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
           ],
           "limits": [
             {
-              "item": "att-respect",
-              "notMoreThan": "attitude"
-            },
-            {
-              "item": "att-roles",
-              "notMoreThan": "attitude"
-            },
-            {
-              "item": "att-arbitre",
-              "notMoreThan": "attitude"
-            },
-            {
-              "item": "att-perseverance",
-              "notMoreThan": "attitude"
-            },
-            {
-              "item": "att-autres-equipes",
-              "notMoreThan": "attitude"
-            },
-            {
               "item": "a-presentation",
               "notMoreThan": "affiche"
             },
@@ -1101,6 +1029,36 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "notMoreThan": "affiche"
             }
           ]
+        },
+        {
+          "id": "bonus-techno",
+          "part": "technologique",
+          "title": "Bonus technologique",
+          "description": "Noté par les référents numériques. Maximum 100 points. Jusqu'à 3 capteurs, 2 moteurs supplémentaires et 2 outils imprimés en 3D, à 20 points chacun ; ils doivent servir aux missions du défi.",
+          "items": [
+            {
+              "id": "capteurs",
+              "type": "counter",
+              "label": "GardBot utilise des capteurs pour être plus autonome dans ses missions (tactile, de force, de lumière, de couleurs, à ultrasons, gyroscopique, de température, infrarouge...).",
+              "points": 20,
+              "max": 3
+            },
+            {
+              "id": "moteurs",
+              "type": "counter",
+              "label": "GardBot utilise des moteurs supplémentaires pour une action autre que ses déplacements, en lien avec les missions.",
+              "points": 20,
+              "max": 2
+            },
+            {
+              "id": "outils-3d",
+              "type": "counter",
+              "label": "GardBot utilise un outil fabriqué à l'aide d'une imprimante 3D.",
+              "points": 20,
+              "max": 2
+            }
+          ],
+          "maxPoints": 100
         }
       ],
       "maxPenalties": 10,
@@ -1388,87 +1346,56 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
           ]
         },
         {
-          "id": "bonus-techno",
-          "title": "Bonus technologique",
-          "description": "Maximum 100 points. Jusqu'à 3 capteurs, 2 moteurs supplémentaires et 2 outils imprimés en 3D, à 20 points chacun ; ils doivent servir aux missions du défi.",
+          "id": "bonus-attitude",
+          "part": "attitude",
+          "title": "Bonus Attitude",
+          "description": "Noté par l'arbitre une fois les matchs de l'équipe terminés : la qualité du temps passé avec l'équipe pendant le défi. 10 points par critère, 50 points maximum.",
           "items": [
-            {
-              "id": "capteurs",
-              "type": "counter",
-              "label": "Le rover utilise des capteurs pour être plus autonome dans ses missions (tactile, de force, de lumière, de couleurs, à ultrasons, gyroscopique, de température, infrarouge...).",
-              "points": 20,
-              "max": 3
-            },
-            {
-              "id": "moteurs",
-              "type": "counter",
-              "label": "Le rover utilise des moteurs supplémentaires pour une action autre que ses déplacements, en lien avec les missions.",
-              "points": 20,
-              "max": 2
-            },
-            {
-              "id": "outils-3d",
-              "type": "counter",
-              "label": "Le rover utilise un outil fabriqué à l'aide d'une imprimante 3D.",
-              "points": 20,
-              "max": 2
-            }
-          ],
-          "maxPoints": 100
-        },
-        {
-          "id": "bonus-pedago",
-          "title": "Bonus pédagogique",
-          "description": "Maximum 100 points. Cocher « Attitude des élèves de l'équipe » pour noter les 5 critères d'attitude (10 points chacun). Cocher « Une affiche est présente sur le stand de l'équipe » pour noter les 5 cadres de l'affiche format raisin (10 points chacun).",
-          "items": [
-            {
-              "id": "attitude",
-              "type": "check",
-              "points": 0,
-              "label": "Attitude des élèves de l'équipe",
-              "section": "1 - Attitude des élèves pendant le défi"
-            },
             {
               "id": "att-respect",
               "type": "check",
               "points": 10,
               "label": "Respectent les lieux et le matériel mis à disposition de l'équipe pendant le temps du défi (robot, outils, ordinateurs, tablettes, tables, chaises, plateau de jeu, matériel d'affichage...).",
-              "showIf": "attitude"
+              "section": "Pendant le défi, les élèves de l'équipe :"
             },
             {
               "id": "att-roles",
               "type": "check",
               "points": 10,
-              "label": "Chacun a un rôle bien défini pendant les tests et les matchs.",
-              "showIf": "attitude"
+              "label": "Chacun a un rôle bien défini pendant les tests et les matchs."
             },
             {
               "id": "att-arbitre",
               "type": "check",
               "points": 10,
-              "label": "Prennent en compte les remarques de l'arbitre.",
-              "showIf": "attitude"
+              "label": "Prennent en compte les remarques de l'arbitre."
             },
             {
               "id": "att-perseverance",
               "type": "check",
               "points": 10,
-              "label": "Apprécient le moment, sont positifs, s'encouragent, progressent et persévèrent pour réussir toutes les missions.",
-              "showIf": "attitude"
+              "label": "Apprécient le moment, sont positifs, s'encouragent, progressent et persévèrent pour réussir toutes les missions."
             },
             {
               "id": "att-autres-equipes",
               "type": "check",
               "points": 10,
-              "label": "Respectent les autres équipes, partagent avec elles leur matériel, leurs connaissances et leurs solutions.",
-              "showIf": "attitude"
-            },
+              "label": "Respectent les autres équipes, partagent avec elles leur matériel, leurs connaissances et leurs solutions."
+            }
+          ]
+        },
+        {
+          "id": "bonus-pedago",
+          "part": "pedagogique",
+          "title": "Bonus pédagogique",
+          "description": "Noté par les conseillers pédagogiques. Cocher « Une affiche est présente sur le stand de l'équipe » pour noter les 5 cadres de l'affiche format raisin (10 points chacun).",
+          "items": [
             {
               "id": "affiche",
               "type": "check",
               "points": 0,
               "label": "Une affiche est présente sur le stand de l'équipe.",
-              "section": "2 - Affiche préparée par les élèves de l'équipe"
+              "section": "1 - Affiche préparée par les élèves de l'équipe"
             },
             {
               "id": "a-presentation",
@@ -1508,26 +1435,6 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
           ],
           "limits": [
             {
-              "item": "att-respect",
-              "notMoreThan": "attitude"
-            },
-            {
-              "item": "att-roles",
-              "notMoreThan": "attitude"
-            },
-            {
-              "item": "att-arbitre",
-              "notMoreThan": "attitude"
-            },
-            {
-              "item": "att-perseverance",
-              "notMoreThan": "attitude"
-            },
-            {
-              "item": "att-autres-equipes",
-              "notMoreThan": "attitude"
-            },
-            {
               "item": "a-presentation",
               "notMoreThan": "affiche"
             },
@@ -1548,6 +1455,36 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "notMoreThan": "affiche"
             }
           ]
+        },
+        {
+          "id": "bonus-techno",
+          "part": "technologique",
+          "title": "Bonus technologique",
+          "description": "Noté par les référents numériques. Maximum 100 points. Jusqu'à 3 capteurs, 2 moteurs supplémentaires et 2 outils imprimés en 3D, à 20 points chacun ; ils doivent servir aux missions du défi.",
+          "items": [
+            {
+              "id": "capteurs",
+              "type": "counter",
+              "label": "Le rover utilise des capteurs pour être plus autonome dans ses missions (tactile, de force, de lumière, de couleurs, à ultrasons, gyroscopique, de température, infrarouge...).",
+              "points": 20,
+              "max": 3
+            },
+            {
+              "id": "moteurs",
+              "type": "counter",
+              "label": "Le rover utilise des moteurs supplémentaires pour une action autre que ses déplacements, en lien avec les missions.",
+              "points": 20,
+              "max": 2
+            },
+            {
+              "id": "outils-3d",
+              "type": "counter",
+              "label": "Le rover utilise un outil fabriqué à l'aide d'une imprimante 3D.",
+              "points": 20,
+              "max": 2
+            }
+          ],
+          "maxPoints": 100
         }
       ]
     }
@@ -1833,87 +1770,56 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
           ]
         },
         {
-          "id": "bonus-techno",
-          "title": "Bonus technologique",
-          "description": "Maximum 100 points. Jusqu'à 3 capteurs, 2 moteurs supplémentaires et 2 outils imprimés en 3D, à 20 points chacun ; ils doivent servir aux missions du défi.",
+          "id": "bonus-attitude",
+          "part": "attitude",
+          "title": "Bonus Attitude",
+          "description": "Noté par l'arbitre une fois les matchs de l'équipe terminés : la qualité du temps passé avec l'équipe pendant le défi. 10 points par critère, 50 points maximum.",
           "items": [
-            {
-              "id": "capteurs",
-              "type": "counter",
-              "label": "Le rover utilise des capteurs pour être plus autonome dans ses missions (tactile, de force, de lumière, de couleurs, à ultrasons, gyroscopique, de température, infrarouge...).",
-              "points": 20,
-              "max": 3
-            },
-            {
-              "id": "moteurs",
-              "type": "counter",
-              "label": "Le rover utilise des moteurs supplémentaires pour une action autre que ses déplacements, en lien avec les missions.",
-              "points": 20,
-              "max": 2
-            },
-            {
-              "id": "outils-3d",
-              "type": "counter",
-              "label": "Le rover utilise un outil fabriqué à l'aide d'une imprimante 3D.",
-              "points": 20,
-              "max": 2
-            }
-          ],
-          "maxPoints": 100
-        },
-        {
-          "id": "bonus-pedago",
-          "title": "Bonus pédagogique",
-          "description": "Maximum 100 points. Cocher « Attitude des élèves de l'équipe » pour noter les 5 critères d'attitude (10 points chacun). Cocher « Une affiche est présente sur le stand de l'équipe » pour noter les 5 cadres de l'affiche format raisin (10 points chacun).",
-          "items": [
-            {
-              "id": "attitude",
-              "type": "check",
-              "points": 0,
-              "label": "Attitude des élèves de l'équipe",
-              "section": "1 - Attitude des élèves pendant le défi"
-            },
             {
               "id": "att-respect",
               "type": "check",
               "points": 10,
               "label": "Respectent les lieux et le matériel mis à disposition de l'équipe pendant le temps du défi (robot, outils, ordinateurs, tablettes, tables, chaises, plateau de jeu, matériel d'affichage...).",
-              "showIf": "attitude"
+              "section": "Pendant le défi, les élèves de l'équipe :"
             },
             {
               "id": "att-roles",
               "type": "check",
               "points": 10,
-              "label": "Chacun a un rôle bien défini pendant les tests et les matchs.",
-              "showIf": "attitude"
+              "label": "Chacun a un rôle bien défini pendant les tests et les matchs."
             },
             {
               "id": "att-arbitre",
               "type": "check",
               "points": 10,
-              "label": "Prennent en compte les remarques de l'arbitre.",
-              "showIf": "attitude"
+              "label": "Prennent en compte les remarques de l'arbitre."
             },
             {
               "id": "att-perseverance",
               "type": "check",
               "points": 10,
-              "label": "Apprécient le moment, sont positifs, s'encouragent, progressent et persévèrent pour réussir toutes les missions.",
-              "showIf": "attitude"
+              "label": "Apprécient le moment, sont positifs, s'encouragent, progressent et persévèrent pour réussir toutes les missions."
             },
             {
               "id": "att-autres-equipes",
               "type": "check",
               "points": 10,
-              "label": "Respectent les autres équipes, partagent avec elles leur matériel, leurs connaissances et leurs solutions.",
-              "showIf": "attitude"
-            },
+              "label": "Respectent les autres équipes, partagent avec elles leur matériel, leurs connaissances et leurs solutions."
+            }
+          ]
+        },
+        {
+          "id": "bonus-pedago",
+          "part": "pedagogique",
+          "title": "Bonus pédagogique",
+          "description": "Noté par les conseillers pédagogiques. Cocher « Une affiche est présente sur le stand de l'équipe » pour noter les 5 cadres de l'affiche format raisin (10 points chacun).",
+          "items": [
             {
               "id": "affiche",
               "type": "check",
               "points": 0,
               "label": "Une affiche est présente sur le stand de l'équipe.",
-              "section": "2 - Affiche préparée par les élèves de l'équipe"
+              "section": "1 - Affiche préparée par les élèves de l'équipe"
             },
             {
               "id": "a-presentation",
@@ -1953,26 +1859,6 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
           ],
           "limits": [
             {
-              "item": "att-respect",
-              "notMoreThan": "attitude"
-            },
-            {
-              "item": "att-roles",
-              "notMoreThan": "attitude"
-            },
-            {
-              "item": "att-arbitre",
-              "notMoreThan": "attitude"
-            },
-            {
-              "item": "att-perseverance",
-              "notMoreThan": "attitude"
-            },
-            {
-              "item": "att-autres-equipes",
-              "notMoreThan": "attitude"
-            },
-            {
               "item": "a-presentation",
               "notMoreThan": "affiche"
             },
@@ -1993,6 +1879,36 @@ export const BUILTIN_CONTESTS: BuiltinContest[] = [
               "notMoreThan": "affiche"
             }
           ]
+        },
+        {
+          "id": "bonus-techno",
+          "part": "technologique",
+          "title": "Bonus technologique",
+          "description": "Noté par les référents numériques. Maximum 100 points. Jusqu'à 3 capteurs, 2 moteurs supplémentaires et 2 outils imprimés en 3D, à 20 points chacun ; ils doivent servir aux missions du défi.",
+          "items": [
+            {
+              "id": "capteurs",
+              "type": "counter",
+              "label": "Le rover utilise des capteurs pour être plus autonome dans ses missions (tactile, de force, de lumière, de couleurs, à ultrasons, gyroscopique, de température, infrarouge...).",
+              "points": 20,
+              "max": 3
+            },
+            {
+              "id": "moteurs",
+              "type": "counter",
+              "label": "Le rover utilise des moteurs supplémentaires pour une action autre que ses déplacements, en lien avec les missions.",
+              "points": 20,
+              "max": 2
+            },
+            {
+              "id": "outils-3d",
+              "type": "counter",
+              "label": "Le rover utilise un outil fabriqué à l'aide d'une imprimante 3D.",
+              "points": 20,
+              "max": 2
+            }
+          ],
+          "maxPoints": 100
         }
       ]
     }

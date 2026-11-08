@@ -25,6 +25,7 @@ model User {
   school       School?  @relation(fields: [schoolId], references: [id], onDelete: SetNull)
   createdAt    DateTime @default(now())
   scores       MatchParticipant[]
+  evaluations  TeamEvaluation[]
   /// Teams of a teacher's class (TEACHER role).
   teams        Team[]
 }
@@ -80,6 +81,7 @@ model Team {
   group          Group              @relation(fields: [groupId], references: [id], onDelete: Cascade)
   participations MatchParticipant[]
   students       Student[]
+  evaluations    TeamEvaluation[]
 }
 
 /// Never exposed by public routes (minors): only admins and the team's teacher see students.
@@ -122,4 +124,22 @@ model MatchParticipant {
   scoredAt    DateTime?
 
   @@unique([matchId, teamId])
+}
+
+/// Bonus scored once per team, outside the matches: attitude (the referee, after the last match),
+/// pedagogique (educational advisers), technologique (digital-education referents).
+/// Final score = best match + these bonuses.
+model TeamEvaluation {
+  id          Int       @id @default(autoincrement())
+  teamId      Int
+  team        Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  /// 'attitude' | 'pedagogique' | 'technologique' (EvalPart in @contest/scoring).
+  part        String
+  score       Int
+  answers     Json
+  evaluatorId Int?
+  evaluator   User?     @relation(fields: [evaluatorId], references: [id], onDelete: SetNull)
+  scoredAt    DateTime  @default(now())
+
+  @@unique([teamId, part])
 }

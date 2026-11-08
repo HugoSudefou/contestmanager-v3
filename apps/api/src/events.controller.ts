@@ -21,11 +21,12 @@ import {
   IsNotEmpty,
   IsObject,
   IsOptional,
+  IsIn,
   IsString,
   Min,
   ValidateNested,
 } from 'class-validator';
-import { clampPenalties, computeSheet, type Answers, type Sheet } from '@contest/scoring';
+import { EVAL_PARTS, clampPenalties, computePart, type Answers, type EvalPart, type Sheet } from '@contest/scoring';
 import { PrismaService } from './prisma.service.js';
 import { Public, Roles, type AuthUser } from './auth.js';
 import type { Prisma } from './generated/prisma/client.js';
@@ -75,7 +76,14 @@ class ScoreDto {
   @IsInt() @Min(0) timeSeconds: number;
 }
 
+/** A bonus scored once per team (attitude, pedagogique, technologique). */
+class EvaluationDto {
+  @IsIn(EVAL_PARTS.map((p) => p.part).filter((p) => p !== 'match')) part: Exclude<EvalPart, 'match'>;
+  @IsObject() answers: Answers;
+}
+
 const schoolName = { select: { name: true } } as const;
+const evaluationSelect = { select: { part: true, score: true, scoredAt: true } } as const;
 
 const matchInclude = {
   participants: { include: { team: { select: { id: true, name: true } } }, orderBy: { id: 'asc' } },
@@ -102,7 +110,7 @@ export class TournamentsController {
           orderBy: { name: 'asc' },
           include: {
             contest: true,
-            teams: { orderBy: { name: 'asc' }, include: { school: schoolName } },
+            teams: { orderBy: { name: 'asc' }, include: { school: schoolName, evaluations: evaluationSelect } },
             matches: { include: matchInclude, orderBy: [{ scheduledAt: 'asc' }, { id: 'asc' }] },
           },
         },
@@ -159,7 +167,27 @@ export class TeamsController {
         school: schoolName,
         group: { include: { tournament: true, contest: { select: { id: true, name: true } } } },
         participations: { include: { match: { include: matchInclude } }, orderBy: { matchId: 'asc' } },
+        evaluations: { select: { part: true, score: true, scoredAt: true, answers: true } },
       },
+    });
+  }
+
+  /**
+   * A bonus scored once for the team (re-sending overwrites). The server recomputes the score from the answers
+   * with the missions of that part only.
+   */
+  @Roles('REFEREE', 'ADMIN')
+  @Post(':id/evaluations')
+  async evaluate(@Param('id', ParseIntPipe) teamId: number, @Body() dto: EvaluationDto, @Req() req: { user: AuthUser }) {
+    const team = await this.prisma.team.findUnique({ where: { id: teamId }, include: { group: { include: { contest: true } } } });
+    if (!team) throw new NotFoundException('Équipe inconnue');
+    const sheet = team.group.contest.sheet as unknown as Sheet;
+    const score = computePart(sheet, dto.part, dto.answers).total;
+    const data = { score, answers: dto.answers as Prisma.InputJsonValue, evaluatorId: req.user.id, scoredAt: new Date() };
+    return this.prisma.teamEvaluation.upsert({
+      where: { teamId_part: { teamId, part: dto.part } },
+      create: { teamId, part: dto.part, ...data },
+      update: data,
     });
   }
 
@@ -256,7 +284,8 @@ export class MatchesController {
     });
     if (!participant) throw new NotFoundException("Cette équipe ne joue pas ce match");
     const sheet = participant.match.group.contest.sheet as unknown as Sheet;
-    const result = computeSheet(sheet, dto.answers, dto.penalties);
+    // Only the missions and penalties: the bonuses are scored once per team (POST /teams/:id/evaluations).
+    const result = computePart(sheet, 'match', dto.answers, dto.penalties);
     const saved = await this.prisma.matchParticipant.update({
       where: { id: participant.id },
       data: {
@@ -312,6 +341,7 @@ export class MeController {
         students: { orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }] },
         group: { include: { tournament: true, contest: { select: { id: true, name: true } } } },
         participations: { include: { match: { include: matchInclude } }, orderBy: { matchId: 'asc' } },
+        evaluations: { select: { part: true, score: true, scoredAt: true, answers: true } },
       },
     });
   }
