@@ -30,7 +30,7 @@ import {
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { createOutline, trashOutline } from 'ionicons/icons';
-import { ApiService, FINALS_GROUP, bestMatch, teamFinal, formatTime, roundName, type Contest, type Group, type Team, type TournamentDetail } from '../api.service';
+import { ApiService, FINALS_GROUP, bestMatch, teamCode, teamFinal, formatTime, roundName, type Contest, type Group, type Team, type TournamentDetail } from '../api.service';
 import { StudentsEditorComponent } from '../students-editor.component';
 import { readWorkbook, type ImportEntry } from './import-workbook';
 
@@ -82,7 +82,7 @@ interface MatchDraft { tableNumber?: number; scheduledAt?: string; teamIds: numb
             <ion-card-content>
               <p>Un groupe = des équipes qui jouent la même feuille de mission (ex. « CM1-CM2 » sur le concours Cycle 3).</p>
               <div class="row">
-                <ion-input class="grow" label="Nouveau groupe" labelPlacement="stacked" [(ngModel)]="newGroup.name" placeholder="CM1-CM2"></ion-input>
+                <ion-input class="grow" label="Nouvelle classe (lettre A, B, C... donnée automatiquement)" labelPlacement="stacked" [(ngModel)]="newGroup.name" placeholder="École Voltaire - CM1 - Mme Martin"></ion-input>
                 <ion-select class="grow" label="Concours" labelPlacement="stacked" interface="popover" [(ngModel)]="newGroup.contestId">
                   @for (c of contests.hasValue() ? contests.value() : []; track c.id) { <ion-select-option [value]="c.id">{{ c.name }}</ion-select-option> }
                 </ion-select>
@@ -105,7 +105,9 @@ interface MatchDraft { tableNumber?: number; scheduledAt?: string; teamIds: numb
           <ion-card>
             <ion-card-content>
               <h3>Phase finale</h3>
-              <p>Meilleure équipe de chaque groupe du concours choisi, complétée par les meilleurs scores, placées en tableau. Le gagnant de chaque match passe au tour suivant dès que les deux scores sont saisis (en cas d'égalité, faites rejouer et ressaisissez).</p>
+              <p>Les équipes sont classées sur leur score final (meilleur match + bonus).</p>
+              <p><strong>Finale des classes :</strong> la meilleure équipe de chaque classe, toutes dans un seul match (2 à 6 équipes selon le nombre de classes).</p>
+              <p><strong>Tableau :</strong> meilleure équipe de chaque classe, complétée par les meilleurs scores, placées en tableau. Le gagnant de chaque match passe au tour suivant dès que les deux scores sont saisis (en cas d'égalité, faites rejouer et ressaisissez).</p>
               <div class="row">
                 <ion-select class="grow" label="Concours" labelPlacement="stacked" interface="popover" [(ngModel)]="finals.contestId">
                   @for (c of contests.hasValue() ? contests.value() : []; track c.id) { <ion-select-option [value]="c.id">{{ c.name }}</ion-select-option> }
@@ -115,7 +117,8 @@ interface MatchDraft { tableNumber?: number; scheduledAt?: string; teamIds: numb
                 </ion-select>
                 <ion-input label="Début" labelPlacement="stacked" type="datetime-local" [(ngModel)]="finals.startAt"></ion-input>
                 <ion-input class="num" label="Min / tour" labelPlacement="stacked" type="number" [(ngModel)]="finals.minutesPerRound"></ion-input>
-                <ion-button [disabled]="!finals.contestId" (click)="generateFinals()">Générer</ion-button>
+                <ion-button [disabled]="!finals.contestId" (click)="generateClassFinal()">Finale des classes</ion-button>
+                <ion-button fill="outline" [disabled]="!finals.contestId" (click)="generateFinals()">Tableau</ion-button>
               </div>
             </ion-card-content>
           </ion-card>
@@ -124,7 +127,7 @@ interface MatchDraft { tableNumber?: number; scheduledAt?: string; teamIds: numb
             <ion-card>
               <ion-card-header>
                 <div class="row">
-                  <ion-card-title class="grow">{{ g.name }}</ion-card-title>
+                  <ion-card-title class="grow">@if (g.letter) { <strong>{{ g.letter }}</strong> · }{{ g.name }}</ion-card-title>
                   <ion-select interface="popover" [value]="g.contestId" (ionChange)="setContest(g, $event.detail.value)" aria-label="Concours du groupe">
                     @for (c of contests.hasValue() ? contests.value() : []; track c.id) { <ion-select-option [value]="c.id">{{ c.name }}</ion-select-option> }
                   </ion-select>
@@ -137,7 +140,7 @@ interface MatchDraft { tableNumber?: number; scheduledAt?: string; teamIds: numb
                 <ion-list>
                   @for (t of ranking(g); track t.team.id) {
                     <ion-item>
-                      <ion-label>{{ t.team.name }} <ion-note>{{ t.team.school?.name }}</ion-note></ion-label>
+                      <ion-label>@if (code(g, t.team); as c) { <strong>{{ c }}</strong> · }{{ t.team.name }} <ion-note>{{ t.team.school?.name }}</ion-note></ion-label>
                       <ion-note slot="end">{{ t.final === null ? '—' : t.final + ' pts' }}@if (t.final !== null) {<br /><small>match {{ t.best ?? '—' }} + bonus {{ t.bonus }}{{ t.tie && t.timeSeconds ? ' · ' + time(t.timeSeconds) : '' }}</small>}</ion-note>
                       <ion-button slot="end" fill="clear" size="small" (click)="toggleStudents(t.team.id)">Élèves</ion-button>
                       <ion-button slot="end" fill="clear" (click)="editTeam(t.team)" aria-label="Modifier"><ion-icon slot="icon-only" name="create-outline"></ion-icon></ion-button>
@@ -328,12 +331,24 @@ export class TournamentAdminPage {
     );
   }
 
+  /** One match: the best team of each class. */
+  async generateClassFinal() {
+    const f = this.finals;
+    await this.run(() =>
+      this.api.send('POST', `/tournaments/${this.id()}/class-final`, {
+        contestId: f.contestId,
+        startAt: f.startAt ? new Date(f.startAt).toISOString() : undefined,
+      }),
+    );
+  }
+
   draft(g: Group): MatchDraft {
     return (this.matchDrafts[g.id] ??= { teamIds: [] });
   }
 
   /** Teams sorted by best score, unscored last. */
   time = formatTime;
+  code = teamCode;
 
   /** Teams sorted by final score: best match + bonuses (attitude, pedagogique, technologique). Unscored last. */
   ranking(g: Group) {
@@ -360,8 +375,13 @@ export class TournamentAdminPage {
   }
 
   async renameGroup(g: Group) {
-    const name = await this.prompt('Renommer le groupe', [{ name: 'name', value: g.name, placeholder: 'Nom' }]);
-    if (name?.['name']) await this.run(() => this.api.send('PUT', `/groups/${g.id}`, { name: name['name'], tournamentId: g.tournamentId, contestId: g.contestId }));
+    const d = await this.prompt('Classe (groupe)', [
+      { name: 'letter', value: g.letter ?? '', placeholder: 'Lettre de la classe (A, B, C...)' },
+      { name: 'name', value: g.name, placeholder: 'École - Classe - Enseignant' },
+    ]);
+    if (d?.['name']) {
+      await this.run(() => this.api.send('PUT', `/groups/${g.id}`, { name: d['name'], letter: d['letter'] || null, tournamentId: g.tournamentId, contestId: g.contestId }));
+    }
   }
 
   async addTeams(g: Group) {
@@ -377,12 +397,14 @@ export class TournamentAdminPage {
 
   async editTeam(t: Team) {
     const d = await this.prompt("Modifier l'équipe", [
+      { name: 'number', value: t.number ? String(t.number) : '', placeholder: "Numéro dans la classe (1, 2, 3...)", type: 'number' },
       { name: 'name', value: t.name, placeholder: 'Nom' },
       { name: 'school', value: t.school?.name ?? '', placeholder: 'École' },
     ]);
     if (d?.['name']) {
+      const number = Number(d['number']) || null;
       await this.run(() =>
-        this.api.send('PUT', `/teams/${t.id}`, { name: d['name'], schoolName: d['school'] || undefined, teacherId: t.teacherId, groupId: t.groupId }),
+        this.api.send('PUT', `/teams/${t.id}`, { name: d['name'], number, schoolName: d['school'] || undefined, teacherId: t.teacherId, groupId: t.groupId }),
       );
     }
   }
@@ -418,7 +440,7 @@ export class TournamentAdminPage {
     }
   }
 
-  private async prompt(header: string, inputs: { name: string; value?: string; placeholder?: string; type?: 'date' }[]) {
+  private async prompt(header: string, inputs: { name: string; value?: string; placeholder?: string; type?: 'date' | 'number' }[]) {
     const alert = await this.alerts.create({ header, inputs, buttons: [{ text: 'Annuler', role: 'cancel' }, { text: 'OK', role: 'ok' }] });
     await alert.present();
     const { data, role } = await alert.onDidDismiss<{ values: Record<string, string> }>();

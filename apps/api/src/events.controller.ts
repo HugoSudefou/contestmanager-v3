@@ -23,6 +23,8 @@ import {
   IsOptional,
   IsIn,
   IsString,
+  Max,
+  MaxLength,
   Min,
   ValidateNested,
 } from 'class-validator';
@@ -42,6 +44,8 @@ class GroupDto {
   @IsString() name: string;
   @IsInt() tournamentId: number;
   @IsInt() contestId: number;
+  /** Class letter (A, B, C...): first character of the team codes. Empty = none. */
+  @IsOptional() @IsString() @MaxLength(3) letter?: string | null;
 }
 
 class TeamDto {
@@ -50,6 +54,8 @@ class TeamDto {
   /** School name; created if new, removed from the team when empty. */
   @IsOptional() @IsString() schoolName?: string;
   @IsOptional() @IsInt() teacherId?: number | null;
+  /** Team number in its class (A1, A2...). Left out on creation = next free number of the class. */
+  @IsOptional() @IsInt() @Min(1) @Max(99) number?: number | null;
 }
 
 export class StudentDto {
@@ -107,10 +113,10 @@ export class TournamentsController {
       where: { id },
       include: {
         groups: {
-          orderBy: { name: 'asc' },
+          orderBy: [{ letter: 'asc' }, { name: 'asc' }],
           include: {
             contest: true,
-            teams: { orderBy: { name: 'asc' }, include: { school: schoolName, evaluations: evaluationSelect } },
+            teams: { orderBy: [{ number: 'asc' }, { name: 'asc' }], include: { school: schoolName, evaluations: evaluationSelect } },
             matches: { include: matchInclude, orderBy: [{ scheduledAt: 'asc' }, { id: 'asc' }] },
           },
         },
@@ -138,14 +144,25 @@ export class TournamentsController {
 export class GroupsController {
   constructor(private prisma: PrismaService) {}
 
+  /** A new class gets the next free letter of the tournament (A, B, C...) unless one is given. */
   @Post()
-  create(@Body() dto: GroupDto) {
-    return this.prisma.group.create({ data: dto });
+  async create(@Body() dto: GroupDto) {
+    const letter = dto.letter?.trim().toUpperCase() || (await this.nextLetter(dto.tournamentId));
+    return this.prisma.group.create({ data: { ...dto, letter } });
+  }
+
+  private async nextLetter(tournamentId: number): Promise<string> {
+    const used = new Set((await this.prisma.group.findMany({ where: { tournamentId }, select: { letter: true } })).map((g) => g.letter));
+    for (let i = 0; i < 26; i++) {
+      const l = String.fromCharCode(65 + i);
+      if (!used.has(l)) return l;
+    }
+    return '';
   }
 
   @Put(':id')
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: GroupDto) {
-    return this.prisma.group.update({ where: { id }, data: dto });
+    return this.prisma.group.update({ where: { id }, data: { ...dto, letter: dto.letter?.trim().toUpperCase() || null } });
   }
 
   @Delete(':id')
@@ -176,9 +193,14 @@ export class TeamsController {
    * A bonus scored once for the team (re-sending overwrites). The server recomputes the score from the answers
    * with the missions of that part only.
    */
-  @Roles('REFEREE', 'ADMIN')
+  @Roles('REFEREE', 'EVALUATOR', 'ADMIN')
   @Post(':id/evaluations')
   async evaluate(@Param('id', ParseIntPipe) teamId: number, @Body() dto: EvaluationDto, @Req() req: { user: AuthUser }) {
+    // The referee scores the attitude; the advisers / referents score the poster, oral and technology bonuses.
+    const allowed = dto.part === 'attitude' ? ['REFEREE', 'ADMIN'] : ['EVALUATOR', 'ADMIN'];
+    if (!allowed.includes(req.user.role)) {
+      throw new ForbiddenException(dto.part === 'attitude' ? "Le bonus Attitude est noté par l'arbitre" : 'Ce bonus est noté avec l\'accès « Bonus pédagogique et technologique »');
+    }
     const team = await this.prisma.team.findUnique({ where: { id: teamId }, include: { group: { include: { contest: true } } } });
     if (!team) throw new NotFoundException('Équipe inconnue');
     const sheet = team.group.contest.sheet as unknown as Sheet;
@@ -193,7 +215,8 @@ export class TeamsController {
 
   @Post()
   async create(@Body() { schoolName, ...dto }: TeamDto) {
-    return this.prisma.team.create({ data: { ...dto, schoolId: await this.schoolId(schoolName) } });
+    const number = dto.number ?? ((await this.prisma.team.aggregate({ where: { groupId: dto.groupId }, _max: { number: true } }))._max.number ?? 0) + 1;
+    return this.prisma.team.create({ data: { ...dto, number, schoolId: await this.schoolId(schoolName) } });
   }
 
   @Put(':id')

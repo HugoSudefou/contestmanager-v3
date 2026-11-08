@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import {
+  ToastController,
   IonBadge,
   IonButton,
   IonButtons,
@@ -13,7 +14,7 @@ import {
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { cloudOfflineOutline, settingsOutline } from 'ionicons/icons';
-import { ApiService } from '../api.service';
+import { ApiService, canScoreBonus } from '../api.service';
 
 @Component({
   selector: 'app-home',
@@ -38,11 +39,21 @@ import { ApiService } from '../api.service';
     <ion-content class="ion-padding">
       <div class="home">
         <img src="assets/legacy/logo.png" alt="" class="logo" />
-        <ion-button expand="block" size="large" routerLink="/tournaments" [queryParams]="{ mode: 'referee' }">
-          Je suis arbitre
+        @if (api.tabletTeam(); as t) {
+          <!-- The tablet follows one team all the half-day: straight back to it. -->
+          <ion-button expand="block" size="large" (click)="openTabletTeam()">
+            <span class="wrap">Arbitre · {{ t.teamName }}</span>
+          </ion-button>
+        } @else {
+          <ion-button expand="block" size="large" (click)="referee()">
+            Je suis arbitre
+          </ion-button>
+        }
+        <ion-button expand="block" fill="outline" (click)="bonus()">
+          Bonus pédagogique et technologique
         </ion-button>
         <ion-button expand="block" size="large" routerLink="/tournaments" [queryParams]="{ mode: 'team' }">
-          Je suis une équipe
+          Classement et équipes
         </ion-button>
         <ion-button expand="block" size="large" fill="outline" routerLink="/training">
           Feuille de mission (entraînement)
@@ -68,11 +79,37 @@ import { ApiService } from '../api.service';
   styles: `
     .home { max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; }
     .home > * + * { margin-top: 12px; }
+    .wrap { white-space: normal; }
     .logo { max-height: 140px; object-fit: contain; margin: 12px auto 24px; }
   `,
 })
 export class HomePage {
   api = inject(ApiService);
+  private router = inject(Router);
+  private toasts = inject(ToastController);
+
+  /** Referees sign in with no password, then pick their team. */
+  async referee() {
+    try {
+      if (this.api.user()?.role !== 'REFEREE' && this.api.user()?.role !== 'ADMIN') await this.api.refereeLogin();
+    } catch (e) {
+      // Offline or server unreachable: the tournament list still opens from the cache.
+      await (await this.toasts.create({ message: (e as Error).message, duration: 3000, position: 'top', color: 'warning' })).present();
+    }
+    await this.router.navigate(['/tournaments'], { queryParams: { mode: 'referee' } });
+  }
+
+  /** Educational advisers / digital referents: password first, then the tournament's teams. */
+  bonus() {
+    const target = '/tournaments?mode=referee';
+    if (canScoreBonus(this.api.user())) void this.router.navigateByUrl(target);
+    else void this.router.navigate(['/login'], { queryParams: { redirect: target } });
+  }
+
+  openTabletTeam() {
+    const t = this.api.tabletTeam()!;
+    void this.router.navigate(['/evaluate', t.contestId], { queryParams: { team: t.teamId, teamName: t.teamName, tournament: t.tournamentId } });
+  }
 
   constructor() {
     addIcons({ cloudOfflineOutline, settingsOutline });

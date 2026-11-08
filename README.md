@@ -186,3 +186,27 @@ Une équipe est évaluée en quatre parties séparées (champ `part` des mission
 - Serveur : les bonus sont enregistrés dans la table `TeamEvaluation` (`POST /teams/:id/evaluations`),
   les matchs ne comptent que les missions de match et les pénalités.
 - Les phases finales (quarts, demies, finale) se jouent toujours sur les scores de match.
+
+## Demi-journée de défi : accès, codes d'équipe, tablette, classement
+
+**Accès**
+- **Arbitre** (les parents) : bouton « Je suis arbitre », **sans mot de passe** (compte partagé `arbitre`, créé automatiquement).
+  Note les matchs et le bonus Attitude.
+- **Bonus pédagogique et technologique** (conseillers pédagogiques, référents numériques) : un **mot de passe très simple**
+  (ex. `1234`), donné par l'admin à un compte de rôle « Évaluateur bonus ». Note l'affiche, l'oral et le bonus technologique.
+- **Admin** : identifiant + mot de passe, crée les tournois, accès à tout.
+
+**Codes d'équipe** : chaque classe (groupe « École - Classe - Enseignant ») a une lettre (A, B, C… donnée automatiquement
+à la création ou à l'import), chaque équipe un numéro dans sa classe : **A1, A2, B1…**
+
+**Tablette** : l'arbitre choisit son équipe une fois ; la tablette la suit ensuite toute la demi-journée
+(l'accueil affiche « Arbitre · A1 · … », bouton « Changer d'équipe »). **Chaque score est gardé sur la tablette avant
+d'être envoyé** (liste « Scores gardés sur cette tablette ») ; sans réseau il attend et part au retour du réseau.
+
+**Classement en direct** (« Classement et équipes », mis à jour toutes les 20 s) : score final = meilleur match + bonus.
+Le **podium ne retient que la meilleure équipe de chaque classe** ; la liste complète marque d'une étoile la meilleure de chaque classe.
+
+**Finale** (administration du tournoi) : « Finale des classes » = un seul match avec la meilleure équipe de chaque classe
+(2 à 6 équipes) ; « Tableau » = phases finales à 2, 4, 8 ou 16. Les deux classent sur le score final.
+
+**Entraînement en classe** : la feuille complète (missions + bonus) s'ouvre directement, sans menu ; les essais s'enregistrent sur l'appareil.

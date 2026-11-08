@@ -110,11 +110,12 @@ import { ApiService, type Contest, type Role, type Tournament, type User } from 
           @case ('users') {
             <form class="new-user" (ngSubmit)="createUser()">
               <ion-input label="Identifiant" labelPlacement="stacked" name="u" [(ngModel)]="newUser.username" required></ion-input>
-              <ion-input label="Mot de passe (6+)" labelPlacement="stacked" name="p" type="password" [(ngModel)]="newUser.password" required></ion-input>
+              <ion-input label="Mot de passe (6+, ou très simple pour un évaluateur bonus)" labelPlacement="stacked" name="p" type="password" [(ngModel)]="newUser.password" required></ion-input>
               <ion-select label="Rôle" labelPlacement="stacked" name="r" [(ngModel)]="newUser.role" interface="popover">
                 <ion-select-option value="REFEREE">Arbitre</ion-select-option>
                 <ion-select-option value="ADMIN">Admin</ion-select-option>
                 <ion-select-option value="TEACHER">Enseignant</ion-select-option>
+                <ion-select-option value="EVALUATOR">Évaluateur bonus (péda / techno)</ion-select-option>
               </ion-select>
               <ion-button type="submit">Ajouter</ion-button>
             </form>
@@ -149,7 +150,7 @@ export class AdminPage implements ViewWillEnter {
   contests = resource({ loader: () => this.api.get<Contest[]>('/contests?all=1') });
   tournaments = resource({ loader: () => this.api.get<Tournament[]>('/tournaments') });
   users = resource({ loader: () => this.api.get<User[]>('/users') });
-  roleLabel: Record<Role, string> = { ADMIN: 'Admin', REFEREE: 'Arbitre', TEACHER: 'Enseignant' };
+  roleLabel: Record<Role, string> = { ADMIN: 'Admin', REFEREE: 'Arbitre', TEACHER: 'Enseignant', EVALUATOR: 'Évaluateur bonus' };
   newUser: { username: string; password: string; role: Role } = { username: '', password: '', role: 'REFEREE' };
 
   constructor() {

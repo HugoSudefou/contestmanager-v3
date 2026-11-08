@@ -2,7 +2,8 @@ import { Injectable, computed, signal } from '@angular/core';
 import { compareResults, finalScore, type Answers, type EvalPart, type Sheet } from '@contest/scoring';
 import { environment } from '../environments/environment';
 
-export type Role = 'ADMIN' | 'REFEREE' | 'TEACHER';
+/** REFEREE: parents, no password (matches + attitude). EVALUATOR: poster / oral and technology bonuses, simple password. */
+export type Role = 'ADMIN' | 'REFEREE' | 'TEACHER' | 'EVALUATOR';
 export interface User { id: number; username: string; role: Role }
 export interface Contest {
   id: number;
@@ -27,6 +28,8 @@ export interface Team {
   school: { name: string } | null;
   teacherId: number | null;
   groupId: number;
+  /** Number in its class: with the class letter, the team code (A1, B3...). */
+  number?: number | null;
   /** Bonuses scored once for the team (attitude, pedagogique, technologique). */
   evaluations?: TeamEvaluation[];
 }
@@ -56,6 +59,8 @@ export interface Group {
   name: string;
   tournamentId: number;
   contestId: number;
+  /** Class letter (A, B, C...). */
+  letter?: string | null;
   contest: Contest;
   teams: Team[];
   matches: Match[];
@@ -74,6 +79,26 @@ export interface ScoreSubmission {
   timeSeconds: number;
   /** For display in the pending list only. */
   label: string;
+}
+
+/** A score as kept on the tablet (see ApiService.localScores). */
+export interface LocalScore extends ScoreSubmission {
+  tournamentId: number;
+  teamName: string;
+  /** « Table 1 · 09:00 », or the bonus name. */
+  what: string;
+  score: number;
+  savedAt: string;
+  /** false while it waits in the outbox. */
+  sent: boolean;
+}
+
+/** The team a referee's tablet follows during the half-day. */
+export interface TabletTeam {
+  tournamentId: number;
+  teamId: number;
+  teamName: string;
+  contestId: number;
 }
 
 /** Same match for the same team, or the same bonus for the same team: the newer one replaces the older. */
@@ -104,6 +129,10 @@ export class ApiService {
   readonly session = signal(read<{ token: string; user: User } | null>('session', null));
   readonly user = computed(() => this.session()?.user ?? null);
   readonly outbox = signal(read<ScoreSubmission[]>('outbox', []));
+  /** Every score saved on this tablet (sent or not): the team's results stay on the device all day. */
+  readonly localScores = signal(read<LocalScore[]>('tabletScores', []));
+  /** Team this tablet is attached to (the referee picks it once; the app then opens on it). */
+  readonly tabletTeam = signal(read<TabletTeam | null>('tabletTeam', null));
   readonly online = signal(navigator.onLine);
   private flushing = false;
 
@@ -130,7 +159,20 @@ export class ApiService {
   }
 
   async login(username: string, password: string): Promise<User> {
-    const session = await this.request<{ token: string; user: User }>('POST', '/auth/login', { username, password });
+    return this.open(await this.request<{ token: string; user: User }>('POST', '/auth/login', { username, password }));
+  }
+
+  /** Referee access, no password (matches and attitude bonus). */
+  async refereeLogin(): Promise<User> {
+    return this.open(await this.request<{ token: string; user: User }>('POST', '/auth/referee'));
+  }
+
+  /** Poster / oral and technology bonuses: password only. */
+  async bonusLogin(password: string): Promise<User> {
+    return this.open(await this.request<{ token: string; user: User }>('POST', '/auth/bonus', { password }));
+  }
+
+  private open(session: { token: string; user: User }): User {
     this.session.set(session);
     write('session', session);
     void this.flush();
@@ -191,10 +233,31 @@ export class ApiService {
           continue;
         }
         this.setOutbox(this.outbox().filter((o) => o !== s));
+        this.markSent(s);
       }
     } finally {
       this.flushing = false;
     }
+  }
+
+  /** Keeps a copy of a score on the tablet; the newer score of the same match / bonus replaces the older one. */
+  keepLocal(score: LocalScore) {
+    const list = [score, ...this.localScores().filter((o) => !(o.tournamentId === score.tournamentId && sameSubmission(o, score)))].slice(0, 500);
+    this.localScores.set(list);
+    write('tabletScores', list);
+  }
+
+  /** Marks the tablet copy of a score as received by the server. */
+  markSent(s: ScoreSubmission) {
+    const list = this.localScores().map((o) => (sameSubmission(o, s) && !o.sent ? { ...o, sent: true } : o));
+    this.localScores.set(list);
+    write('tabletScores', list);
+  }
+
+  setTabletTeam(team: TabletTeam | null) {
+    this.tabletTeam.set(team);
+    if (team) write('tabletTeam', team);
+    else localStorage.removeItem('tabletTeam');
   }
 
   discardPending(s: ScoreSubmission) {
@@ -219,15 +282,27 @@ export class ApiService {
     if (body !== undefined && !isForm) headers['Content-Type'] = 'application/json';
 
     let res: Response;
+    // 10 s at most. Not AbortSignal.timeout(): it only exists since Chrome 103, and on older tablets every call
+    // failed with « Serveur injoignable ». AbortController works from Chrome 66.
+    const controller = typeof AbortController === 'function' ? new AbortController() : null;
+    const timer = setTimeout(() => controller?.abort(), 10_000);
     try {
       res = await fetch(this.baseUrl() + path, {
         method,
         headers,
         body: body === undefined ? undefined : isForm ? body : JSON.stringify(body),
-        signal: AbortSignal.timeout(10_000),
+        signal: controller?.signal,
       });
       this.online.set(true);
     } catch {
+      this.online.set(false);
+      throw new OfflineError('Serveur injoignable');
+    } finally {
+      clearTimeout(timer);
+    }
+    // Without network the service worker answers 504 instead of failing: that is "offline", not a refusal
+    // (otherwise a score typed during a network cut would be lost instead of waiting in the outbox).
+    if (res.status === 502 || res.status === 503 || res.status === 504) {
       this.online.set(false);
       throw new OfflineError('Serveur injoignable');
     }
@@ -268,11 +343,54 @@ export const practiceHistory = {
 
 export const FINALS_GROUP = 'Phase finale';
 
+/** Team code: class letter + team number (A1, B3...), or '' when not set. */
+export function teamCode(group: { letter?: string | null } | null | undefined, team: { number?: number | null }): string {
+  return group?.letter && team.number ? `${group.letter}${team.number}` : '';
+}
+
 /** Best match of a team in its group (time splits equal scores when the sheet says so). null = no match scored. */
 export function bestMatch(g: Group, team: Team): Participant | null {
   const tie = !!g.contest?.sheet?.timeTiebreak;
   const scored = g.matches.flatMap((m) => m.participants).filter((p) => p.teamId === team.id && p.score !== null);
   return [...scored].sort((a, b) => compareResults(a, b, tie))[0] ?? null;
+}
+
+export interface RankedTeam {
+  team: Team;
+  group: Group;
+  code: string;
+  best: number | null;
+  bonus: number;
+  final: number | null;
+  timeSeconds: number | null;
+  /** Best team of its class: the one that represents the class on the podium. */
+  classBest: boolean;
+}
+
+/**
+ * Ranking of one contest in a half-day: every team on its final score (best match + bonuses), ties split by the time
+ * of the best match when the sheet says so. The podium keeps only the best team of each class (group):
+ * a class may hold the top scores, only one team represents it.
+ */
+export function rankContest(groups: Group[]): { all: RankedTeam[]; podium: RankedTeam[] } {
+  const tie = !!groups[0]?.contest?.sheet?.timeTiebreak;
+  const all = groups
+    .flatMap((g) =>
+      g.teams.map((team) => {
+        const top = bestMatch(g, team);
+        const bonus = (team.evaluations ?? []).reduce((sum, e) => sum + e.score, 0);
+        return { team, group: g, code: teamCode(g, team), best: top?.score ?? null, bonus, final: teamFinal(g, team), timeSeconds: top?.timeSeconds ?? null, classBest: false };
+      }),
+    )
+    .sort((a, b) => compareResults({ score: a.final, timeSeconds: a.timeSeconds }, { score: b.final, timeSeconds: b.timeSeconds }, tie) || a.code.localeCompare(b.code, 'fr', { numeric: true }));
+  const seen = new Set<number>();
+  for (const r of all) {
+    if (r.final !== null && !seen.has(r.group.id)) {
+      seen.add(r.group.id);
+      r.classBest = true;
+    }
+  }
+  return { all, podium: all.filter((r) => r.classBest) };
 }
 
 /** Final score of a team: its best match + the bonuses scored once (attitude, pedagogique, technologique). */
@@ -281,7 +399,15 @@ export function teamFinal(g: Group, team: Team): number | null {
 }
 export const roundName = (round: number) =>
   ({ 1: 'Finale', 2: 'Demi-finales', 3: 'Quarts de finale', 4: 'Huitièmes de finale' })[round] ?? `Tour ${round}`;
+/** Matches and the attitude bonus: the referees (and admins). */
 export const canScore = (u: User | null) => u?.role === 'REFEREE' || u?.role === 'ADMIN';
+/** Poster / oral and technology bonuses: the bonus evaluators (and admins). */
+export const canScoreBonus = (u: User | null) => u?.role === 'EVALUATOR' || u?.role === 'ADMIN';
+/** Who may open a team's evaluation menu. */
+export const canEvaluate = (u: User | null) => canScore(u) || canScoreBonus(u);
+/** Parts of a team this user scores. */
+export const partsFor = (u: User | null): EvalPart[] =>
+  u?.role === 'ADMIN' ? ['match', 'attitude', 'pedagogique', 'technologique'] : u?.role === 'REFEREE' ? ['match', 'attitude'] : u?.role === 'EVALUATOR' ? ['pedagogique', 'technologique'] : [];
 
 export const formatTime = (s: number) =>
   `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

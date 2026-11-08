@@ -35,10 +35,10 @@ import { BUILTIN_CONTESTS } from '../builtin-contests';
         <ion-list>
           <ion-list-header>Choisissez la feuille de mission</ion-list-header>
           @for (c of contests; track c.id) {
-            <ion-item button [routerLink]="['/evaluate', c.id]">
+            <ion-item button [routerLink]="['/sheet', c.id]">
               <ion-label>
                 <h2>{{ c.name }}</h2>
-                <p>{{ c.season }} · {{ matchMissions(c) }} missions · {{ c.sheet.durationSeconds ? time(c.sheet.durationSeconds) : 'chrono libre' }}</p>
+                <p>{{ c.season }} · {{ matchMissions(c) }} missions + bonus · {{ c.sheet.durationSeconds ? time(c.sheet.durationSeconds) : 'chrono libre' }}</p>
               </ion-label>
             </ion-item>
           }

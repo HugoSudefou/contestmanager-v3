@@ -10,8 +10,11 @@ datasource db {
 
 enum Role {
   ADMIN
+  /// Parents (or staff) scoring matches and the attitude bonus. Signs in without a password (shared account).
   REFEREE
   TEACHER
+  /// Educational advisers and digital-education referents: poster / oral and technology bonuses. Very simple password.
+  EVALUATOR
 }
 
 model User {
@@ -62,6 +65,8 @@ model Tournament {
 model Group {
   id           Int        @id @default(autoincrement())
   name         String
+  /// A group is usually one class (« École - Classe - Enseignant »). Its letter (A, B, C...) starts the team codes: A1, A2...
+  letter       String?
   tournamentId Int
   tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   contestId    Int
@@ -73,6 +78,8 @@ model Group {
 model Team {
   id             Int                @id @default(autoincrement())
   name           String
+  /// Number of the team in its class (1 to 6): with the class letter, the team code (A1, B3...).
+  number         Int?
   schoolId       Int?
   school         School?            @relation(fields: [schoolId], references: [id], onDelete: SetNull)
   teacherId      Int?

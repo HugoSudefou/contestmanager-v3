@@ -48,6 +48,12 @@ class FinalsDto {
   @IsInt() @Min(1) @Max(120) minutesPerRound: number;
 }
 
+/** Final between the best team of each class (one match, 2 to 6 teams). */
+class ClassFinalDto {
+  @IsInt() contestId: number;
+  @IsOptional() @IsDateString() startAt?: string;
+}
+
 export const FINALS_GROUP = 'Phase finale';
 const ROUND_NAMES: Record<number, string> = { 1: 'Finale', 2: 'Demi-finales', 3: 'Quarts de finale', 4: 'Huitièmes de finale' };
 
@@ -96,10 +102,19 @@ export class TournamentToolsController {
           const groupName = `${school.name} - ${e.className.trim()} - ${e.teacher.trim()}`;
           const group =
             (await tx.group.findFirst({ where: { tournamentId, name: groupName } })) ??
-            (await tx.group.create({ data: { tournamentId, name: groupName, contestId: Number(dto.levelContest[e.level]) } }));
+            (await tx.group.create({
+              data: {
+                tournamentId,
+                name: groupName,
+                contestId: Number(dto.levelContest[e.level]),
+                // Classes get A, B, C... in the order of the workbook: team codes A1, A2, B1...
+                letter: String.fromCharCode(65 + Math.min(25, await tx.group.count({ where: { tournamentId, name: { not: FINALS_GROUP } } }))),
+              },
+            }));
 
           const teamName = `Équipe ${e.team.trim()}`;
-          const data = { schoolId: school.id, teacherId: teacher.id, groupId: group.id };
+          const number = Number.parseInt(e.team, 10);
+          const data = { schoolId: school.id, teacherId: teacher.id, groupId: group.id, number: Number.isFinite(number) ? number : null };
           const existing = await tx.team.findFirst({ where: { name: teamName, group: { tournamentId } } });
           const team = existing
             ? await tx.team.update({ where: { id: existing.id }, data })
@@ -117,19 +132,15 @@ export class TournamentToolsController {
   }
 
   /**
-   * Final phase: best team of each group playing `contestId`, then the best others, seeded in a bracket.
-   * Later rounds are created empty and filled as winners are scored.
+   * Each team's result for the final phases: its final score (best match + bonuses: attitude, poster / oral, technology),
+   * with the time of that best match to split ties. Only teams with at least one scored match.
    */
-  @Post('finals')
-  async finals(@Param('id', ParseIntPipe) tournamentId: number, @Body() dto: FinalsDto) {
-    if (await this.prisma.group.findFirst({ where: { tournamentId, name: FINALS_GROUP } })) {
-      throw new ConflictException(`La phase finale existe déjà : supprimez le groupe « ${FINALS_GROUP} » pour la régénérer.`);
-    }
+  private async ranked(tournamentId: number, contestId: number) {
     const groups = await this.prisma.group.findMany({
-      where: { tournamentId, contestId: dto.contestId },
-      include: { matches: { include: { participants: true } } },
+      where: { tournamentId, contestId, name: { not: FINALS_GROUP } },
+      include: { matches: { include: { participants: true } }, teams: { include: { evaluations: true } } },
     });
-    const contest = await this.prisma.contest.findUniqueOrThrow({ where: { id: dto.contestId } });
+    const contest = await this.prisma.contest.findUniqueOrThrow({ where: { id: contestId } });
     const timeTiebreak = !!(contest.sheet as unknown as Sheet).timeTiebreak;
     const best = new Map<number, Ranked>();
     for (const g of groups) {
@@ -142,11 +153,32 @@ export class TournamentToolsController {
         }
       }
     }
-    if (best.size < dto.size) {
-      throw new BadRequestException(`Seulement ${best.size} équipe(s) notée(s) sur ce concours : impossible de faire une phase finale à ${dto.size}.`);
+    for (const t of groups.flatMap((g) => g.teams)) {
+      const r = best.get(t.id);
+      if (r) r.best += t.evaluations.reduce((sum, e) => sum + e.score, 0);
+    }
+    return { teams: [...best.values()], timeTiebreak, classes: groups.length };
+  }
+
+  private async assertNoFinals(tournamentId: number) {
+    if (await this.prisma.group.findFirst({ where: { tournamentId, name: FINALS_GROUP } })) {
+      throw new ConflictException(`La phase finale existe déjà : supprimez le groupe « ${FINALS_GROUP} » pour la régénérer.`);
+    }
+  }
+
+  /**
+   * Final phase: best team of each group (class) playing `contestId`, then the best others, seeded in a bracket.
+   * Teams are ranked on their final score (best match + bonuses). Later rounds are created empty and filled as winners are scored.
+   */
+  @Post('finals')
+  async finals(@Param('id', ParseIntPipe) tournamentId: number, @Body() dto: FinalsDto) {
+    await this.assertNoFinals(tournamentId);
+    const { teams, timeTiebreak } = await this.ranked(tournamentId, dto.contestId);
+    if (teams.length < dto.size) {
+      throw new BadRequestException(`Seulement ${teams.length} équipe(s) notée(s) sur ce concours : impossible de faire une phase finale à ${dto.size}.`);
     }
 
-    const seeded = qualify([...best.values()], dto.size, timeTiebreak);
+    const seeded = qualify(teams, dto.size, timeTiebreak);
     const rounds = Math.log2(dto.size);
     const start = dto.startAt ? new Date(dto.startAt) : null;
     const at = (round: number) => (start ? new Date(start.getTime() + (rounds - round) * dto.minutesPerRound * 60_000) : null);
@@ -171,6 +203,33 @@ export class TournamentToolsController {
         }
       }
       return { groupId: group.id, rounds: Array.from({ length: rounds }, (_, i) => ROUND_NAMES[rounds - i] ?? `Tour ${i + 1}`) };
+    });
+  }
+
+  /**
+   * Single final: the best team of each class (final score: best match + bonuses) in one match,
+   * 2 to 6 teams depending on how many classes came that half-day.
+   */
+  @Post('class-final')
+  async classFinal(@Param('id', ParseIntPipe) tournamentId: number, @Body() dto: ClassFinalDto) {
+    await this.assertNoFinals(tournamentId);
+    const { teams, timeTiebreak } = await this.ranked(tournamentId, dto.contestId);
+    const classes = new Set(teams.map((t) => t.groupId)).size;
+    if (classes < 2) throw new BadRequestException('Il faut au moins 2 classes avec une équipe notée pour faire une finale.');
+    const finalists = qualify(teams, classes, timeTiebreak);
+    return this.prisma.$transaction(async (tx) => {
+      const group = await tx.group.create({ data: { tournamentId, contestId: dto.contestId, name: FINALS_GROUP } });
+      await tx.match.create({
+        data: {
+          groupId: group.id,
+          round: 1,
+          bracketIndex: 0,
+          tableNumber: 1,
+          scheduledAt: dto.startAt ? new Date(dto.startAt) : null,
+          participants: { create: finalists.map((t) => ({ teamId: t.teamId })) },
+        },
+      });
+      return { groupId: group.id, teams: finalists.length };
     });
   }
 }

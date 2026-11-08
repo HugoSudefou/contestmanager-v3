@@ -31,7 +31,7 @@ import {
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { addOutline, hourglassOutline, pauseOutline, playOutline, refreshOutline, removeOutline } from 'ionicons/icons';
-import { EVAL_PARTS, applyChange, canDecrease, canIncrease, computePart, sheetForPart, type Answers, type EvalPart, type ItemDef, type ItemValue, type MissionDef } from '@contest/scoring';
+import { EVAL_PARTS, applyChange, canDecrease, canIncrease, computePart, computeSheet, sheetForPart, type Answers, type EvalPart, type ItemDef, type ItemValue, type MissionDef } from '@contest/scoring';
 import { ApiService, formatTime, practiceHistory, type BuiltinContest, type Contest } from '../api.service';
 import { builtinContest } from '../builtin-contests';
 
@@ -316,14 +316,27 @@ export class SheetPage implements OnDestroy {
   teamName = input<string>();
   tournament = input<string>();
   matchId = computed(() => Number(this.match()) || null);
+  /** « Table 1 · 09:00 »: kept with the score on the tablet. */
+  matchLabel = input<string>();
   /** What is evaluated on this sheet (chosen in the menu before it): a match, or one of the bonuses. */
   part = input<string>();
-  evalPart = computed<EvalPart>(() => (EVAL_PARTS.some((p) => p.part === this.part()) ? (this.part() as EvalPart) : 'match'));
-  isMatch = computed(() => this.evalPart() === 'match');
-  partInfo = computed(() => EVAL_PARTS.find((p) => p.part === this.evalPart())!);
+  /**
+   * Tournament: the part chosen in the menu (a match by default). Training in class: the whole sheet on one page
+   * (missions and bonuses), like a full rehearsal.
+   */
+  evalPart = computed<EvalPart | 'all'>(() =>
+    EVAL_PARTS.some((p) => p.part === this.part()) ? (this.part() as EvalPart) : this.tournament() ? 'match' : 'all',
+  );
+  /** Missions, penalties and stopwatch are shown (a match, or the full training sheet). */
+  isMatch = computed(() => this.evalPart() === 'match' || this.evalPart() === 'all');
+  partInfo = computed(() => EVAL_PARTS.find((p) => p.part === this.evalPart()) ?? EVAL_PARTS[0]);
   /** Bonus sent for a tournament team (no match). */
   isTeamBonus = computed(() => !this.isMatch() && !!this.team() && !!this.tournament());
-  sheet = computed(() => (this.contest.hasValue() ? sheetForPart(this.contest.value().sheet, this.evalPart()) : null));
+  sheet = computed(() => {
+    if (!this.contest.hasValue()) return null;
+    const part = this.evalPart();
+    return part === 'all' ? this.contest.value().sheet : sheetForPart(this.contest.value().sheet, part);
+  });
   title = computed(() => {
     const name = this.teamName() || (this.contest.hasValue() ? this.contest.value().name : '') || 'Feuille de mission';
     return this.isMatch() ? name : `${this.partInfo().title} · ${name}`;
@@ -351,7 +364,9 @@ export class SheetPage implements OnDestroy {
 
   result = computed(() => {
     const c = this.contest.hasValue() ? this.contest.value() : null;
-    return c ? computePart(c.sheet, this.evalPart(), this.answers(), this.penalties()) : null;
+    if (!c) return null;
+    const part = this.evalPart();
+    return part === 'all' ? computeSheet(c.sheet, this.answers(), this.penalties()) : computePart(c.sheet, part, this.answers(), this.penalties());
   });
   duration = computed(() => (this.contest.hasValue() ? this.contest.value().sheet.durationSeconds : 0));
   /**
@@ -371,7 +386,7 @@ export class SheetPage implements OnDestroy {
       const q = new URLSearchParams({ team: this.team()!, teamName: this.teamName() ?? '', tournament: this.tournament()! });
       return `/evaluate/${this.contestId()}?${q}`;
     }
-    return this.tournament() ? `/tournament/${this.tournament()}?mode=referee` : `/evaluate/${this.contestId()}`;
+    return this.tournament() ? `/tournament/${this.tournament()}?mode=referee` : '/training';
   });
 
   constructor() {
@@ -563,15 +578,28 @@ export class SheetPage implements OnDestroy {
   private async sendScore(total: number) {
     this.saving.set(true);
     try {
-      const sent = await this.api.submitScore({
-        part: this.evalPart(),
+      const submission = {
+        part: this.evalPart() === 'all' ? 'match' : (this.evalPart() as EvalPart),
         matchId: this.isMatch() ? this.matchId()! : 0,
         teamId: Number(this.team()),
         answers: this.answers(),
         penalties: this.penalties(),
         timeSeconds: this.elapsed(),
         label: this.isMatch() ? `${this.teamName()} · match ${this.matchId()} · ${total} pts` : `${this.teamName()} · ${this.partInfo().title} · ${total} pts`,
+      };
+      // The tablet keeps every score of the team for the whole half-day, saved before anything is sent:
+      // even if the network or the server fails, nothing typed is lost.
+      this.api.keepLocal({
+        ...submission,
+        tournamentId: Number(this.tournament()),
+        teamName: this.teamName() ?? '',
+        what: this.isMatch() ? this.matchLabel() || `Match ${this.matchId()}` : this.partInfo().title,
+        score: total,
+        savedAt: new Date().toISOString(),
+        sent: false,
       });
+      const sent = await this.api.submitScore(submission);
+      if (sent) this.api.markSent(submission);
       await this.toast(sent ? 'Score envoyé' : 'Hors ligne : score gardé, il sera envoyé au retour du réseau', sent ? 'success' : 'warning');
       await this.router.navigateByUrl(this.backUrl(), { replaceUrl: true });
     } catch (e) {

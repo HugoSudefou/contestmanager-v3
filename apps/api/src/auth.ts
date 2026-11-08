@@ -76,6 +76,13 @@ class LoginDto {
   @IsString() password: string;
 }
 
+class BonusLoginDto {
+  @IsString() password: string;
+}
+
+/** Shared account behind the password-free referee access. */
+export const REFEREE_USERNAME = 'arbitre';
+
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -90,6 +97,40 @@ export class AuthController {
     if (!user || !(await verifyPassword(dto.password, user.passwordHash))) {
       throw new UnauthorizedException('Identifiant ou mot de passe incorrect');
     }
+    return this.session(user);
+  }
+
+  /**
+   * Referee access, no password: the parents who referee on the day just tap « Arbitre ».
+   * They can score matches and the attitude bonus, nothing else (see the role checks).
+   */
+  @Public()
+  @Post('referee')
+  async referee() {
+    const user =
+      (await this.prisma.user.findUnique({ where: { username: REFEREE_USERNAME } })) ??
+      (await this.prisma.user.create({
+        data: { username: REFEREE_USERNAME, firstName: 'Arbitre', role: 'REFEREE', passwordHash: await hashPassword(randomBytes(24).toString('hex')) },
+      }));
+    if (user.role !== 'REFEREE') throw new ForbiddenException(`Le compte « ${REFEREE_USERNAME} » n'est pas un compte arbitre`);
+    return this.session(user);
+  }
+
+  /**
+   * Bonus access (educational advisers, digital-education referents): password only, no username.
+   * The admin creates one or more EVALUATOR accounts with a very simple password.
+   */
+  @Public()
+  @Post('bonus')
+  async bonus(@Body() dto: BonusLoginDto) {
+    const candidates = await this.prisma.user.findMany({ where: { role: 'EVALUATOR' } });
+    for (const user of candidates) {
+      if (await verifyPassword(dto.password, user.passwordHash)) return this.session(user);
+    }
+    throw new UnauthorizedException('Mot de passe incorrect');
+  }
+
+  private async session(user: { id: number; username: string; role: Role }) {
     const payload: AuthUser = { id: user.id, username: user.username, role: user.role };
     return { token: await this.jwt.signAsync(payload), user: payload };
   }
