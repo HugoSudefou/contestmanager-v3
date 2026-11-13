@@ -7,10 +7,17 @@
  *  `section`: optional sub-heading shown just before the item (e.g. « 1 - Attitude des élèves pendant le défi »).
  *  `showIf`: id of a check item of the same mission; the line is shown only once that box is ticked
  *  (pair it with a limit item ≤ showIf so unticking the box also clears the hidden line). */
+/** One answer of a choice line. `image`: picture shown next to this answer (e.g. the robot in the workshop). */
+export interface ChoiceOption {
+  label: string;
+  points: number;
+  image?: string;
+}
+
 export type ItemDef =
   | { id: string; type: 'check'; label: string; section?: string; showIf?: string; image?: string; images?: string[]; points: number }
   | { id: string; type: 'counter'; label: string; section?: string; showIf?: string; image?: string; images?: string[]; points: number; max: number }
-  | { id: string; type: 'choice'; label: string; section?: string; showIf?: string; image?: string; images?: string[]; options: { label: string; points: number }[] };
+  | { id: string; type: 'choice'; label: string; section?: string; showIf?: string; image?: string; images?: string[]; options: ChoiceOption[] };
 
 /** Adds `add` points (can be negative) when every condition matches. Covers the "20 + 70 = 100" style combos. */
 export interface RuleDef {

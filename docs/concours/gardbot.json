@@ -23,23 +23,21 @@
             "id": "momie",
             "type": "choice",
             "label": "La momie",
-            "images": [
-              "assets/gardbot/m1-momie-tablette-sarcophage.jpg",
-              "assets/gardbot/m1-momie-loge.jpg",
-              "assets/gardbot/m1-momie-couloirs.jpg"
-            ],
             "options": [
               {
                 "label": "est allongée dans le sarcophage.",
-                "points": 80
+                "points": 80,
+                "image": "assets/gardbot/m1-momie-tablette-sarcophage.jpg"
               },
               {
                 "label": "se trouve dans la loge de GardBot.",
-                "points": 50
+                "points": 50,
+                "image": "assets/gardbot/m1-momie-loge.jpg"
               },
               {
                 "label": "se trouve à l'intérieur des couloirs du temps mais pas dans son sarcophage.",
-                "points": 20
+                "points": 20,
+                "image": "assets/gardbot/m1-momie-couloirs.jpg"
               },
               {
                 "label": "Autre situation",
@@ -315,16 +313,14 @@
             "options": [
               {
                 "label": "quand GardBot était à l'intérieur de l'auditorium.",
-                "points": 20
+                "points": 20,
+                "image": "assets/gardbot/m5-auditorium-dedans.jpg"
               },
               {
                 "label": "quand GardBot était à l'extérieur de l'auditorium.",
-                "points": 10
+                "points": 10,
+                "image": "assets/gardbot/m5-auditorium-dehors.jpg"
               }
-            ],
-            "images": [
-              "assets/gardbot/m5-auditorium-dedans.jpg",
-              "assets/gardbot/m5-auditorium-dehors.jpg"
             ]
           },
           {
@@ -334,21 +330,19 @@
             "options": [
               {
                 "label": "d'un son du répertoire du robot.",
-                "points": 0
+                "points": 0,
+                "image": "assets/gardbot/m5-son-repertoire.jpg"
               },
               {
                 "label": "d'une mélodie composée en classe par l'équipe.",
-                "points": 40
+                "points": 40,
+                "image": "assets/gardbot/m5-melodie-classe.jpg"
               },
               {
                 "label": "de la nouvelle mélodie imposée pour le défi et composée par l'équipe le jour même.",
-                "points": 70
+                "points": 70,
+                "image": "assets/gardbot/m5-melodie-defi.jpg"
               }
-            ],
-            "images": [
-              "assets/gardbot/m5-son-repertoire.jpg",
-              "assets/gardbot/m5-melodie-classe.jpg",
-              "assets/gardbot/m5-melodie-defi.jpg"
             ]
           }
         ],
@@ -381,21 +375,19 @@
             "options": [
               {
                 "label": "dans l'atelier.",
-                "points": 30
+                "points": 30,
+                "image": "assets/gardbot/m6-atelier.jpg"
               },
               {
                 "label": "dans la loge.",
-                "points": 50
+                "points": 50,
+                "image": "assets/gardbot/m6-loge.jpg"
               },
               {
                 "label": "Autre situation.",
-                "points": 0
+                "points": 0,
+                "image": "assets/gardbot/m6-autre.jpg"
               }
-            ],
-            "images": [
-              "assets/gardbot/m6-atelier.jpg",
-              "assets/gardbot/m6-loge.jpg",
-              "assets/gardbot/m6-autre.jpg"
             ]
           },
           {
@@ -405,14 +397,14 @@
             "options": [
               {
                 "label": "Oui.",
-                "points": 50
+                "points": 50,
+                "image": "assets/gardbot/m6-eteint.png"
               },
               {
                 "label": "Non.",
                 "points": 0
               }
-            ],
-            "image": "assets/gardbot/m6-eteint.png"
+            ]
           }
         ],
         "description": "GardBot doit être en sécurité pour passer la journée et recharger ses batteries pour être en forme la nuit suivante... Il doit donc se hâter, avant que l'aube pointe le bout de son nez, de retourner dans sa loge."

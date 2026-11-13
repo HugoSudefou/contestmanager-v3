@@ -288,16 +288,14 @@
             "options": [
               {
                 "label": "RoBee a effectué une danse.",
-                "points": 15
+                "points": 15,
+                "image": "assets/robee/m5-danse.jpg"
               },
               {
                 "label": "RoBee a effectué une danse en forme de huit.",
-                "points": 30
+                "points": 30,
+                "image": "assets/robee/m5-danse-huit.jpg"
               }
-            ],
-            "images": [
-              "assets/robee/m5-danse.jpg",
-              "assets/robee/m5-danse-huit.jpg"
             ]
           }
         ]
@@ -315,21 +313,19 @@
             "options": [
               {
                 "label": "RoBee se trouve dans la « Ruche ».",
-                "points": 10
+                "points": 10,
+                "image": "assets/robee/m6-ruche.jpg"
               },
               {
                 "label": "RoBee se trouve dans l'hôtel à insectes de l'école.",
-                "points": 30
+                "points": 30,
+                "image": "assets/robee/m6-hotel.jpg"
               },
               {
                 "label": "RoBee se trouve ailleurs.",
-                "points": 0
+                "points": 0,
+                "image": "assets/robee/m6-ailleurs.jpg"
               }
-            ],
-            "images": [
-              "assets/robee/m6-ruche.jpg",
-              "assets/robee/m6-hotel.jpg",
-              "assets/robee/m6-ailleurs.jpg"
             ]
           },
           {
@@ -339,14 +335,14 @@
             "options": [
               {
                 "label": "Oui.",
-                "points": 30
+                "points": 30,
+                "image": "assets/robee/m6-eteint.png"
               },
               {
                 "label": "Non.",
                 "points": 0
               }
-            ],
-            "image": "assets/robee/m6-eteint.png"
+            ]
           }
         ]
       },

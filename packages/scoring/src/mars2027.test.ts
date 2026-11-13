@@ -130,3 +130,30 @@ test('GardBot mission 6: workshop 30 / lodge 50 / other 0, then switched off yes
   assert.equal(pts(1, 1), 50);
   assert.equal(pts(2, 1), 0);
 });
+
+test('every picture of the 4 contests exists, and each answer picture sits next to its own answer', async () => {
+  const { existsSync } = await import('node:fs');
+  const assets = new URL('../../../apps/app/src/', import.meta.url);
+  const all = JSON.parse(readFileSync(new URL('../../../apps/api/prisma/seed-contests.json', import.meta.url), 'utf8')) as { name: string; sheet: Sheet }[];
+  for (const c of all) {
+    for (const m of c.sheet.missions) {
+      const pics = [m.image, ...m.items.flatMap((i) => [i.image, ...(i.images ?? []), ...(i.type === 'choice' ? i.options.map((o) => o.image) : [])])];
+      for (const p of pics.filter(Boolean)) assert.ok(existsSync(new URL(p!, assets)), `${c.name} ${m.id} : ${p} introuvable`);
+      for (const i of m.items) {
+        if (i.type !== 'choice') continue;
+        const optionPics = i.options.map((o) => o.image).filter(Boolean);
+        assert.equal(new Set(optionPics).size, optionPics.length, `${c.name} ${m.id}/${i.id} : même image sur deux réponses`);
+        if (optionPics.length) assert.ok(!i.images?.length && !i.image, `${c.name} ${m.id}/${i.id} : images à la fois sur la question et les réponses`);
+      }
+    }
+  }
+  // GardBot: the mummy's three places have their picture, "Autre situation" none; "éteint" next to "Oui"
+  const gardbot = all.find((c) => c.sheet.missions.some((m) => JSON.stringify(m).includes('gardbot')))!;
+  const item = (mid: string, iid: string) => gardbot.sheet.missions.find((m) => m.id === mid)!.items.find((i) => i.id === iid)!;
+  const momie = item('m1', 'momie');
+  assert.deepEqual(momie.type === 'choice' && momie.options.map((o) => o.image?.split('/').pop() ?? null), [
+    'm1-momie-tablette-sarcophage.jpg', 'm1-momie-loge.jpg', 'm1-momie-couloirs.jpg', null,
+  ]);
+  const eteint = item('m6', 'eteint');
+  assert.deepEqual(eteint.type === 'choice' && eteint.options.map((o) => o.image?.split('/').pop() ?? null), ['m6-eteint.png', null]);
+});

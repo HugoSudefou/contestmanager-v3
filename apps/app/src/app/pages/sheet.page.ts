@@ -220,7 +220,7 @@ Exception : ce qui ne laisse pas de trace sur le tapis (un son, une mélodie, un
                         @case ('choice') {
                           <ion-radio-group [allowEmptySelection]="true" [value]="value(m.id, item.id)" (ionChange)="set(m.id, item.id, $event.detail.value ?? null)">
                             <ion-item lines="none">
-                              @if (pictures(item).length && !perOption(item)) {
+                              @if (pictures(item).length && !optionPics(item)) {
                                 <div slot="start" class="thumbs">
                                   @for (img of pictures(item); track $index) {
                                     <img [src]="img" alt="" class="thumb" (click)="zoom.set(img)" />
@@ -232,8 +232,13 @@ Exception : ce qui ne laisse pas de trace sur le tapis (un son, une mélodie, un
                             @for (o of item.options; track $index) {
                               <ion-item>
                                 <!-- One picture per option: shown next to the option it illustrates. -->
-                                @if (perOption(item); as pics) {
-                                  <img slot="start" [src]="pics[$index]" alt="" class="thumb" (click)="zoom.set(pics[$index])" />
+                                @if (optionPics(item); as pics) {
+                                  @if (pics[$index]; as pic) {
+                                    <img slot="start" [src]="pic" alt="" class="thumb" (click)="zoom.set(pic)" />
+                                  } @else {
+                                    <!-- Answer without a picture: an empty slot keeps the answers aligned. -->
+                                    <div slot="start" class="thumb"></div>
+                                  }
                                 }
                                 <ion-radio [value]="$index" justify="space-between">
                                   <span class="wrap">{{ o.label }}</span> <ion-note>{{ o.points }} pts</ion-note>
@@ -408,10 +413,16 @@ export class SheetPage implements OnDestroy {
     return (item.images?.length ? item.images : [item.image]).map((i) => this.api.imageUrl(i)).filter((i): i is string => !!i);
   }
 
-  /** For a choice line with exactly one picture per option, the pictures in option order (else null). */
-  perOption(item: ItemDef): string[] | null {
+  /**
+   * Pictures of a choice line, one slot per answer (null = no picture for that answer), or null when the pictures
+   * belong to the question. Answers carry their own `image`; old sheets with exactly one picture per answer in
+   * `images` are still shown answer by answer.
+   */
+  optionPics(item: ItemDef): (string | null)[] | null {
+    if (item.type !== 'choice') return null;
+    if (item.options.some((o) => o.image)) return item.options.map((o) => this.api.imageUrl(o.image) ?? null);
     const pics = this.pictures(item);
-    return item.type === 'choice' && pics.length > 1 && pics.length === item.options.length ? pics : null;
+    return pics.length > 1 && pics.length === item.options.length ? pics : null;
   }
 
   /** Blocks entries that would make the sheet impossible (object limit, lines that depend on each other). */
